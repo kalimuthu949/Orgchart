@@ -1,0 +1,16 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.14.0",
+    "libraryName": "phoneguide",
+    "libraryId": "34bb036c-beb7-4ea6-8e4b-fa9882b132f6",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "Phoneguide",
+    "solutionShortDescription": "Phoneguide description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

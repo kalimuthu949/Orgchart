@@ -1,0 +1,19 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "phoneguide-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/phoneguide/PhoneguideWebPart.js",
+          "manifest": "./src/webparts/phoneguide/PhoneguideWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "PhoneguideWebPartStrings": "lib/webparts/phoneguide/loc/{locale}.js",
+    "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js"
+  }
+}

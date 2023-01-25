@@ -1,0 +1,16 @@
+.clsMaterialtab .MuiAppBar-colorPrimary {
+    background-color: #03606a !important;
+}
+
+.clsMaterialtab .MuiTabs-indicator
+{
+    background-color: #FFE49F;
+}
+
+.clsMaterialtab .MuiDataGrid-root .MuiDataGrid-row:hover {
+    background-color: #D8F4F7;
+}
+
+.clsMaterialtab .MuiCheckbox-colorPrimary.Mui-checked {
+    color: #03606a;
+}

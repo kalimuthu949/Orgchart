@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "phoneguide-client-side-solution",
+    "id": "34bb036c-beb7-4ea6-8e4b-fa9882b132f6",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.14.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "Phoneguide description"
+      },
+      "longDescription": {
+        "default": "Phoneguide description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "phoneguide Feature",
+        "description": "The feature that activates elements of the phoneguide solution.",
+        "id": "3301aa43-98ce-4d6f-ab6f-c6a9dfc05508",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/phoneguide.sppkg"
+  }
+}
