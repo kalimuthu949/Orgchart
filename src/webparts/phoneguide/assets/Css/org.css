@@ -1,34 +1,34 @@
-.clsPersons
-{
-  display: flex;
-  justify-content: center;
-  align-items: center !important;
+.clsPersons {
+    display: flex;
+    justify-content: center;
+    align-items: center !important;
 }
 
 a:hover {
-
     text-decoration: none;
-  }
+}
 
-  .searchDiv
-  {
+.searchDiv {
     margin-bottom: 30px;
     display: flex;
     justify-content: space-between;
-  }
-  .treenode-li:first-of-type::after,
-  .treenode-li:last-of-type::before
-  {
-border-radius: 0;
-  }
-  .treeview-stack {
-display: flex;
-flex-direction: column;
-border: 1px solid rgba(0,0,0,.15);
-margin-bottom: 15px;
-position: relative;
-  }
-  .Manager .treeview-stack::after{
+}
+
+.treenode-li:first-of-type::after,
+.treenode-li:last-of-type::before {
+    border-radius: 0;
+}
+
+.treeview-stack {
+    display: flex;
+    flex-direction: column;
+    /* border: 1px solid rgba(0, 0, 0, .15); */
+    box-shadow: 0px 2px 4px #00000024, 0px 0px 2px #0000001f;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.Manager .treeview-stack::after {
     content: '';
     display: block;
     position: absolute;
@@ -39,187 +39,196 @@ position: relative;
     margin: auto;
     left: 50%;
     right: 50%;
+}
 
-  }
-  
-  .treeview-stack .treeview-content-top {
-   
-    background-color: #fff;
+.treeview-stack .treeview-content-top {
+    background-color: #ffe49f;
     padding: 15px 15px;
-  }
-  .treeview-stack .treeview-content-top:hover
-  {
-    background-color:rgba(255, 228, 159, 0.3);
-  }
-  .treeview-stack .treeview-content-bottom {
+    border-radius: 4px;
+}
+
+.treeview-stack .treeview-content-top:hover {
+    background-color: #fcdc8a;
+}
+
+.treeview-stack .treeview-content-bottom {
     padding: 7px 15px;
-    border-top: 1px solid rgba(0,0,0,.15);
+    border-top: 1px solid rgba(0, 0, 0, .15);
     background-color: #f5f5f5;
     text-align: left;
-  } 
-  .treenode-li::after, .treenode-li::before {
-    border-top: 1px solid rgba(0,0,0,.15);
-  }
-  .treenode-li::after {
-    border-left: 1px solid rgba(0,0,0,.15);
-  }
-  .treeview-stack .treeview-link {
+}
+
+.treenode-li::after,
+.treenode-li::before {
+    border-top: 1px solid rgba(0, 0, 0, .15);
+}
+
+.treenode-li::after {
+    border-left: 1px solid rgba(0, 0, 0, .15);
+}
+
+.treeview-stack .treeview-link {
     text-decoration: none;
     color: #353535;
-  }
-  .treeview-stack .treeview-content-bottom .icon-link {
+}
+
+.treeview-stack .treeview-content-bottom .icon-link {
     color: #353535;
-  }
-  .treeview-stack .treeview-link .ms-TooltipHost {
+}
+
+.treeview-stack .treeview-link .ms-TooltipHost {
     font-size: 18px;
     font-weight: 500;
-  }
-  .treeview-stack{
+}
+
+.treeview-stack {
     width: 300px;
-  }
-  .treeview-person {
+    border-radius: 4px;
+}
+
+.treeview-person {
     height: inherit;
-   
     align-items: flex-start;
-  }
-  .treeview-person .ms-Persona-primaryText {
+}
+
+.treeview-person .ms-Persona-primaryText {
     text-overflow: inherit;
     white-space: normal;
     overflow: inherit;
-    color:#03606a;
-  }
+    color: #03606a;
+}
 
-  .clsPopup .treeview-person .ms-Persona-primaryText {
-    color:#fff;
-  }
+.clsPopup .treeview-person .ms-Persona-primaryText {
+    color: #03606a;
+}
 
-  .clsIcons 
-  {
+.clsIcons {
     display: flex;
-  }
-  .clsIcons a.icon-link {
+}
+
+.clsIcons a.icon-link {
     margin-right: 10px;
 }
 
 .Reportees .treeview-parent {
-  padding-left: 15px;
-  padding-right: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .Reportees-box {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 15px;
-
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 15px;
 }
 
-.Reportees-bg
-{
-  background-color: #D8F4F7;
-  border: 1px solid rgba(0,0,0,.15);
-  padding: 15px 15px;
-  
+.Reportees-bg {
+    background-color: #D8F4F7;
+    border: 1px solid rgba(0, 0, 0, .15);
+    padding: 15px 15px;
+    border-radius: 4px;
 }
 
 .treeview-content-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .searchDiv .ms-SelectionZone {
-  display: flex;
-  justify-content: flex-end;
-  min-width: 300px;
-  margin-left: auto;
+    display: flex;
+    justify-content: flex-end;
+    min-width: 300px;
+    margin-left: auto;
 }
-.searchDiv .ms-BasePicker-text{
-border: 1px solid rgba(0,0,0,.15) !important;
-}
-.searchDiv .ms-BasePicker-text:after {
-  border: none !important;
-}
-.searchDiv .ms-BasePicker-text:focus,.searchDiv .ms-BasePicker-text:active,.searchDiv .ms-BasePicker-text:hover{
-  border: 1px solid rgba(0,0,0,.15) !important;
-  }
 
-  .treeview-stack:hover,.treeview-stack:hover {
+.searchDiv .ms-BasePicker-text {
+    border: 1px solid rgba(0, 0, 0, .15) !important;
+}
+
+.searchDiv .ms-BasePicker-text:after {
+    border: none !important;
+}
+
+.searchDiv .ms-BasePicker-text:focus,
+.searchDiv .ms-BasePicker-text:active,
+.searchDiv .ms-BasePicker-text:hover {
+    border: 1px solid rgba(0, 0, 0, .15) !important;
+}
+
+.treeview-stack:hover,
+.treeview-stack:hover {
     color: rgb(19, 38, 59);
     text-decoration: none;
-    
-  }
+}
 
-  .treeview-stack{
+.treeview-stack {
     cursor: pointer;
-  }
+}
 
-  .clsPopup{
+.clsPopup {
     position: fixed;
     width: 300px;
     height: 100%;
     top: 48px;
-    bottom:0px;
+    bottom: 0px;
     right: -100%;
     padding: 15px;
-    border: 1px solid rgba(0,0,0,.15);
+    border: 1px solid rgba(0, 0, 0, .15);
     border-radius: 5px 0px 0px 0px;
-    background-color: #03606a;
-    color: #fff;
+    background-color: #D8F4F7;
+    color: #03606a;
     -webkit-transition: all 0s ease-in-out;
     -moz-transition: all 0s ease-in-out;
     -o-transition: all 0s ease-in-out;
     transition: all 0s ease-in-out;
-    
-  }
+}
 
-  .clsPopup.visible{
+.clsPopup.visible {
     right: 0px;
-  }
+}
 
-  .clsIcons {
+.clsIcons {
     display: flex;
     justify-content: flex-start;
     margin-left: -10px;
     margin-top: 10px;
-  }
+}
 
-  .clsIcons li{
+.clsIcons li {
     list-style-type: none;
     margin: 10px;
     font-size: 18px;
-  }
-  .clsIcons li:hover,.clsBack li:hover{
-    cursor: pointer;
-  }
-
-  .clsBack li{
-    list-style-type: none;
-    font-size: 32px;
-  }
-
-  .clsFirstDiv
-  {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .clsClose li
-  {
-    list-style-type: none;
-  }
-
-  .clsClose li:hover
-  {
-    cursor: pointer;
-  }
-
-  .clsPopup a {
-    text-decoration: none;
-    color: white;
 }
 
+.clsIcons li:hover,
+.clsBack li:hover {
+    cursor: pointer;
+}
 
-  .clsEmail h2 {
+.clsBack li {
+    list-style-type: none;
+    font-size: 32px;
+}
+
+.clsFirstDiv {
+    display: flex;
+    justify-content: space-between;
+}
+
+.clsClose li {
+    list-style-type: none;
+}
+
+.clsClose li:hover {
+    cursor: pointer;
+}
+
+.clsPopup a {
+    text-decoration: none;
+    color: #03606a;
+}
+
+.clsEmail h2 {
     display: block;
     font-size: 1.5em;
     margin-block-start: 0.83em;
@@ -227,4 +236,8 @@ border: 1px solid rgba(0,0,0,.15) !important;
     margin-inline-start: 0px;
     margin-inline-end: 0px;
     font-weight: bold;
+}
+
+.ms-Persona-secondaryText>div {
+    font-size: 14px !important;
 }

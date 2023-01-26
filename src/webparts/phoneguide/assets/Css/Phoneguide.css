@@ -1,16 +1,45 @@
-.clsMaterialtab .MuiAppBar-colorPrimary {
-    background-color: #03606a !important;
+#workbenchPageContent {
+    max-width: 100%;
 }
 
-.clsMaterialtab .MuiTabs-indicator
-{
-    background-color: #FFE49F;
+.content_3f3fd3c2,
+.CanvasZone {
+    padding: 0 !important;
+    max-width: 100% !important;
+}
+
+.clsMaterialtab .MuiAppBar-colorPrimary {
+    background-color: #D8F4F7 !important;
+    color: #03606a !important;
+}
+
+.clsMaterialtab .MuiTabs-indicator {
+    /* background-color: #ffe49f; */
+    background-color: #03606a;
 }
 
 .clsMaterialtab .MuiDataGrid-root .MuiDataGrid-row:hover {
-    background-color: #D8F4F7;
+    background-color: #ffe49f80;
 }
 
 .clsMaterialtab .MuiCheckbox-colorPrimary.Mui-checked {
     color: #03606a;
+}
+
+.clsMaterialtab .MuiBox-root {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.MuiDataGrid-root .MuiDataGrid-columnsContainer {
+    /* background-color: #ffe49f; */
+}
+
+.MuiDataGrid-columnHeaderTitle {
+    color: #03606a !important;
+}
+
+.MuiDataGrid-root {
+    border: none !important;
+    box-shadow: 0px 2px 4px #00000024, 0px 0px 2px #0000001f;
 }

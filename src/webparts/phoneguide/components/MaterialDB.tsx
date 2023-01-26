@@ -1,48 +1,74 @@
 import * as React from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles } from "@material-ui/styles";
 
-const columns:any = [
+const columns: any = [
   { field: "id", headerName: "ID", width: 90, hide: true },
   {
-    field: "Name",
-    headerName: "First name",
-    width: 150,
+    field: "empName",
+    headerName: "Employee Name",
+    width: 200,
     editable: false,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center'
+    headerClassName: "super-app-theme--header",
+    headerAlign: "left",
+  },
+  {
+    field: "title",
+    headerName: "Title",
+    width: 200,
+    editable: false,
+    headerClassName: "super-app-theme--header",
+    headerAlign: "left",
   },
   {
     field: "Email",
     headerName: "Email",
-    width: 150,
+    width: 300,
     editable: false,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center'
+    headerClassName: "super-app-theme--header",
+    headerAlign: "left",
   },
-  {
-    field: "Department",
-    headerName: "Department",
-    width: 150,
-    editable: false,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center'
-  },
+
   {
     field: "Zone",
     headerName: "Zone",
     width: 150,
     editable: false,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center'
+    headerClassName: "super-app-theme--header",
+    headerAlign: "left",
   },
+
   {
-    field: "Dept",
-    headerName: "Dept",
+    field: "Ext",
+    headerName: "Ext",
     width: 150,
     editable: false,
-    headerClassName: 'super-app-theme--header',
-    headerAlign: 'center'
+    headerClassName: "super-app-theme--header",
+    headerAlign: "left",
+  },
+  {
+    field: "mobile",
+    headerName: "Mobile Number",
+    width: 150,
+    editable: false,
+    headerClassName: "super-app-theme--header",
+    headerAlign: "left",
+  },
+  {
+    field: "subDep",
+    headerName: "Sub Department",
+    width: 200,
+    editable: false,
+    headerClassName: "super-app-theme--header",
+    headerAlign: "left",
+  },
+  {
+    field: "Manager",
+    headerName: "Manager",
+    width: 150,
+    editable: false,
+    headerClassName: "super-app-theme--header",
+    headerAlign: "left",
   },
 ];
 
@@ -56,11 +82,16 @@ export default function MaterialDB(props) {
     if (props.Department == props.items[i].department)
       rows.push({
         id: props.items[i].ID,
-        Name: props.items[i].text,
+        empName: props.items[i].text,
+        title: props.items[i].jobTitle,
         Email: props.items[i].Email,
-        Department: props.items[i].department,
+        subDep: props.items[i].Dept,
         Zone: props.items[i].Zone,
-        Dept: props.items[i].Dept,
+        Manager: props.items[i].manager
+          ? props.items[i].manager.displayName
+          : "",
+        Ext: props.items[i].Ext,
+        mobile: props.items[i].mobilePhone,
       });
   }
   return (
@@ -70,9 +101,8 @@ export default function MaterialDB(props) {
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
-        checkboxSelection
+        // checkboxSelection
         disableSelectionOnClick
-        
       />
     </div>
   );

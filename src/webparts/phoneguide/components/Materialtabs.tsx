@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
-import { makeStyles,useTheme  } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -9,9 +9,8 @@ import Box from "@material-ui/core/Box";
 import MaterialDB from "./MaterialDB";
 import { graph } from "@pnp/graph/presets/all";
 
-
 import SPServices from "./SPServices";
-import "../assets/Css/Phoneguide.css"
+import "../assets/Css/Phoneguide.css";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -88,7 +87,8 @@ export default function MaterialDtabs() {
 
   async function getallusersgraph(userData) {
     await graph.users
-      .select("department,mail,id,displayName,jobTitle,mobilePhone")
+      .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext")
+      .expand("manager")
       .top(999)
       .get()
       .then(function (data) {
@@ -103,6 +103,7 @@ export default function MaterialDtabs() {
               filteredArr.push(user);
             }
           }
+
           users.push({
             imageUrl:
               "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
@@ -115,13 +116,18 @@ export default function MaterialDtabs() {
             mobilePhone: data[i].mobilePhone,
             department: data[i].department,
             Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
-            Dept: filteredArr.length > 0 ? filteredArr[0].Department : "",
+            Dept:
+              filteredArr.length > 0
+                ? filteredArr[0].SubDepartments.join(", ")
+                : "",
+            manager: data[i].manager ? data[i].manager : null,
+            Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
           });
 
           if (data[i].department) depts.push(data[i].department);
-
           depts = removeDuplicates(depts);
         }
+        console.log(users);
         setdepartment([...depts]);
         setPeopleList([...users]);
       })
@@ -130,28 +136,31 @@ export default function MaterialDtabs() {
       });
   }
 
-
   return peopleList.length > 0 ? (
-    <div className="clsMaterialtab"><div className={classes.root}>
-      <AppBar position="static" className="clsTabs">
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="simple tabs example"
-        >
-          {department.map(function (item, index) {
-            let name = item;
-            return <Tab label={name} {...a11yProps(index)} />;
-          })}
-        </Tabs>
-      </AppBar>
-      {department.map(function (item, index) {
-        return (
-          <TabPanel value={value} index={index}>
-            <MaterialDB Department={item} items={peopleList} />
-          </TabPanel>
-        );
-      })}
-    </div></div>
+    <div className="clsMaterialtab">
+      <div className={classes.root}>
+        <AppBar position="static" className="clsTabs">
+          <Tabs
+            variant="scrollable"
+            scrollButtons="auto"
+            value={value}
+            onChange={handleChange}
+            aria-label="simple tabs example"
+          >
+            {department.map(function (item, index) {
+              let name = item;
+              return <Tab label={name} {...a11yProps(index)} />;
+            })}
+          </Tabs>
+        </AppBar>
+        {department.map(function (item, index) {
+          return (
+            <TabPanel value={value} index={index}>
+              <MaterialDB Department={item} items={peopleList} />
+            </TabPanel>
+          );
+        })}
+      </div>
+    </div>
   ) : null;
 }

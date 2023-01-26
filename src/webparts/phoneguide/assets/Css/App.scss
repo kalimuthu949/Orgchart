@@ -1,0 +1,21 @@
+.Toggle-section {
+    display: flex;
+    background: #d8f4f7;
+    width: fit-content;
+    padding: 6px;
+    border-radius: 4px;
+    margin: 6px 0px 12px auto;
+    button {
+        border-radius: 4px;
+        padding: 6px 20px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        color: #03606a;
+        &.Active {
+            background-color: #03606a;
+            color: #fff;
+            font-weight: 600;
+        }
+    }
+}
