@@ -1,16 +1,32 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
+import { DefaultButton, PrimaryButton } from '@fluentui/react/lib/Button';
+import {
+  IPersonaProps,
+  Persona,
+  PersonaSize,
+} from "@fluentui/react/lib/Persona";
+import {
+  NormalPeoplePicker,
+  ValidationState,
+} from "@fluentui/react/lib/Pickers";
 import Box from "@material-ui/core/Box";
 import MaterialDB from "./MaterialDB";
 import { graph } from "@pnp/graph/presets/all";
-
+import { Dropdown, IDropdownStyles } from '@fluentui/react/lib/Dropdown';
 import SPServices from "./SPServices";
 import "../assets/Css/Phoneguide.css";
+
+//Filter functionality
+let listitems=[];//glb array which is having the all user details from sharepoint list
+let graphuserdetails=[];//glb array which is having the all user details from grpah
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -53,19 +69,35 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MaterialDtabs() {
   const classes = useStyles();
+  const [delayResults, setDelayResults] = React.useState(false);
   const [value, setValue] = React.useState(0);
-  const [peopleList, setPeopleList] = React.useState([]);
-  const [department, setdepartment] = React.useState([]);
+  const [allusers, setallusers] = React.useState([]);
+  const [peopleList, setPeopleList] = React.useState([]);//which is used to store the users from graph and sharepoint list as well dropdown filter.
+  const [department, setdepartment] = React.useState([]);//which is used to bind tabs.
+  const [loader,setloader]=React.useState(false);
+  const [mostRecentlyUsed, setMostRecentlyUsed] = React.useState<
+  IPersonaProps[]
+>([]);
+
+  //For filter dropdowns
+  const [zones, setzones] = React.useState([]);
+  const [selectedusers, setselectedusers] = React.useState([]);
+
+  //For Filters
+  const [empname, setempname] = React.useState("");
+  const [zone, setzone] = React.useState("");
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  function removeDuplicates(arr) {
+  function removeDuplicatesfromarray(arr) {
     return arr.filter((item, index) => arr.indexOf(item) === index);
   }
 
   React.useEffect(function () {
+    setloader(true);
     getalluserssp();
     // getallusersgraph();
   }, []);
@@ -77,11 +109,13 @@ export default function MaterialDtabs() {
       Expand: "Employee",
     })
       .then((items: any) => {
+        listitems=items;
         getallusersgraph(items);
         // console.log(items);
       })
       .catch(function (error) {
         console.log(error);
+        setloader(false);
       });
   }
 
@@ -95,8 +129,10 @@ export default function MaterialDtabs() {
         console.log(data);
         const users = [];
         let depts = [];
+        let arrzones =[];
         for (let i = 0; i < data.length; i++) {
           let filteredArr = [];
+
           for (let j = 0; j < userData.length; j++) {
             let user = userData[j];
             if (user.EmployeeId && user.Employee.EMail == data[i].mail) {
@@ -125,19 +161,335 @@ export default function MaterialDtabs() {
           });
 
           if (data[i].department) depts.push(data[i].department);
-          depts = removeDuplicates(depts);
+          
+
+          let zonename=filteredArr.length > 0 ? filteredArr[0].Zone : ""
+          if (zonename) arrzones.push(zonename);
+          
         }
         console.log(users);
+        graphuserdetails=users;
+        depts = removeDuplicatesfromarray(depts);
+        arrzones = removeDuplicatesfromarray(arrzones);
+        let statezones=[];
+        for(let i=0;i<arrzones.length;i++)
+        {
+          if(i==0)
+          {
+            statezones.push({ key: "Select", text: "Select" })
+          }
+          statezones.push({ key: arrzones[i], text: arrzones[i] })
+        }
         setdepartment([...depts]);
+        setzones([...statezones]);
+        setallusers([...users]);
         setPeopleList([...users]);
+        setloader(false);
       })
       .catch(function (error) {
         console.log(error);
+        setloader(false);
       });
   }
 
-  return peopleList.length > 0 ? (
-    <div className="clsMaterialtab">
+  async function filtervalues(useremail,zone)
+  {
+    const usersdata = [];
+    let data=graphuserdetails;
+    if(useremail||zone)
+    {
+    for (let i = 0; i < data.length; i++) 
+    {
+      let filteredArr = [];
+
+      for (let j = 0; j < listitems.length; j++) 
+      {
+        let user = listitems[j];
+        if (user.EmployeeId && user.Employee.EMail == data[i].Email) {
+          filteredArr.push(user);
+        }
+      }
+
+      let strzone=filteredArr.length > 0 ? filteredArr[0].Zone:"";
+
+      if(useremail&&zone)
+      {
+        if(useremail==data[i].Email&&zone==strzone)
+        {
+          usersdata.push({
+            imageUrl:
+              "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].Email,
+            isValid: true,
+            Email: data[i].Email,
+            ID: data[i].ID,
+            key: i,
+            text: data[i].text,
+            jobTitle: data[i].jobTitle,
+            mobilePhone: data[i].mobilePhone,
+            department: data[i].department,
+            Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
+            Dept:
+              filteredArr.length > 0
+                ? filteredArr[0].SubDepartments.join(", ")
+                : "",
+            manager: data[i].manager ? data[i].manager : null,
+            Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
+          });
+        }
+      }
+      else if(useremail&&!zone)
+      {
+        if(useremail==data[i].Email){
+        usersdata.push({
+          imageUrl:
+            "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].Email,
+          isValid: true,
+          Email: data[i].Email,
+          ID: data[i].ID,
+          key: i,
+          text: data[i].text,
+          jobTitle: data[i].jobTitle,
+          mobilePhone: data[i].mobilePhone,
+          department: data[i].department,
+          Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
+          Dept:
+            filteredArr.length > 0
+              ? filteredArr[0].SubDepartments.join(", ")
+              : "",
+          manager: data[i].manager ? data[i].manager : null,
+          Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
+        });
+        }
+      }
+      else if(!useremail&&zone)
+      {
+        if(zone==strzone){
+        usersdata.push({
+          imageUrl:
+            "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].Email,
+          isValid: true,
+          Email: data[i].Email,
+          ID: data[i].ID,
+          key: i,
+          text: data[i].text,
+          jobTitle: data[i].jobTitle,
+          mobilePhone: data[i].mobilePhone,
+          department: data[i].department,
+          Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
+          Dept:
+            filteredArr.length > 0
+              ? filteredArr[0].SubDepartments.join(", ")
+              : "",
+          manager: data[i].manager ? data[i].manager : null,
+          Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
+        });
+        }
+      }
+    }
+    console.log(usersdata);
+    setPeopleList([...usersdata]);
+    setloader(false);
+   }
+   else
+   {
+     filtervaluesall();
+   }
+  }
+
+  async function filtervaluesall()
+  {
+    const usersdata = [];
+    let data=graphuserdetails;
+
+    for (let i = 0; i < data.length; i++) 
+    {
+      let filteredArr = [];
+      
+      for (let j = 0; j < listitems.length; j++) 
+      {
+        let user = listitems[j];
+        if (user.EmployeeId && user.Employee.EMail == data[i].Email) {
+          filteredArr.push(user);
+        }
+      }
+        usersdata.push({
+          imageUrl:
+            "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].Email,
+          isValid: true,
+          Email: data[i].Email,
+          ID: data[i].ID,
+          key: i,
+          text: data[i].text,
+          jobTitle: data[i].jobTitle,
+          mobilePhone: data[i].mobilePhone,
+          department: data[i].department,
+          Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
+          Dept:
+            filteredArr.length > 0
+              ? filteredArr[0].SubDepartments.join(", ")
+              : "",
+          manager: data[i].manager ? data[i].manager : null,
+          Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
+        });
+      
+    }
+    console.log(usersdata);
+    setPeopleList(usersdata);
+    setloader(false);
+  }
+
+
+  const onFilterChanged = (
+    filterText: string,
+    currentPersonas: IPersonaProps[],
+    limitResults?: number
+  ): IPersonaProps[] | Promise<IPersonaProps[]> => {
+    if (filterText) {
+      let filteredPersonas: IPersonaProps[] = filterPersonasByText(filterText);
+
+      filteredPersonas = removeDuplicates(filteredPersonas, currentPersonas);
+      filteredPersonas = limitResults
+        ? filteredPersonas.slice(0, limitResults)
+        : filteredPersonas;
+      return filterPromise(filteredPersonas);
+    } else {
+      return [];
+    }
+  };
+
+  const filterPersonasByText = (filterText: string): IPersonaProps[] => {
+    return allusers.filter((item) =>
+      doesTextStartWith(item.text as string, filterText)
+    );
+  };
+
+  const filterPromise = (
+    personasToReturn: IPersonaProps[]
+  ): IPersonaProps[] | Promise<IPersonaProps[]> => {
+    if (delayResults) {
+      return convertResultsToPromise(personasToReturn);
+    } else {
+      return personasToReturn;
+    }
+  };
+
+  const returnMostRecentlyUsed = (
+    currentPersonas: IPersonaProps[]
+  ): IPersonaProps[] | Promise<IPersonaProps[]> => {
+    return filterPromise(removeDuplicates(mostRecentlyUsed, currentPersonas));
+  };
+
+  function doesTextStartWith(text: string, filterText: string): boolean {
+    return text.toLowerCase().indexOf(filterText.toLowerCase()) === 0;
+  }
+
+  function removeDuplicates(
+    personas: IPersonaProps[],
+    possibleDupes: IPersonaProps[]
+  ) {
+    return personas.filter(
+      (persona) => !listContainsPersona(persona, possibleDupes)
+    );
+  }
+
+  function listContainsPersona(
+    persona: IPersonaProps,
+    personas: IPersonaProps[]
+  ) {
+    if (!personas || !personas.length || personas.length === 0) {
+      return false;
+    }
+    return personas.filter((item) => item.text === persona.text).length > 0;
+  }
+
+  function convertResultsToPromise(
+    results: IPersonaProps[]
+  ): Promise<IPersonaProps[]> {
+    return new Promise<IPersonaProps[]>((resolve, reject) =>
+      setTimeout(() => resolve(results), 2000)
+    );
+  }
+
+  function getTextFromItem(persona: IPersonaProps): string {
+    return persona.text as string;
+  }
+
+  function validateInput(input: string): ValidationState {
+    if (input.indexOf("@") !== -1) {
+      return ValidationState.valid;
+    } else if (input.length > 1) {
+      return ValidationState.warning;
+    } else {
+      return ValidationState.invalid;
+    }
+  }
+
+  return(
+    
+    <div>
+       {loader?<div className="spinnerBackground"><Spinner className="clsSpinner" size={SpinnerSize.large} /></div>:<></>}
+       <div className="clsMaterialtab">
+        <div className="clsFilters">
+          <div className="clsFilterEmployeeName">
+          <NormalPeoplePicker
+            onResolveSuggestions={onFilterChanged}
+            getTextFromItem={getTextFromItem}
+            className={"ms-PeoplePicker"}
+            key={"normal"}
+            inputProps={{ placeholder: "Search User" }}
+            onValidateInput={validateInput}
+            selectedItems={selectedusers}
+            selectionAriaLabel={"Selected contacts"}
+            removeButtonAriaLabel={"Remove"}
+            resolveDelay={300}
+            itemLimit={1}
+            onChange={(data) => 
+              {
+                if(data.length>0)
+                {
+                  setempname(data[0]['Email']);
+                  setselectedusers(data);
+                  filtervalues(data[0]['Email'],zone);
+                }
+                else
+                {
+                  setempname("");
+                  setselectedusers([]);
+                  filtervalues("",zone);
+                }
+              }
+                
+            }
+          />
+          </div>
+          <div className="clsFilterEmployeeName"> <Dropdown
+        placeholder="Select"
+        options={zones}
+        selectedKey={zone}
+        onChange={(event, option, index)=>
+          {
+                if(option.key!="Select")
+                {
+                  setzone(option.text);
+                  filtervalues(empname,option.text);
+                }
+                else
+                {
+                  setzone("");
+                  filtervalues(empname,"");
+                }
+        }}
+      /></div>
+          <div className="clsFilterEmployeeName">
+          <PrimaryButton text="Clear filter" onClick={()=>
+          {
+              setempname("");
+              setzone("");
+              setselectedusers([]);
+              filtervaluesall();
+          }}/>
+          </div>
+        </div>
       <div className={classes.root}>
         <AppBar position="static" className="clsTabs">
           <Tabs
@@ -147,7 +499,8 @@ export default function MaterialDtabs() {
             onChange={handleChange}
             aria-label="simple tabs example"
           >
-            {department.map(function (item, index) {
+            {department.map(function (item, index) 
+            {
               let name = item;
               return <Tab label={name} {...a11yProps(index)} />;
             })}
@@ -160,7 +513,6 @@ export default function MaterialDtabs() {
             </TabPanel>
           );
         })}
-      </div>
-    </div>
-  ) : null;
+      </div></div>
+    </div>)
 }

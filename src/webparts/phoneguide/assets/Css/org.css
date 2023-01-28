@@ -138,11 +138,12 @@ a:hover {
     display: flex;
     justify-content: flex-end;
     min-width: 300px;
-    margin-left: auto;
+    margin-left: 16px;
 }
 
 .searchDiv .ms-BasePicker-text {
-    border: 1px solid rgba(0, 0, 0, .15) !important;
+    border: 1px solid #000000 !important;
+    min-width: 100% !important;
 }
 
 .searchDiv .ms-BasePicker-text:after {
@@ -240,4 +241,10 @@ a:hover {
 
 .ms-Persona-secondaryText>div {
     font-size: 14px !important;
+}
+
+.clsDropplussearch
+{
+    display: flex;
+    justify-content: space-between;
 }
