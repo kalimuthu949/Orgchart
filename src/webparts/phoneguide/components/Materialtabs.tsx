@@ -17,7 +17,7 @@ import {
   ValidationState,
 } from "@fluentui/react/lib/Pickers";
 import Box from "@material-ui/core/Box";
-import MaterialDB from "./MaterialDB";
+import MaterialDBNew from "./MaterialDBNew";
 import { graph } from "@pnp/graph/presets/all";
 import { Dropdown, IDropdownStyles } from '@fluentui/react/lib/Dropdown';
 import SPServices from "./SPServices";
@@ -81,12 +81,13 @@ export default function MaterialDtabs() {
 
   //For filter dropdowns
   const [zones, setzones] = React.useState([]);
+  const [titles, settitles] = React.useState([]);
   const [selectedusers, setselectedusers] = React.useState([]);
 
   //For Filters
   const [empname, setempname] = React.useState("");
   const [zone, setzone] = React.useState("");
-
+  const [title, settitle] = React.useState("");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -128,9 +129,14 @@ export default function MaterialDtabs() {
       .then(function (data) {
         console.log(data);
         const users = [];
+
         let depts = [];
         let arrzones =[];
-        for (let i = 0; i < data.length; i++) {
+        let arrTitles=[];
+
+
+        for (let i = 0; i < data.length; i++) 
+        {
           let filteredArr = [];
 
           for (let j = 0; j < userData.length; j++) {
@@ -160,17 +166,25 @@ export default function MaterialDtabs() {
             Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
           });
 
-          if (data[i].department) depts.push(data[i].department);
-          
 
+
+          if (data[i].department) depts.push(data[i].department);
+          if (data[i].jobTitle) arrTitles.push(data[i].jobTitle);
+          
           let zonename=filteredArr.length > 0 ? filteredArr[0].Zone : ""
           if (zonename) arrzones.push(zonename);
           
         }
         console.log(users);
         graphuserdetails=users;
+
+
+
         depts = removeDuplicatesfromarray(depts);
         arrzones = removeDuplicatesfromarray(arrzones);
+        arrTitles=removeDuplicatesfromarray(arrTitles);
+
+
         let statezones=[];
         for(let i=0;i<arrzones.length;i++)
         {
@@ -180,8 +194,25 @@ export default function MaterialDtabs() {
           }
           statezones.push({ key: arrzones[i], text: arrzones[i] })
         }
+
+        let statetitles=[];
+        for(let i=0;i<arrTitles.length;i++)
+        {
+          if(i==0)
+          {
+            statetitles.push({ key: "Select", text: "Select" });
+          }
+          statetitles.push({ key: arrTitles[i], text: arrTitles[i] })
+        }
+
+
+
+
+
+
         setdepartment([...depts]);
         setzones([...statezones]);
+        settitles([...statetitles]);
         setallusers([...users]);
         setPeopleList([...users]);
         setloader(false);
@@ -192,11 +223,11 @@ export default function MaterialDtabs() {
       });
   }
 
-  async function filtervalues(useremail,zone)
+  async function filtervalues(useremail,userzone,usertitle)
   {
     const usersdata = [];
     let data=graphuserdetails;
-    if(useremail||zone)
+    if(useremail||userzone||usertitle)
     {
     for (let i = 0; i < data.length; i++) 
     {
@@ -212,34 +243,72 @@ export default function MaterialDtabs() {
 
       let strzone=filteredArr.length > 0 ? filteredArr[0].Zone:"";
 
-      if(useremail&&zone)
+      let insertdata=false;
+
+      if(useremail&&userzone&&usertitle)
       {
-        if(useremail==data[i].Email&&zone==strzone)
+        if(useremail==data[i].Email&&userzone==strzone&&usertitle==data[i].jobTitle)
         {
-          usersdata.push({
-            imageUrl:
-              "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].Email,
-            isValid: true,
-            Email: data[i].Email,
-            ID: data[i].ID,
-            key: i,
-            text: data[i].text,
-            jobTitle: data[i].jobTitle,
-            mobilePhone: data[i].mobilePhone,
-            department: data[i].department,
-            Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
-            Dept:
-              filteredArr.length > 0
-                ? filteredArr[0].SubDepartments.join(", ")
-                : "",
-            manager: data[i].manager ? data[i].manager : null,
-            Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
-          });
+          insertdata=true;
         }
       }
-      else if(useremail&&!zone)
+      else if(!useremail&&!userzone&&!usertitle)
       {
-        if(useremail==data[i].Email){
+          insertdata=true;
+      }
+      else if(useremail||userzone||usertitle)
+      {
+          if(useremail&&!userzone&&!usertitle)
+          {
+            if(useremail==data[i].Email)
+            insertdata=true
+          }
+          else if(useremail&&userzone&&!usertitle)
+          {
+            if(useremail==data[i].Email&&userzone==strzone)
+            insertdata=true
+          }
+
+
+
+          else if(userzone&&!useremail&&!usertitle)
+          {
+            if(userzone==strzone)
+            insertdata=true
+          }
+          else if(userzone&&useremail&&!usertitle)
+          {
+            if(useremail==data[i].Email&&userzone==strzone)
+            insertdata=true
+          }
+          else if(userzone&&!useremail&&usertitle)
+          {
+            if(usertitle==data[i].jobTitle&&userzone==strzone)
+            insertdata=true
+          }
+
+
+          else if(usertitle&&!useremail&&!userzone)
+          {
+            if(usertitle==data[i].jobTitle)
+            insertdata=true
+          }
+          else if(usertitle&&useremail&&!userzone)
+          {
+            if(useremail==data[i].Email&&usertitle==data[i].jobTitle)
+            insertdata=true
+          }
+          else if(usertitle&&!useremail&&userzone)
+          {
+            if(usertitle==data[i].jobTitle&&userzone==strzone)
+            insertdata=true
+          }
+
+      }
+
+
+      if(insertdata)
+      {
         usersdata.push({
           imageUrl:
             "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].Email,
@@ -259,31 +328,6 @@ export default function MaterialDtabs() {
           manager: data[i].manager ? data[i].manager : null,
           Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
         });
-        }
-      }
-      else if(!useremail&&zone)
-      {
-        if(zone==strzone){
-        usersdata.push({
-          imageUrl:
-            "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].Email,
-          isValid: true,
-          Email: data[i].Email,
-          ID: data[i].ID,
-          key: i,
-          text: data[i].text,
-          jobTitle: data[i].jobTitle,
-          mobilePhone: data[i].mobilePhone,
-          department: data[i].department,
-          Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
-          Dept:
-            filteredArr.length > 0
-              ? filteredArr[0].SubDepartments.join(", ")
-              : "",
-          manager: data[i].manager ? data[i].manager : null,
-          Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
-        });
-        }
       }
     }
     console.log(usersdata);
@@ -430,7 +474,7 @@ export default function MaterialDtabs() {
        {loader?<div className="spinnerBackground"><Spinner className="clsSpinner" size={SpinnerSize.large} /></div>:<></>}
        <div className="clsMaterialtab">
         <div className="clsFilters">
-          <div className="clsFilterEmployeeName">
+          <div className="clsFilterdropdowns">
           <NormalPeoplePicker
             onResolveSuggestions={onFilterChanged}
             getTextFromItem={getTextFromItem}
@@ -449,20 +493,20 @@ export default function MaterialDtabs() {
                 {
                   setempname(data[0]['Email']);
                   setselectedusers(data);
-                  filtervalues(data[0]['Email'],zone);
+                  filtervalues(data[0]['Email'],zone,title);
                 }
                 else
                 {
                   setempname("");
                   setselectedusers([]);
-                  filtervalues("",zone);
+                  filtervalues("",zone,title);
                 }
               }
                 
             }
           />
           </div>
-          <div className="clsFilterEmployeeName"> <Dropdown
+          <div className="clsFilterdropdowns"> <Dropdown
         placeholder="Select"
         options={zones}
         selectedKey={zone}
@@ -471,27 +515,46 @@ export default function MaterialDtabs() {
                 if(option.key!="Select")
                 {
                   setzone(option.text);
-                  filtervalues(empname,option.text);
+                  filtervalues(empname,option.text,title);
                 }
                 else
                 {
                   setzone("");
-                  filtervalues(empname,"");
+                  filtervalues(empname,"",title);
                 }
         }}
       /></div>
-          <div className="clsFilterEmployeeName">
+       <div className="clsFilterdropdowns"> <Dropdown
+        placeholder="Select"
+        options={titles}
+        selectedKey={title}
+        onChange={(event, option, index)=>
+          {
+                if(option.key!="Select")
+                {
+                  settitle(option.text);
+                  filtervalues(empname,zone,option.text);
+                }
+                else
+                {
+                  settitle("");
+                  filtervalues(empname,zone,"");
+                }
+        }}
+      /></div>
+          <div className="clsFilterdropdowns">
           <PrimaryButton text="Clear filter" onClick={()=>
           {
               setempname("");
               setzone("");
+              settitle("");
               setselectedusers([]);
               filtervaluesall();
           }}/>
           </div>
         </div>
       <div className={classes.root}>
-        <AppBar position="static" className="clsTabs">
+        {/* <AppBar position="static" className="clsTabs">
           <Tabs
             variant="scrollable"
             scrollButtons="auto"
@@ -512,7 +575,8 @@ export default function MaterialDtabs() {
               <MaterialDB Department={item} items={peopleList} />
             </TabPanel>
           );
-        })}
+        })} */}
+         <MaterialDBNew Department={""} items={peopleList} />
       </div></div>
     </div>)
 }

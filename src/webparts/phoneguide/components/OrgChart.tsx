@@ -20,6 +20,7 @@ import { initializeIcons } from "@fluentui/react/lib/Icons";
 import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 import styles from "./Phoneguide.module.scss"
 import { Dropdown, IDropdownStyles } from '@fluentui/react/lib/Dropdown';
+import SPServices from "./SPServices";
 initializeIcons();
 const MyIcon = () => <Icon iconName="CompassNW" />;
 const Manager = [];
@@ -64,15 +65,19 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
     IPersonaProps[]
   >([]);
   const [peopleList, setPeopleList] = React.useState([]);
+  const [alluserdata,setalluserdata]=React.useState([]);
   const [ManagerList, setManagerList] = React.useState(Manager);
   const [ReporteeList, setReporteeList] = React.useState(Reportees);
   const [SelectedPerson, setSelectedPerson] = React.useState([]);
   const[SelectedPersonManager, setSelectedPersonManager] = React.useState("");
+  const [userdatafromsharepoint,setuserdatafromsharepoint]=React.useState([]);
   const [CallLink, setCallLink] = React.useState("#");
   const [chatlink, setchatlink] = React.useState("#");
   const [loader,setloader]=React.useState(true);
   const [departments,setdepartments]=React.useState([]);
   const [selecteddeprt,setselecteddeprt]=React.useState("");
+  
+  
 
 
   const departDrpdownoptions = [
@@ -135,6 +140,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
 
   useEffect(() => {
     setloader(true);
+    getalluserssp();
     getcurrentuser();
     getallusers();
   }, []);
@@ -156,7 +162,6 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
           mobilePhone: data.mobilePhone,
           department:data.department
         });
-        
         if(data.department)
         {
            setselecteddeprt(data.department);
@@ -214,6 +219,22 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
       });
   }
 
+
+  async function getalluserssp() {
+    SPServices.SPReadItems({
+      Listname: "EmployeeDetails",
+      Select: "*,Employee/Title,Employee/Id,Employee/EMail",
+      Expand: "Employee",
+    })
+      .then((items: any) => {
+        setalluserdata([...items]);
+      })
+      .catch(function (error) {
+        console.log(error);
+        setloader(false);
+      });
+  }
+
   async function getallusers() {
     await graph.users
       .top(999)
@@ -264,9 +285,21 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
     return arr.filter((item, index) => arr.indexOf(item) === index);
   }
 
-  async function getManagerforcard(userID) 
+  async function getManagerforcard(userID,userEmail) 
   {
     setloader(true);
+    console.log(alluserdata);
+    let testdata=[];
+    for(let i=0;i<alluserdata.length;i++)
+    {
+      if(alluserdata[i].Employee.EMail)
+      {
+        testdata.push(alluserdata[i]);
+        setuserdatafromsharepoint(alluserdata[i])
+        break;
+      }
+    }
+    console.log(testdata);
     await graph.users
       .getById(userID)
       .select('mail,id,displayName,jobTitle,mobilePhone,department')
@@ -557,7 +590,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
                                 setSelectedPerson([{ ...item }]);
                                 setCallLink('https://teams.microsoft.com/l/call/0/0?users='+item.Email);
                                 setchatlink('https://teams.microsoft.com/l/chat/0/0?users='+item.Email);
-                                getManagerforcard(item.ID);
+                                getManagerforcard(item.ID,item.Email);
                                 
                               }}
                             />
@@ -612,7 +645,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
                                     setSelectedPerson([{ ...item }]);
                                     setCallLink('https://teams.microsoft.com/l/call/0/0?users='+item.Email);
                                     setchatlink('https://teams.microsoft.com/l/chat/0/0?users='+item.Email);
-                                    ShowPopup();
+                                    getManagerforcard(item.ID,item.Email);
                                   }}
                                 />
                               </a>
@@ -682,6 +715,8 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
               <b>Contact</b>
             </h3>
             <div>
+              {userdatafromsharepoint?(userdatafromsharepoint['Ext']?userdatafromsharepoint['Ext']:""):""}
+              {" "}
               {SelectedPerson[0].mobilePhone
                 ? SelectedPerson[0].mobilePhone
                 : "N/A"}
@@ -704,6 +739,12 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
               <b>Manager</b>
             </h3>
             <div>{SelectedPersonManager?SelectedPersonManager:"N/A"}</div>
+          </div>
+          <div className="clsEmail">
+            <h3>
+              <b>Zone</b>
+            </h3>
+            <div>{userdatafromsharepoint?(userdatafromsharepoint['Zone']?userdatafromsharepoint['Zone']:"N/A"):"N/A"}</div>
           </div>
         </div>
       ) : (
