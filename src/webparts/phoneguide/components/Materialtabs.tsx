@@ -1,12 +1,12 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
+import { Spinner, SpinnerSize } from "@fluentui/react/lib/Spinner";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
-import { DefaultButton, PrimaryButton } from '@fluentui/react/lib/Button';
+import { DefaultButton, PrimaryButton } from "@fluentui/react/lib/Button";
 import {
   IPersonaProps,
   Persona,
@@ -19,14 +19,44 @@ import {
 import Box from "@material-ui/core/Box";
 import MaterialDBNew from "./MaterialDBNew";
 import { graph } from "@pnp/graph/presets/all";
-import { Dropdown, IDropdownStyles } from '@fluentui/react/lib/Dropdown';
+import { Dropdown, IDropdownStyles } from "@fluentui/react/lib/Dropdown";
 import SPServices from "./SPServices";
 import "../assets/Css/Phoneguide.css";
-
+import { IIconProps } from "@fluentui/react";
+import { ThemeProvider, PartialTheme } from "@fluentui/react/lib/Theme";
+import NewPivot from "./NewPivot";
+import { useState } from "react";
+import { Icon } from "@fluentui/react";
 //Filter functionality
-let listitems=[];//glb array which is having the all user details from sharepoint list
-let graphuserdetails=[];//glb array which is having the all user details from grpah
-
+let listitems = []; //glb array which is having the all user details from sharepoint list
+let graphuserdetails = []; //glb array which is having the all user details from grpah
+const myTheme: PartialTheme = {
+  palette: {
+    themePrimary: "#03606a",
+    themeLighterAlt: "#eff8f9",
+    themeLighter: "#c3e4e7",
+    themeLight: "#95cdd3",
+    themeTertiary: "#459da6",
+    themeSecondary: "#12727d",
+    themeDarkAlt: "#035760",
+    themeDark: "#024a51",
+    themeDarker: "#02363c",
+    neutralLighterAlt: "#faf9f8",
+    neutralLighter: "#f3f2f1",
+    neutralLight: "#edebe9",
+    neutralQuaternaryAlt: "#e1dfdd",
+    neutralQuaternary: "#d0d0d0",
+    neutralTertiaryAlt: "#c8c6c4",
+    neutralTertiary: "#a19f9d",
+    neutralSecondary: "#605e5c",
+    neutralPrimaryAlt: "#3b3a39",
+    neutralPrimary: "#323130",
+    neutralDark: "#201f1e",
+    black: "#000000",
+    white: "#ffffff",
+  },
+};
+const syncIcon: IIconProps = { iconName: "Sync" };
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -72,12 +102,12 @@ export default function MaterialDtabs() {
   const [delayResults, setDelayResults] = React.useState(false);
   const [value, setValue] = React.useState(0);
   const [allusers, setallusers] = React.useState([]);
-  const [peopleList, setPeopleList] = React.useState([]);//which is used to store the users from graph and sharepoint list as well dropdown filter.
-  const [department, setdepartment] = React.useState([]);//which is used to bind tabs.
-  const [loader,setloader]=React.useState(false);
+  const [peopleList, setPeopleList] = React.useState([]); //which is used to store the users from graph and sharepoint list as well dropdown filter.
+  const [department, setdepartment] = React.useState([]); //which is used to bind tabs.
+  const [loader, setloader] = React.useState(false);
   const [mostRecentlyUsed, setMostRecentlyUsed] = React.useState<
-  IPersonaProps[]
->([]);
+    IPersonaProps[]
+  >([]);
 
   //For filter dropdowns
   const [zones, setzones] = React.useState([]);
@@ -88,7 +118,7 @@ export default function MaterialDtabs() {
   const [empname, setempname] = React.useState("");
   const [zone, setzone] = React.useState("");
   const [title, settitle] = React.useState("");
-
+  const [isPG, setIsPG] = useState(true);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -110,7 +140,7 @@ export default function MaterialDtabs() {
       Expand: "Employee",
     })
       .then((items: any) => {
-        listitems=items;
+        listitems = items;
         getallusersgraph(items);
         // console.log(items);
       })
@@ -131,12 +161,10 @@ export default function MaterialDtabs() {
         const users = [];
 
         let depts = [];
-        let arrzones =[];
-        let arrTitles=[];
+        let arrzones = [];
+        let arrTitles = [];
 
-
-        for (let i = 0; i < data.length; i++) 
-        {
+        for (let i = 0; i < data.length; i++) {
           let filteredArr = [];
 
           for (let j = 0; j < userData.length; j++) {
@@ -166,49 +194,34 @@ export default function MaterialDtabs() {
             Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
           });
 
-
-
           if (data[i].department) depts.push(data[i].department);
           if (data[i].jobTitle) arrTitles.push(data[i].jobTitle);
-          
-          let zonename=filteredArr.length > 0 ? filteredArr[0].Zone : ""
+
+          let zonename = filteredArr.length > 0 ? filteredArr[0].Zone : "";
           if (zonename) arrzones.push(zonename);
-          
         }
         console.log(users);
-        graphuserdetails=users;
-
-
+        graphuserdetails = users;
 
         depts = removeDuplicatesfromarray(depts);
         arrzones = removeDuplicatesfromarray(arrzones);
-        arrTitles=removeDuplicatesfromarray(arrTitles);
+        arrTitles = removeDuplicatesfromarray(arrTitles);
 
-
-        let statezones=[];
-        for(let i=0;i<arrzones.length;i++)
-        {
-          if(i==0)
-          {
-            statezones.push({ key: "Select", text: "Select" })
+        let statezones = [];
+        for (let i = 0; i < arrzones.length; i++) {
+          if (i == 0) {
+            statezones.push({ key: "Select", text: "Select" });
           }
-          statezones.push({ key: arrzones[i], text: arrzones[i] })
+          statezones.push({ key: arrzones[i], text: arrzones[i] });
         }
 
-        let statetitles=[];
-        for(let i=0;i<arrTitles.length;i++)
-        {
-          if(i==0)
-          {
+        let statetitles = [];
+        for (let i = 0; i < arrTitles.length; i++) {
+          if (i == 0) {
             statetitles.push({ key: "Select", text: "Select" });
           }
-          statetitles.push({ key: arrTitles[i], text: arrTitles[i] })
+          statetitles.push({ key: arrTitles[i], text: arrTitles[i] });
         }
-
-
-
-
-
 
         setdepartment([...depts]);
         setzones([...statezones]);
@@ -223,165 +236,126 @@ export default function MaterialDtabs() {
       });
   }
 
-  async function filtervalues(useremail,userzone,usertitle)
-  {
+  async function filtervalues(useremail, userzone, usertitle) {
     const usersdata = [];
-    let data=graphuserdetails;
-    if(useremail||userzone||usertitle)
-    {
-    for (let i = 0; i < data.length; i++) 
-    {
-      let filteredArr = [];
+    let data = graphuserdetails;
+    if (useremail || userzone || usertitle) {
+      for (let i = 0; i < data.length; i++) {
+        let filteredArr = [];
 
-      for (let j = 0; j < listitems.length; j++) 
-      {
-        let user = listitems[j];
-        if (user.EmployeeId && user.Employee.EMail == data[i].Email) {
-          filteredArr.push(user);
+        for (let j = 0; j < listitems.length; j++) {
+          let user = listitems[j];
+          if (user.EmployeeId && user.Employee.EMail == data[i].Email) {
+            filteredArr.push(user);
+          }
+        }
+
+        let strzone = filteredArr.length > 0 ? filteredArr[0].Zone : "";
+
+        let insertdata = false;
+
+        if (useremail && userzone && usertitle) {
+          if (
+            useremail == data[i].Email &&
+            userzone == strzone &&
+            usertitle == data[i].jobTitle
+          ) {
+            insertdata = true;
+          }
+        } else if (!useremail && !userzone && !usertitle) {
+          insertdata = true;
+        } else if (useremail || userzone || usertitle) {
+          if (useremail && !userzone && !usertitle) {
+            if (useremail == data[i].Email) insertdata = true;
+          } else if (useremail && userzone && !usertitle) {
+            if (useremail == data[i].Email && userzone == strzone)
+              insertdata = true;
+          } else if (userzone && !useremail && !usertitle) {
+            if (userzone == strzone) insertdata = true;
+          } else if (userzone && useremail && !usertitle) {
+            if (useremail == data[i].Email && userzone == strzone)
+              insertdata = true;
+          } else if (userzone && !useremail && usertitle) {
+            if (usertitle == data[i].jobTitle && userzone == strzone)
+              insertdata = true;
+          } else if (usertitle && !useremail && !userzone) {
+            if (usertitle == data[i].jobTitle) insertdata = true;
+          } else if (usertitle && useremail && !userzone) {
+            if (useremail == data[i].Email && usertitle == data[i].jobTitle)
+              insertdata = true;
+          } else if (usertitle && !useremail && userzone) {
+            if (usertitle == data[i].jobTitle && userzone == strzone)
+              insertdata = true;
+          }
+        }
+
+        if (insertdata) {
+          usersdata.push({
+            imageUrl:
+              "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].Email,
+            isValid: true,
+            Email: data[i].Email,
+            ID: data[i].ID,
+            key: i,
+            text: data[i].text,
+            jobTitle: data[i].jobTitle,
+            mobilePhone: data[i].mobilePhone,
+            department: data[i].department,
+            Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
+            Dept:
+              filteredArr.length > 0
+                ? filteredArr[0].SubDepartments.join(", ")
+                : "",
+            manager: data[i].manager ? data[i].manager : null,
+            Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
+          });
         }
       }
-
-      let strzone=filteredArr.length > 0 ? filteredArr[0].Zone:"";
-
-      let insertdata=false;
-
-      if(useremail&&userzone&&usertitle)
-      {
-        if(useremail==data[i].Email&&userzone==strzone&&usertitle==data[i].jobTitle)
-        {
-          insertdata=true;
-        }
-      }
-      else if(!useremail&&!userzone&&!usertitle)
-      {
-          insertdata=true;
-      }
-      else if(useremail||userzone||usertitle)
-      {
-          if(useremail&&!userzone&&!usertitle)
-          {
-            if(useremail==data[i].Email)
-            insertdata=true
-          }
-          else if(useremail&&userzone&&!usertitle)
-          {
-            if(useremail==data[i].Email&&userzone==strzone)
-            insertdata=true
-          }
-
-
-
-          else if(userzone&&!useremail&&!usertitle)
-          {
-            if(userzone==strzone)
-            insertdata=true
-          }
-          else if(userzone&&useremail&&!usertitle)
-          {
-            if(useremail==data[i].Email&&userzone==strzone)
-            insertdata=true
-          }
-          else if(userzone&&!useremail&&usertitle)
-          {
-            if(usertitle==data[i].jobTitle&&userzone==strzone)
-            insertdata=true
-          }
-
-
-          else if(usertitle&&!useremail&&!userzone)
-          {
-            if(usertitle==data[i].jobTitle)
-            insertdata=true
-          }
-          else if(usertitle&&useremail&&!userzone)
-          {
-            if(useremail==data[i].Email&&usertitle==data[i].jobTitle)
-            insertdata=true
-          }
-          else if(usertitle&&!useremail&&userzone)
-          {
-            if(usertitle==data[i].jobTitle&&userzone==strzone)
-            insertdata=true
-          }
-
-      }
-
-
-      if(insertdata)
-      {
-        usersdata.push({
-          imageUrl:
-            "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].Email,
-          isValid: true,
-          Email: data[i].Email,
-          ID: data[i].ID,
-          key: i,
-          text: data[i].text,
-          jobTitle: data[i].jobTitle,
-          mobilePhone: data[i].mobilePhone,
-          department: data[i].department,
-          Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
-          Dept:
-            filteredArr.length > 0
-              ? filteredArr[0].SubDepartments.join(", ")
-              : "",
-          manager: data[i].manager ? data[i].manager : null,
-          Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
-        });
-      }
+      console.log(usersdata);
+      setPeopleList([...usersdata]);
+      setloader(false);
+    } else {
+      filtervaluesall();
     }
-    console.log(usersdata);
-    setPeopleList([...usersdata]);
-    setloader(false);
-   }
-   else
-   {
-     filtervaluesall();
-   }
   }
 
-  async function filtervaluesall()
-  {
+  async function filtervaluesall() {
     const usersdata = [];
-    let data=graphuserdetails;
+    let data = graphuserdetails;
 
-    for (let i = 0; i < data.length; i++) 
-    {
+    for (let i = 0; i < data.length; i++) {
       let filteredArr = [];
-      
-      for (let j = 0; j < listitems.length; j++) 
-      {
+
+      for (let j = 0; j < listitems.length; j++) {
         let user = listitems[j];
         if (user.EmployeeId && user.Employee.EMail == data[i].Email) {
           filteredArr.push(user);
         }
       }
-        usersdata.push({
-          imageUrl:
-            "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].Email,
-          isValid: true,
-          Email: data[i].Email,
-          ID: data[i].ID,
-          key: i,
-          text: data[i].text,
-          jobTitle: data[i].jobTitle,
-          mobilePhone: data[i].mobilePhone,
-          department: data[i].department,
-          Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
-          Dept:
-            filteredArr.length > 0
-              ? filteredArr[0].SubDepartments.join(", ")
-              : "",
-          manager: data[i].manager ? data[i].manager : null,
-          Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
-        });
-      
+      usersdata.push({
+        imageUrl:
+          "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].Email,
+        isValid: true,
+        Email: data[i].Email,
+        ID: data[i].ID,
+        key: i,
+        text: data[i].text,
+        jobTitle: data[i].jobTitle,
+        mobilePhone: data[i].mobilePhone,
+        department: data[i].department,
+        Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
+        Dept:
+          filteredArr.length > 0
+            ? filteredArr[0].SubDepartments.join(", ")
+            : "",
+        manager: data[i].manager ? data[i].manager : null,
+        Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
+      });
     }
     console.log(usersdata);
     setPeopleList(usersdata);
     setloader(false);
   }
-
 
   const onFilterChanged = (
     filterText: string,
@@ -468,93 +442,113 @@ export default function MaterialDtabs() {
     }
   }
 
-  return(
-    
-    <div>
-       {loader?<div className="spinnerBackground"><Spinner className="clsSpinner" size={SpinnerSize.large} /></div>:<></>}
-       <div className="clsMaterialtab">
-        <div className="clsFilters">
-          <div className="clsFilterdropdowns">
-          <NormalPeoplePicker
-            onResolveSuggestions={onFilterChanged}
-            getTextFromItem={getTextFromItem}
-            className={"ms-PeoplePicker"}
-            key={"normal"}
-            inputProps={{ placeholder: "Search User" }}
-            onValidateInput={validateInput}
-            selectedItems={selectedusers}
-            selectionAriaLabel={"Selected contacts"}
-            removeButtonAriaLabel={"Remove"}
-            resolveDelay={300}
-            itemLimit={1}
-            onChange={(data) => 
-              {
-                if(data.length>0)
-                {
-                  setempname(data[0]['Email']);
-                  setselectedusers(data);
-                  filtervalues(data[0]['Email'],zone,title);
-                }
-                else
-                {
-                  setempname("");
-                  setselectedusers([]);
-                  filtervalues("",zone,title);
-                }
-              }
-                
-            }
+  return (
+    <>
+      <div className="innerToggleSection">
+        {/* <PrimaryButton
+            iconProps={{ iconName: "ManagerSelfService" }}
+            text="Department"
+          /> */}
+        <button
+          className="innerToggle"
+          onClick={() => {
+            setIsPG(!isPG);
+          }}
+          style={{ background: isPG ? "#ffe49f" : "#D8F4F7" }}
+        >
+          <Icon
+            iconName={isPG ? "ManagerSelfService" : "Phone"}
+            style={{ marginRight: 6 }}
           />
-          </div>
-          <div className="clsFilterdropdowns"> <Dropdown
-        placeholder="Select"
-        options={zones}
-        selectedKey={zone}
-        onChange={(event, option, index)=>
-          {
-                if(option.key!="Select")
-                {
-                  setzone(option.text);
-                  filtervalues(empname,option.text,title);
-                }
-                else
-                {
-                  setzone("");
-                  filtervalues(empname,"",title);
-                }
-        }}
-      /></div>
-       <div className="clsFilterdropdowns"> <Dropdown
-        placeholder="Select"
-        options={titles}
-        selectedKey={title}
-        onChange={(event, option, index)=>
-          {
-                if(option.key!="Select")
-                {
-                  settitle(option.text);
-                  filtervalues(empname,zone,option.text);
-                }
-                else
-                {
-                  settitle("");
-                  filtervalues(empname,zone,"");
-                }
-        }}
-      /></div>
-          <div className="clsFilterdropdowns">
-          <PrimaryButton text="Clear filter" onClick={()=>
-          {
-              setempname("");
-              setzone("");
-              settitle("");
-              setselectedusers([]);
-              filtervaluesall();
-          }}/>
-          </div>
-        </div>
-      <div className={classes.root}>
-        {/* <AppBar position="static" className="clsTabs">
+          {isPG ? "Department" : "Phone Guide"}
+        </button>
+      </div>
+      {isPG ? (
+        <ThemeProvider theme={myTheme}>
+          {loader ? (
+            <div className="spinnerBackground">
+              <Spinner className="clsSpinner" size={SpinnerSize.large} />
+            </div>
+          ) : (
+            <></>
+          )}
+          <div className="clsMaterialtab">
+            <div className="clsFilters">
+              <div className="clsFilterdropdowns">
+                <NormalPeoplePicker
+                  onResolveSuggestions={onFilterChanged}
+                  getTextFromItem={getTextFromItem}
+                  className={"ms-PeoplePicker"}
+                  key={"normal"}
+                  inputProps={{ placeholder: "Search User" }}
+                  onValidateInput={validateInput}
+                  selectedItems={selectedusers}
+                  selectionAriaLabel={"Selected contacts"}
+                  removeButtonAriaLabel={"Remove"}
+                  resolveDelay={300}
+                  itemLimit={1}
+                  onChange={(data) => {
+                    if (data.length > 0) {
+                      setempname(data[0]["Email"]);
+                      setselectedusers(data);
+                      filtervalues(data[0]["Email"], zone, title);
+                    } else {
+                      setempname("");
+                      setselectedusers([]);
+                      filtervalues("", zone, title);
+                    }
+                  }}
+                />
+              </div>
+              <div className="clsFilterdropdowns">
+                {" "}
+                <Dropdown
+                  placeholder="Select Zone"
+                  options={zones}
+                  selectedKey={zone}
+                  onChange={(event, option, index) => {
+                    if (option.key != "Select") {
+                      setzone(option.text);
+                      filtervalues(empname, option.text, title);
+                    } else {
+                      setzone("");
+                      filtervalues(empname, "", title);
+                    }
+                  }}
+                />
+              </div>
+              <div className="clsFilterdropdowns">
+                {" "}
+                <Dropdown
+                  placeholder="Select Department"
+                  options={titles}
+                  selectedKey={title}
+                  onChange={(event, option, index) => {
+                    if (option.key != "Select") {
+                      settitle(option.text);
+                      filtervalues(empname, zone, option.text);
+                    } else {
+                      settitle("");
+                      filtervalues(empname, zone, "");
+                    }
+                  }}
+                />
+              </div>
+              <div className="clsFilterdropdowns">
+                <PrimaryButton
+                  iconProps={syncIcon}
+                  onClick={() => {
+                    setempname("");
+                    setzone("");
+                    settitle("");
+                    setselectedusers([]);
+                    filtervaluesall();
+                  }}
+                />
+              </div>
+            </div>
+            <div className={classes.root}>
+              {/* <AppBar position="static" className="clsTabs">
           <Tabs
             variant="scrollable"
             scrollButtons="auto"
@@ -576,7 +570,13 @@ export default function MaterialDtabs() {
             </TabPanel>
           );
         })} */}
-         <MaterialDBNew Department={""} items={peopleList} />
-      </div></div>
-    </div>)
+              <MaterialDBNew Department={""} items={peopleList} />
+            </div>
+          </div>
+        </ThemeProvider>
+      ) : (
+        <NewPivot />
+      )}
+    </>
+  );
 }

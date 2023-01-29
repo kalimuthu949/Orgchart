@@ -9,7 +9,7 @@ import MaterialDtabs from "./Materialtabs";
 import DepartmentPivot from "./DepartmentPivot";
 import { OrgChart } from "./OrgChart";
 import App from "./App";
-import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
+import { Spinner, SpinnerSize } from "@fluentui/react/lib/Spinner";
 export default class Phoneguide extends React.Component<IPhoneguideProps, {}> {
   constructor(prop: IPhoneguideProps, state: {}) {
     super(prop);
@@ -31,7 +31,6 @@ export default class Phoneguide extends React.Component<IPhoneguideProps, {}> {
 
     return (
       <div style={{ padding: 26 }}>
-        
         <App context={this.props.context} />
       </div>
     );

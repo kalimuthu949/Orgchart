@@ -24,28 +24,21 @@ const App = (props) => {
         >
           Phone Guide
         </button>
-        <button
+        {/* <button
           className={`${activeTab === "Pivot" ? "Active" : ""}`}
           onClick={() => setActiveTab("Pivot")}
         >
           Pivot
-        </button>
+        </button> */}
       </div>
       <div>
-        {
-        
-        activeTab === "OrgChart" ? (
+        {activeTab === "OrgChart" ? (
           <OrgChart context={props.context} />
         ) : activeTab === "PhoneGuide" ? (
           <MaterialDtabs />
-        ) : activeTab === "Pivot" ? (
-          <NewPivot />
         ) : (
           ""
-        )
-        
-        
-        }
+        )}
       </div>
     </>
   );
