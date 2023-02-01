@@ -55,6 +55,14 @@ const columns: any = [
     headerAlign: "left",
   },
   {
+    field: "dept",
+    headerName: "Department",
+    width: 200,
+    editable: false,
+    headerClassName: "super-app-theme--header",
+    headerAlign: "left",
+  },
+  {
     field: "subDep",
     headerName: "Sub Department",
     width: 200,
@@ -75,7 +83,6 @@ const columns: any = [
 let rows = [];
 
 export default function MaterialDBNew(props) {
-  console.log(props);
 
   rows = [];
   for (let i = 0; i < props.items.length; i++) {
@@ -84,6 +91,7 @@ export default function MaterialDBNew(props) {
         empName: props.items[i].text,
         title: props.items[i].jobTitle,
         Email: props.items[i].Email,
+        dept:props.items[i].department,
         subDep: props.items[i].Dept,
         Zone: props.items[i].Zone,
         Manager: props.items[i].manager

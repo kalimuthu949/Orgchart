@@ -102,8 +102,9 @@ export default function MaterialDtabs() {
   const [delayResults, setDelayResults] = React.useState(false);
   const [value, setValue] = React.useState(0);
   const [allusers, setallusers] = React.useState([]);
+  const [masterPeopleList,setMasterPeopleList]=React.useState([]); //which is used to store the users from graph and sharepoint list as well dropdown filter.
   const [peopleList, setPeopleList] = React.useState([]); //which is used to store the users from graph and sharepoint list as well dropdown filter.
-  const [department, setdepartment] = React.useState([]); //which is used to bind tabs.
+  const [alldepartment, setalldepartment] = React.useState([]); //which is used to bind tabs.
   const [loader, setloader] = React.useState(false);
   const [mostRecentlyUsed, setMostRecentlyUsed] = React.useState<
     IPersonaProps[]
@@ -116,8 +117,9 @@ export default function MaterialDtabs() {
 
   //For Filters
   const [empname, setempname] = React.useState("");
-  const [zone, setzone] = React.useState("");
-  const [title, settitle] = React.useState("");
+  const [zone, setzone] = React.useState([]);
+  const [title, settitle] = React.useState([]);
+  const [dept, setdept] = React.useState([]);
   const [isPG, setIsPG] = useState(true);
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -142,7 +144,6 @@ export default function MaterialDtabs() {
       .then((items: any) => {
         listitems = items;
         getallusersgraph(items);
-        // console.log(items);
       })
       .catch(function (error) {
         console.log(error);
@@ -157,7 +158,6 @@ export default function MaterialDtabs() {
       .top(999)
       .get()
       .then(function (data) {
-        console.log(data);
         const users = [];
 
         let depts = [];
@@ -178,11 +178,11 @@ export default function MaterialDtabs() {
             imageUrl:
               "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
             isValid: true,
-            Email: data[i].mail,
+            Email: data[i].mail?data[i].mail:'',
             ID: data[i].id,
             key: i,
             text: data[i].displayName,
-            jobTitle: data[i].jobTitle,
+            jobTitle: data[i].jobTitle?data[i].jobTitle:'',
             mobilePhone: data[i].mobilePhone,
             department: data[i].department,
             Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
@@ -200,33 +200,33 @@ export default function MaterialDtabs() {
           let zonename = filteredArr.length > 0 ? filteredArr[0].Zone : "";
           if (zonename) arrzones.push(zonename);
         }
-        console.log(users);
+        
         graphuserdetails = users;
 
         depts = removeDuplicatesfromarray(depts);
         arrzones = removeDuplicatesfromarray(arrzones);
         arrTitles = removeDuplicatesfromarray(arrTitles);
 
+        let statedept = [];
+        for (let i = 0; i < depts.length; i++) {
+          statedept.push({ key: depts[i], text: depts[i] });
+        }
+
         let statezones = [];
         for (let i = 0; i < arrzones.length; i++) {
-          if (i == 0) {
-            statezones.push({ key: "Select", text: "Select" });
-          }
           statezones.push({ key: arrzones[i], text: arrzones[i] });
         }
 
         let statetitles = [];
         for (let i = 0; i < arrTitles.length; i++) {
-          if (i == 0) {
-            statetitles.push({ key: "Select", text: "Select" });
-          }
           statetitles.push({ key: arrTitles[i], text: arrTitles[i] });
         }
 
-        setdepartment([...depts]);
+        setalldepartment([...statedept]);
         setzones([...statezones]);
         settitles([...statetitles]);
         setallusers([...users]);
+        setMasterPeopleList([...users]);
         setPeopleList([...users]);
         setloader(false);
       })
@@ -236,125 +236,23 @@ export default function MaterialDtabs() {
       });
   }
 
-  async function filtervalues(useremail, userzone, usertitle) {
-    const usersdata = [];
-    let data = graphuserdetails;
-    if (useremail || userzone || usertitle) {
-      for (let i = 0; i < data.length; i++) {
-        let filteredArr = [];
+  async function filtervalues(useremail, userdept, usertitle) {
 
-        for (let j = 0; j < listitems.length; j++) {
-          let user = listitems[j];
-          if (user.EmployeeId && user.Employee.EMail == data[i].Email) {
-            filteredArr.push(user);
-          }
-        }
+    let tempPeopleList=[...masterPeopleList];
 
-        let strzone = filteredArr.length > 0 ? filteredArr[0].Zone : "";
-
-        let insertdata = false;
-
-        if (useremail && userzone && usertitle) {
-          if (
-            useremail == data[i].Email &&
-            userzone == strzone &&
-            usertitle == data[i].jobTitle
-          ) {
-            insertdata = true;
-          }
-        } else if (!useremail && !userzone && !usertitle) {
-          insertdata = true;
-        } else if (useremail || userzone || usertitle) {
-          if (useremail && !userzone && !usertitle) {
-            if (useremail == data[i].Email) insertdata = true;
-          } else if (useremail && userzone && !usertitle) {
-            if (useremail == data[i].Email && userzone == strzone)
-              insertdata = true;
-          } else if (userzone && !useremail && !usertitle) {
-            if (userzone == strzone) insertdata = true;
-          } else if (userzone && useremail && !usertitle) {
-            if (useremail == data[i].Email && userzone == strzone)
-              insertdata = true;
-          } else if (userzone && !useremail && usertitle) {
-            if (usertitle == data[i].jobTitle && userzone == strzone)
-              insertdata = true;
-          } else if (usertitle && !useremail && !userzone) {
-            if (usertitle == data[i].jobTitle) insertdata = true;
-          } else if (usertitle && useremail && !userzone) {
-            if (useremail == data[i].Email && usertitle == data[i].jobTitle)
-              insertdata = true;
-          } else if (usertitle && !useremail && userzone) {
-            if (usertitle == data[i].jobTitle && userzone == strzone)
-              insertdata = true;
-          }
-        }
-
-        if (insertdata) {
-          usersdata.push({
-            imageUrl:
-              "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].Email,
-            isValid: true,
-            Email: data[i].Email,
-            ID: data[i].ID,
-            key: i,
-            text: data[i].text,
-            jobTitle: data[i].jobTitle,
-            mobilePhone: data[i].mobilePhone,
-            department: data[i].department,
-            Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
-            Dept:
-              filteredArr.length > 0
-                ? filteredArr[0].SubDepartments.join(", ")
-                : "",
-            manager: data[i].manager ? data[i].manager : null,
-            Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
-          });
-        }
-      }
-      console.log(usersdata);
-      setPeopleList([...usersdata]);
-      setloader(false);
-    } else {
-      filtervaluesall();
+    if(useremail){
+      tempPeopleList=tempPeopleList.filter((_user)=>_user.Email==useremail)
     }
-  }
 
-  async function filtervaluesall() {
-    const usersdata = [];
-    let data = graphuserdetails;
-
-    for (let i = 0; i < data.length; i++) {
-      let filteredArr = [];
-
-      for (let j = 0; j < listitems.length; j++) {
-        let user = listitems[j];
-        if (user.EmployeeId && user.Employee.EMail == data[i].Email) {
-          filteredArr.push(user);
-        }
-      }
-      usersdata.push({
-        imageUrl:
-          "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].Email,
-        isValid: true,
-        Email: data[i].Email,
-        ID: data[i].ID,
-        key: i,
-        text: data[i].text,
-        jobTitle: data[i].jobTitle,
-        mobilePhone: data[i].mobilePhone,
-        department: data[i].department,
-        Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
-        Dept:
-          filteredArr.length > 0
-            ? filteredArr[0].SubDepartments.join(", ")
-            : "",
-        manager: data[i].manager ? data[i].manager : null,
-        Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
-      });
+    if(userdept.length>0){
+      tempPeopleList=tempPeopleList.filter((_user)=>userdept.some((_dept)=>_dept==_user.department))
     }
-    console.log(usersdata);
-    setPeopleList(usersdata);
-    setloader(false);
+
+    if(usertitle.length>0){
+      tempPeopleList=tempPeopleList.filter((_user)=>usertitle.some((_title)=>_title==_user.jobTitle))
+    }
+
+    setPeopleList([...tempPeopleList])
   }
 
   const onFilterChanged = (
@@ -501,48 +399,70 @@ export default function MaterialDtabs() {
                 />
               </div>
               <div className="clsFilterdropdowns">
-                {" "}
                 <Dropdown
-                  placeholder="Select Zone"
-                  options={zones}
-                  selectedKey={zone}
+                  multiSelect
+                  placeholder="Select Title"
+                  options={titles}
+                  selectedKeys={title}
                   onChange={(event, option, index) => {
-                    if (option.key != "Select") {
-                      setzone(option.text);
-                      filtervalues(empname, option.text, title);
-                    } else {
-                      setzone("");
-                      filtervalues(empname, "", title);
+                    console.log(option);
+                    let tempTitle=title;
+                    if (option) {
+                      tempTitle = option.selected? [...tempTitle, option.key as string, ] : tempTitle.filter((key) => key !== option.key)
                     }
+
+                    settitle(tempTitle);
+                    filtervalues(empname, zone, tempTitle);
                   }}
                 />
               </div>
               <div className="clsFilterdropdowns">
-                {" "}
                 <Dropdown
+                  multiSelect
                   placeholder="Select Department"
-                  options={titles}
-                  selectedKey={title}
+                  options={alldepartment}
+                  selectedKeys={dept}
                   onChange={(event, option, index) => {
-                    if (option.key != "Select") {
-                      settitle(option.text);
-                      filtervalues(empname, zone, option.text);
-                    } else {
-                      settitle("");
-                      filtervalues(empname, zone, "");
+                    console.log(option);
+                    let tempDept=dept;
+                    if (option) {
+                      tempDept = option.selected? [...tempDept, option.key as string, ] : tempDept.filter((key) => key !== option.key)
                     }
+
+                    setdept(tempDept);
+                    filtervalues(empname, tempDept, title);
                   }}
                 />
               </div>
+              {/* <div className="clsFilterdropdowns">
+                <Dropdown
+                  multiSelect
+                  placeholder="Select Zone"
+                  options={zones}
+                  selectedKeys={zone}
+                  onChange={(event, option, index) => {
+                    console.log(option);
+                    let tempZone=zone;
+                    if (option) {
+                      tempZone = option.selected? [...tempZone, option.key as string, ] : tempZone.filter((key) => key !== option.key)
+                    }
+
+                    setzone(tempZone);
+                    filtervalues(empname, tempZone, title);
+                  }}
+                />
+              </div> */}
+              
               <div className="clsFilterdropdowns">
                 <PrimaryButton
                   iconProps={syncIcon}
                   onClick={() => {
                     setempname("");
-                    setzone("");
-                    settitle("");
+                    setzone([]);
+                    settitle([]);
                     setselectedusers([]);
-                    filtervaluesall();
+                    setdept([]);
+                    setPeopleList([...masterPeopleList])
                   }}
                 />
               </div>
