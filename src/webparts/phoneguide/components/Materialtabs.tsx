@@ -153,7 +153,7 @@ export default function MaterialDtabs() {
 
   async function getallusersgraph(userData) {
     await graph.users
-      .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext")
+      .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname")
       .expand("manager")
       .top(999)
       .get()
@@ -183,6 +183,8 @@ export default function MaterialDtabs() {
             key: i,
             text: data[i].displayName,
             jobTitle: data[i].jobTitle?data[i].jobTitle:'',
+            givenName:data[i].givenName?data[i].givenName:'',
+            surname:data[i].surname?data[i].surname:'',
             mobilePhone: data[i].mobilePhone,
             department: data[i].department,
             Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",

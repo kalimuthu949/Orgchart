@@ -76,7 +76,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
   const [loader,setloader]=React.useState(true);
   const [departments,setdepartments]=React.useState([]);
   const [selecteddeprt,setselecteddeprt]=React.useState("");
-  
+  const [deptuserscount,setdeptuserscount]=React.useState(0);
   
 
 
@@ -165,6 +165,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
         if(data.department)
         {
            setselecteddeprt(data.department);
+           getdeptcount(data.department);
         }
         else
         {
@@ -178,6 +179,34 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
       .catch(function (error) {
         console.log(error);
         setloader(false);
+      });
+  }
+
+  async function getdeptcount(dept) {
+    await graph.users
+      .top(999)
+      .select('mail,id,displayName,jobTitle,mobilePhone,department')
+      .get()
+      .then(function (data) 
+      {
+        console.log(data);
+        const users = [];
+        let countofusers=0;
+        for (let i = 0; i < data.length; i++) 
+        {
+          if(dept==data[i].department)
+          {
+            countofusers=countofusers+1;
+          }
+        }
+
+        setdeptuserscount(countofusers);
+
+        
+      })
+      .catch(function (error) 
+      {
+        console.log(error);
       });
   }
 
@@ -208,6 +237,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
           }
         }
         setloader(false);
+        setdeptuserscount(users.length);
         if(users.length>0)
         {
           getSelecteduser([users[0]])
@@ -519,6 +549,9 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
           </li>
         </div>
         <div className="clsDropplussearch">
+        <div className="clsDeptCount">
+          <label><b>Department User Count</b> : {deptuserscount}</label>
+        </div>
         <div className="clsDeptDrpDown">
             <Dropdown
             placeholder="Select department"
@@ -529,6 +562,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
                 setselecteddeprt(option.key);
                 setSelectedPerson([]);
                 getusersfromselecteddept(option.key);
+                getdeptcount(option.key)
             }}
           />
         </div>

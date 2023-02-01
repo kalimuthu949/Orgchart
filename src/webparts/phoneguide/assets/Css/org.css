@@ -33,9 +33,9 @@ a:hover {
     display: block;
     position: absolute;
     width: 1px;
-    height: 18px;
+    height: 15px;
     background-color: #03606a;
-    bottom: -18px;
+    bottom: -15.5px;
     margin: auto;
     left: 50%;
     right: 50%;
@@ -247,4 +247,9 @@ a:hover {
 {
     display: flex;
     justify-content: space-between;
+}
+
+.clsDeptCount label{
+    display: block;
+    padding: 10px;
 }
