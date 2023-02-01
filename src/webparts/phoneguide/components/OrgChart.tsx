@@ -21,6 +21,7 @@ import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
 import styles from "./Phoneguide.module.scss"
 import { Dropdown, IDropdownStyles } from '@fluentui/react/lib/Dropdown';
 import SPServices from "./SPServices";
+import {sp} from "@pnp/sp/presets/all";
 initializeIcons();
 const MyIcon = () => <Icon iconName="CompassNW" />;
 const Manager = [];
@@ -77,7 +78,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
   const [departments,setdepartments]=React.useState([]);
   const [selecteddeprt,setselecteddeprt]=React.useState("");
   const [deptuserscount,setdeptuserscount]=React.useState(0);
-  
+  const [userzonefromuserprofile,setuserzonefromuserprofile]=React.useState("");
 
 
   const departDrpdownoptions = [
@@ -318,7 +319,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
   async function getManagerforcard(userID,userEmail) 
   {
     setloader(true);
-    console.log(alluserdata);
+
     let testdata=[];
     for(let i=0;i<alluserdata.length;i++)
     {
@@ -329,7 +330,18 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
         break;
       }
     }
-    console.log(testdata);
+
+    const loginName = "i:0#.f|membership|"+userEmail;
+    const propertyName = "SPS-TimeZone";
+    const property = await sp.profiles.getUserProfilePropertyFor(loginName, propertyName).then(function (data: any) 
+    {
+      setuserzonefromuserprofile(data)
+    }).catch(function (error) 
+    {
+      console.log(error);
+      setloader(false);
+    })
+
     await graph.users
       .getById(userID)
       .select('mail,id,displayName,jobTitle,mobilePhone,department')
@@ -778,7 +790,8 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             <h3>
               <b>Zone</b>
             </h3>
-            <div>{userdatafromsharepoint?(userdatafromsharepoint['Zone']?userdatafromsharepoint['Zone']:"N/A"):"N/A"}</div>
+            {/* <div>{userdatafromsharepoint?(userdatafromsharepoint['Zone']?userdatafromsharepoint['Zone']:"N/A"):"N/A"}</div> */}
+            <div>{userzonefromuserprofile}</div>
           </div>
         </div>
       ) : (
