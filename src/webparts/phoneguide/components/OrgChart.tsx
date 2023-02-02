@@ -148,7 +148,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
 
   async function getcurrentuser() {
     await graph.me
-      .select('mail,id,displayName,jobTitle,mobilePhone,department')
+      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation')
       .get()
       .then(function (data) {
         const cnrtUserDetails = [];
@@ -161,7 +161,8 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
           text: data.displayName,
           jobTitle: data.jobTitle,
           mobilePhone: data.mobilePhone,
-          department:data.department
+          department:data.department,
+          officeLocation:data.officeLocation,
         });
         if(data.department)
         {
@@ -186,7 +187,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
   async function getdeptcount(dept) {
     await graph.users
       .top(999)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department')
+      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation')
       .get()
       .then(function (data) 
       {
@@ -214,7 +215,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
   async function getusersfromselecteddept(dept) {
     await graph.users
       .top(999)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department')
+      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation')
       .get()
       .then(function (data) {
         console.log(data);
@@ -233,7 +234,8 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             text: data[i].displayName,
             jobTitle: data[i].jobTitle,
             mobilePhone: data[i].mobilePhone,
-            department:data[i].department
+            department:data[i].department,
+            officeLocation:data[i].officeLocation,
           });
           }
         }
@@ -269,7 +271,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
   async function getallusers() {
     await graph.users
       .top(999)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department')
+      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation')
       .get()
       .then(function (data) {
         console.log(data);
@@ -294,7 +296,9 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             text: data[i].displayName,
             jobTitle: data[i].jobTitle,
             mobilePhone: data[i].mobilePhone,
-            department:data[i].department
+            department:data[i].department,
+            officeLocation:data[i].officeLocation,
+
           });
         }
         arrdepartments=removeDuplicatesfromarray(arrdepartments);
@@ -331,20 +335,20 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
       }
     }
 
-    const loginName = "i:0#.f|membership|"+userEmail;
-    const propertyName = "SPS-TimeZone";
-    const property = await sp.profiles.getUserProfilePropertyFor(loginName, propertyName).then(function (data: any) 
-    {
-      setuserzonefromuserprofile(data)
-    }).catch(function (error) 
-    {
-      console.log(error);
-      setloader(false);
-    })
+    // const loginName = "i:0#.f|membership|"+userEmail;
+    // const propertyName = "SPS-TimeZone";
+    // const property = await sp.profiles.getUserProfilePropertyFor(loginName, propertyName).then(function (data: any) 
+    // {
+    //   setuserzonefromuserprofile(data)
+    // }).catch(function (error) 
+    // {
+    //   console.log(error);
+    //   setloader(false);
+    // })
 
     await graph.users
       .getById(userID)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department')
+      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation')
       .manager()
       .then(function (data: any) {
         if (data) {
@@ -365,7 +369,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
     setloader(true);
     await graph.users
       .getById(userID)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department')
+      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation')
       .manager()
       .then(function (data: any) {
         if (data) {
@@ -379,7 +383,8 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             text: data.displayName,
             jobTitle: data.jobTitle,
             mobilePhone: data.mobilePhone,
-            department:data.department
+            department:data.department,
+            officeLocation:data.officeLocation,
           });
           getSelecteduser(userdetails);
         }
@@ -393,7 +398,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
   async function getDirectreports(userID) {
     await graph.users
       .getById(userID)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department')
+      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation')
       .directReports()
       .then(function (data: any) {
         const directreports: any = [];
@@ -407,7 +412,8 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             Manager: "",
             jobTitle: data[i].jobTitle,
             mobilePhone: data[i].mobilePhone,
-            department:data[i].department
+            department:data[i].department,
+            officeLocation:data[i].officeLocation,
           });
         }
         setReporteeList([...directreports]);
@@ -435,7 +441,8 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             text: peopleList[i].text,
             jobTitle: peopleList[i].jobTitle,
             mobilePhone: peopleList[i].mobilePhone,
-            department:peopleList[i].department
+            department:peopleList[i].department,
+            officeLocation:peopleList[i].officeLocation,
           });
         }
       }
@@ -791,7 +798,8 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
               <b>Zone</b>
             </h3>
             {/* <div>{userdatafromsharepoint?(userdatafromsharepoint['Zone']?userdatafromsharepoint['Zone']:"N/A"):"N/A"}</div> */}
-            <div>{userzonefromuserprofile}</div>
+            {/* <div>{userzonefromuserprofile}</div> */}
+            <div>{SelectedPerson[0].officeLocation?SelectedPerson[0].officeLocation:"N/A"}</div>
           </div>
         </div>
       ) : (

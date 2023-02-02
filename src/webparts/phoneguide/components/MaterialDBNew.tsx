@@ -4,14 +4,14 @@ import { makeStyles } from "@material-ui/styles";
 
 const columns: any = [
   { field: "id", headerName: "ID", width: 90, hide: true },
-  {
-    field: "empName",
-    headerName: "Employee Name",
-    width: 200,
-    editable: false,
-    headerClassName: "super-app-theme--header",
-    headerAlign: "left",
-  },
+  // {
+  //   field: "empName",
+  //   headerName: "Employee Name",
+  //   width: 200,
+  //   editable: false,
+  //   headerClassName: "super-app-theme--header",
+  //   headerAlign: "left",
+  // },
   {
     field: "givenName",
     headerName: "First Name",
