@@ -107,21 +107,21 @@ const _columns: IColumn[] = [
     key: "Column1",
     name: "First Name",
     fieldName: "givenName",
-    minWidth: 200,
+    minWidth: 150,
     maxWidth: 200,
   },
   {
     key: "Column2",
     name: "Last Name",
     fieldName: "surname",
-    minWidth: 200,
+    minWidth: 150,
     maxWidth: 200,
   },
   {
     key: "Column3",
     name: "Title",
     fieldName: "title",
-    minWidth: 200,
+    minWidth: 150,
     maxWidth: 200,
   },
   {
@@ -142,8 +142,8 @@ const _columns: IColumn[] = [
     key: "Column6",
     name: "Ext",
     fieldName: "Ext",
-    minWidth: 150,
-    maxWidth: 150,
+    minWidth: 50,
+    maxWidth: 100,
   },
   {
     key: "Column7",
@@ -156,8 +156,8 @@ const _columns: IColumn[] = [
     key: "Column8",
     name: "Department",
     fieldName: "dept",
-    minWidth: 200,
-    maxWidth: 200,
+    minWidth: 100,
+    maxWidth: 150,
   },
   {
     key: "Column9",
@@ -170,7 +170,7 @@ const _columns: IColumn[] = [
     key: "Column10",
     name: "Manager",
     fieldName: "Manager",
-    minWidth: 200,
+    minWidth: 150,
     maxWidth: 200,
   },
 ];
@@ -200,7 +200,7 @@ export default function FluentUIDB(props) {
     setData([...rows]);
   }, [props.items]);
   return (
-    <div style={{ overflow: "auto", width: "100%" }}>
+    <div style={{ overflow: "auto", width: "100%",boxShadow: "0px 2px 4px #00000024, 0px 0px 2px #0000001f",borderRadius:8 }} >
       <DetailsList
         items={data}
         columns={_columns}
@@ -208,6 +208,14 @@ export default function FluentUIDB(props) {
           root: {
             ".ms-DetailsRow-cell": {
               height: 40,
+            },
+            ".ms-DetailsList":{
+              padding:10,
+              margin:"10px 0px !important"
+            },
+            ".ms-DetailsHeader":{
+              padding:0,
+              background:'#d8f4f7c7'
             },
           },
         }}
