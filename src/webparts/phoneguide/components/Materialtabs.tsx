@@ -152,10 +152,9 @@ export default function MaterialDtabs() {
   }
 
   async function getallusersgraph(userData) {
-    await graph.users
+    await graph.users.top(999)
       .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname")
       .expand("manager")
-      .top(999)
       .get()
       .then(function (data) {
         const users = [];
@@ -341,7 +340,7 @@ export default function MaterialDtabs() {
       return ValidationState.invalid;
     }
   }
-
+console.log(peopleList);
   return (
     <>
       <div className="innerToggleSection">

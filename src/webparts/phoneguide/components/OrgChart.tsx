@@ -278,7 +278,9 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
         const users = [];
         let arrdepartments=[];
         let arrDeptswithkey=[];
-        for (let i = 0; i < data.length; i++) {
+        console.log("length"+data.length);
+        for (let i = 0; i < data.length; i++) 
+        {
           if (props.context.pageContext.user.email == data[i].mail) {
             userID = data[i].id;
           }
@@ -300,7 +302,14 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             officeLocation:data[i].officeLocation,
 
           });
+
+          if(i==data.length-1)
+          {
+              console.log("start")
+          }
         }
+
+        console.log("end");
         arrdepartments=removeDuplicatesfromarray(arrdepartments);
 
         for(var i=0;i<arrdepartments.length;i++)

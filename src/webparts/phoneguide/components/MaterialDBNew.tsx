@@ -124,7 +124,8 @@ export default function MaterialDBNew(props) {
       <DataGrid
         rows={rows}
         columns={columns}
-        pageSize={10}
+        pagination={true}
+        pageSize={100}
         rowsPerPageOptions={[5]}
         // checkboxSelection
         disableSelectionOnClick
