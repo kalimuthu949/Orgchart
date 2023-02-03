@@ -6,6 +6,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
+import { Label } from "@fluentui/react";
 import { DefaultButton, PrimaryButton } from "@fluentui/react/lib/Button";
 import {
   IPersonaProps,
@@ -18,6 +19,7 @@ import {
 } from "@fluentui/react/lib/Pickers";
 import Box from "@material-ui/core/Box";
 import MaterialDBNew from "./MaterialDBNew";
+import FluentUIDB from "./FluentUIDB";
 import { graph } from "@pnp/graph/presets/all";
 import { Dropdown, IDropdownStyles } from "@fluentui/react/lib/Dropdown";
 import SPServices from "./SPServices";
@@ -27,6 +29,7 @@ import { ThemeProvider, PartialTheme } from "@fluentui/react/lib/Theme";
 import NewPivot from "./NewPivot";
 import { useState } from "react";
 import { Icon } from "@fluentui/react";
+import Pagination from "office-ui-fabric-react-pagination";
 //Filter functionality
 let listitems = []; //glb array which is having the all user details from sharepoint list
 let graphuserdetails = []; //glb array which is having the all user details from grpah
@@ -97,13 +100,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+let CurrentPage: number = 1;
+let totalPageItems: number = 10;
+
 export default function MaterialDtabs() {
   const classes = useStyles();
   const [delayResults, setDelayResults] = React.useState(false);
   const [value, setValue] = React.useState(0);
   const [allusers, setallusers] = React.useState([]);
-  const [masterPeopleList,setMasterPeopleList]=React.useState([]); //which is used to store the users from graph and sharepoint list as well dropdown filter.
-  const [peopleList, setPeopleList] = React.useState([]); //which is used to store the users from graph and sharepoint list as well dropdown filter.
+  const [masterPeopleList, setMasterPeopleList] = React.useState([]); //which is used to store the users from graph and sharepoint list as well dropdown filter.
+  const [peopleList, setPeopleList] = React.useState([]);
+  const [displayData, setDisplayData] = React.useState([]);
   const [alldepartment, setalldepartment] = React.useState([]); //which is used to bind tabs.
   const [loader, setloader] = React.useState(false);
   const [mostRecentlyUsed, setMostRecentlyUsed] = React.useState<
@@ -121,6 +128,7 @@ export default function MaterialDtabs() {
   const [title, settitle] = React.useState([]);
   const [dept, setdept] = React.useState([]);
   const [isPG, setIsPG] = useState(true);
+  const [currentPage, setCurrentPage] = useState<number>(CurrentPage);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -152,8 +160,11 @@ export default function MaterialDtabs() {
   }
 
   async function getallusersgraph(userData) {
-    await graph.users.top(999)
-      .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname")
+    await graph.users
+      .top(999)
+      .select(
+        "department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname"
+      )
       .expand("manager")
       .get()
       .then(function (data) {
@@ -177,13 +188,13 @@ export default function MaterialDtabs() {
             imageUrl:
               "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
             isValid: true,
-            Email: data[i].mail?data[i].mail:'',
+            Email: data[i].mail ? data[i].mail : "",
             ID: data[i].id,
             key: i,
             text: data[i].displayName,
-            jobTitle: data[i].jobTitle?data[i].jobTitle:'',
-            givenName:data[i].givenName?data[i].givenName:'',
-            surname:data[i].surname?data[i].surname:'',
+            jobTitle: data[i].jobTitle ? data[i].jobTitle : "",
+            givenName: data[i].givenName ? data[i].givenName : "",
+            surname: data[i].surname ? data[i].surname : "",
             mobilePhone: data[i].mobilePhone,
             department: data[i].department,
             Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
@@ -201,7 +212,7 @@ export default function MaterialDtabs() {
           let zonename = filteredArr.length > 0 ? filteredArr[0].Zone : "";
           if (zonename) arrzones.push(zonename);
         }
-        
+
         graphuserdetails = users;
 
         depts = removeDuplicatesfromarray(depts);
@@ -223,6 +234,7 @@ export default function MaterialDtabs() {
           statetitles.push({ key: arrTitles[i], text: arrTitles[i] });
         }
 
+        paginateFunction(1, users);
         setalldepartment([...statedept]);
         setzones([...statezones]);
         settitles([...statetitles]);
@@ -238,22 +250,28 @@ export default function MaterialDtabs() {
   }
 
   async function filtervalues(useremail, userdept, usertitle) {
+    let tempPeopleList = [...masterPeopleList];
 
-    let tempPeopleList=[...masterPeopleList];
-
-    if(useremail){
-      tempPeopleList=tempPeopleList.filter((_user)=>_user.Email==useremail)
+    if (useremail) {
+      tempPeopleList = tempPeopleList.filter(
+        (_user) => _user.Email == useremail
+      );
     }
 
-    if(userdept.length>0){
-      tempPeopleList=tempPeopleList.filter((_user)=>userdept.some((_dept)=>_dept==_user.department))
+    if (userdept.length > 0) {
+      tempPeopleList = tempPeopleList.filter((_user) =>
+        userdept.some((_dept) => _dept == _user.department)
+      );
     }
 
-    if(usertitle.length>0){
-      tempPeopleList=tempPeopleList.filter((_user)=>usertitle.some((_title)=>_title==_user.jobTitle))
+    if (usertitle.length > 0) {
+      tempPeopleList = tempPeopleList.filter((_user) =>
+        usertitle.some((_title) => _title == _user.jobTitle)
+      );
     }
 
-    setPeopleList([...tempPeopleList])
+    setPeopleList([...tempPeopleList]);
+    paginateFunction(1, tempPeopleList);
   }
 
   const onFilterChanged = (
@@ -340,7 +358,20 @@ export default function MaterialDtabs() {
       return ValidationState.invalid;
     }
   }
-console.log(peopleList);
+
+  const paginateFunction = (pagenumber, data): void => {
+    if (data.length > 0) {
+      let lastIndex: number = pagenumber * totalPageItems;
+      let firstIndex: number = lastIndex - totalPageItems;
+      let paginatedItems = data.slice(firstIndex, lastIndex);
+      CurrentPage = pagenumber;
+      setDisplayData(paginatedItems);
+      setCurrentPage(pagenumber);
+    } else {
+      setDisplayData([]);
+      setCurrentPage(1);
+    }
+  };
   return (
     <>
       <div className="innerToggleSection">
@@ -406,10 +437,11 @@ console.log(peopleList);
                   options={titles}
                   selectedKeys={title}
                   onChange={(event, option, index) => {
-                    console.log(option);
-                    let tempTitle=title;
+                    let tempTitle = title;
                     if (option) {
-                      tempTitle = option.selected? [...tempTitle, option.key as string, ] : tempTitle.filter((key) => key !== option.key)
+                      tempTitle = option.selected
+                        ? [...tempTitle, option.key as string]
+                        : tempTitle.filter((key) => key !== option.key);
                     }
 
                     settitle(tempTitle);
@@ -424,10 +456,11 @@ console.log(peopleList);
                   options={alldepartment}
                   selectedKeys={dept}
                   onChange={(event, option, index) => {
-                    console.log(option);
-                    let tempDept=dept;
+                    let tempDept = dept;
                     if (option) {
-                      tempDept = option.selected? [...tempDept, option.key as string, ] : tempDept.filter((key) => key !== option.key)
+                      tempDept = option.selected
+                        ? [...tempDept, option.key as string]
+                        : tempDept.filter((key) => key !== option.key);
                     }
 
                     setdept(tempDept);
@@ -453,17 +486,18 @@ console.log(peopleList);
                   }}
                 />
               </div> */}
-              
+
               <div className="clsFilterdropdowns">
                 <PrimaryButton
                   iconProps={syncIcon}
                   onClick={() => {
+                    paginateFunction(1, masterPeopleList);
                     setempname("");
                     setzone([]);
                     settitle([]);
                     setselectedusers([]);
                     setdept([]);
-                    setPeopleList([...masterPeopleList])
+                    setPeopleList([...masterPeopleList]);
                   }}
                 />
               </div>
@@ -491,7 +525,39 @@ console.log(peopleList);
             </TabPanel>
           );
         })} */}
-              <MaterialDBNew Department={""} items={peopleList} />
+              {/* <MaterialDBNew Department={""} items={peopleList} /> */}
+              <FluentUIDB Department={""} items={displayData} />
+              {peopleList.length > 0 ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    margin: "10px 0",
+                  }}
+                >
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={
+                      peopleList.length > 0
+                        ? Math.ceil(peopleList.length / totalPageItems)
+                        : 1
+                    }
+                    onChange={(page) => {
+                      paginateFunction(page, peopleList);
+                    }}
+                  />
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "15px",
+                  }}
+                >
+                  <Label style={{ color: "#2392B2" }}>No data Found !!!</Label>
+                </div>
+              )}
             </div>
           </div>
         </ThemeProvider>

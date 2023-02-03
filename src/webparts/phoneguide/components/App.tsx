@@ -8,7 +8,7 @@ import { useState } from "react";
 // import { initializeIcons } from "@uifabric/icons/fonts";
 // initializeIcons("@uifabric/icons/fonts");
 const App = (props) => {
-  const [activeTab, setActiveTab] = useState("OrgChart");
+  const [activeTab, setActiveTab] = useState("PhoneGuide");
   return (
     <>
       <div className="Toggle-section">

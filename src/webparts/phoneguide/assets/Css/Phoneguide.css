@@ -8,6 +8,17 @@
     max-width: 100% !important;
 }
 
+.pagination .ms-Button {
+    border: none !important;
+    background: none !important;
+    min-width: 0 !important;
+    padding: 5px !important;
+}
+
+.pagination .ms-Button.ms-Button--primary .ms-Button-label {
+    color: #2fc3f9;
+}
+
 .clsMaterialtab .MuiAppBar-colorPrimary {
     background-color: #D8F4F7 !important;
     color: #03606a !important;
