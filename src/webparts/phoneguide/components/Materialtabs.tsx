@@ -171,7 +171,6 @@ export default function MaterialDtabs(props) {
         let depts = [];
         let arrzones = [];
         let arrTitles = [];
-        console.log(data);
         for (let i = 0; i < data.length; i++) 
         {
           
@@ -252,6 +251,7 @@ export default function MaterialDtabs(props) {
       .then((client: MSGraphClient) => {
         client
           .api("users")
+          .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname")
           .top(999)
           .skipToken(skiptoken)
           .get()
@@ -263,7 +263,6 @@ export default function MaterialDtabs(props) {
             }
 
             let strtoken='';
-            console.log(data["@odata.nextLink"])
             if(data["@odata.nextLink"])
             {
               strtoken=data["@odata.nextLink"].split("skipToken=")[1];
@@ -283,7 +282,7 @@ export default function MaterialDtabs(props) {
 
   async function getallusersgraph(userData) 
   {
-    
+    alldatafromAD=[];
     await props.context.msGraphClientFactory
       .getClient()
       .then((client: MSGraphClient) => {
@@ -295,6 +294,7 @@ export default function MaterialDtabs(props) {
           .get()
           .then(function (data) 
           {
+            console.log(data);
             for(let i=0;i<data.value.length;i++)
             {
                 alldatafromAD.push(data.value[i]);
