@@ -20,7 +20,7 @@ import {
 import Box from "@material-ui/core/Box";
 import MaterialDBNew from "./MaterialDBNew";
 import FluentUIDB from "./FluentUIDB";
-import { graph } from "@pnp/graph/presets/all";
+import { graph  } from "@pnp/graph/presets/all";
 import { Dropdown, IDropdownStyles } from "@fluentui/react/lib/Dropdown";
 import SPServices from "./SPServices";
 import "../assets/Css/Phoneguide.css";
@@ -30,6 +30,7 @@ import NewPivot from "./NewPivot";
 import { useState } from "react";
 import { Icon } from "@fluentui/react";
 import Pagination from "office-ui-fabric-react-pagination";
+import { MSGraphClient } from "@microsoft/sp-http";
 //Filter functionality
 let listitems = []; //glb array which is having the all user details from sharepoint list
 let graphuserdetails = []; //glb array which is having the all user details from grpah
@@ -103,7 +104,11 @@ const useStyles = makeStyles((theme) => ({
 let CurrentPage: number = 1;
 let totalPageItems: number = 10;
 
-export default function MaterialDtabs() {
+
+var count=0;
+var alldatafromAD=[];
+
+export default function MaterialDtabs(props) {
   const classes = useStyles();
   const [delayResults, setDelayResults] = React.useState(false);
   const [value, setValue] = React.useState(0);
@@ -159,22 +164,18 @@ export default function MaterialDtabs() {
       });
   }
 
-  async function getallusersgraph(userData) {
-    await graph.users
-      .top(999)
-      .select(
-        "department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname"
-      )
-      .expand("manager")
-      .get()
-      .then(function (data) {
+  function binddata(data,userData) 
+      {
         const users = [];
 
         let depts = [];
         let arrzones = [];
         let arrTitles = [];
+        console.log(data);
+        for (let i = 0; i < data.length; i++) 
+        {
+          
 
-        for (let i = 0; i < data.length; i++) {
           let filteredArr = [];
 
           for (let j = 0; j < userData.length; j++) {
@@ -242,7 +243,90 @@ export default function MaterialDtabs() {
         setMasterPeopleList([...users]);
         setPeopleList([...users]);
         setloader(false);
+      }
+
+  async function getnextitems(skiptoken,userData)
+  {
+    await props.context.msGraphClientFactory
+      .getClient()
+      .then((client: MSGraphClient) => {
+        client
+          .api("users")
+          .top(999)
+          .skipToken(skiptoken)
+          .get()
+          .then(function (data) 
+          {
+            for(let i=0;i<data.value.length;i++)
+            {
+                alldatafromAD.push(data.value[i]);
+            }
+
+            let strtoken='';
+            console.log(data["@odata.nextLink"])
+            if(data["@odata.nextLink"])
+            {
+              strtoken=data["@odata.nextLink"].split("skipToken=")[1];
+              getnextitems(data["@odata.nextLink"].split("skipToken=")[1],userData);
+            }
+            else
+            {
+              binddata(alldatafromAD,userData);
+            }
+          })
+      .catch(function (error) 
+      { console.log(error);
+        setloader(false);
       })
+    })
+  }
+
+  async function getallusersgraph(userData) 
+  {
+    
+    await props.context.msGraphClientFactory
+      .getClient()
+      .then((client: MSGraphClient) => {
+        client
+          .api("users")
+          .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname")
+          .expand("manager")
+          .top(999)
+          .get()
+          .then(function (data) 
+          {
+            for(let i=0;i<data.value.length;i++)
+            {
+                alldatafromAD.push(data.value[i]);
+            }
+
+            let strtoken='';
+            if(data["@odata.nextLink"])
+            {
+              strtoken=data["@odata.nextLink"].split("skiptoken=")[1];
+              getnextitems(data["@odata.nextLink"].split("skiptoken=")[1],userData);
+            }
+            else
+            {
+              binddata(alldatafromAD,userData);
+            }
+          })
+          .catch(function (error) 
+          { 
+            console.log(error)
+            setloader(false);
+          })
+    })
+    
+    
+    
+    await graph.users.top(999).select("*")
+      .expand("manager")
+      .get()
+      .then(function(data)
+       {
+         //testing(data,userData);
+       })
       .catch(function (error) {
         console.log(error);
         setloader(false);
