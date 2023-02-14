@@ -192,6 +192,7 @@ export default function MaterialDtabs(props) {
             ID: data[i].id,
             key: i,
             text: data[i].displayName,
+            UserPrincipalName:data[i].userPrincipalName,
             jobTitle: data[i].jobTitle ? data[i].jobTitle : "",
             givenName: data[i].givenName ? data[i].givenName : "",
             surname: data[i].surname ? data[i].surname : "",
@@ -251,7 +252,7 @@ export default function MaterialDtabs(props) {
       .then((client: MSGraphClient) => {
         client
           .api("users")
-          .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname")
+          .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName")
           .top(999)
           .skipToken(skiptoken)
           .get()
@@ -259,7 +260,8 @@ export default function MaterialDtabs(props) {
           {
             for(let i=0;i<data.value.length;i++)
             {
-                alldatafromAD.push(data.value[i]);
+              if(data.value[i].userType!="Guest")  
+              alldatafromAD.push(data.value[i]);
             }
 
             let strtoken='';
@@ -288,7 +290,7 @@ export default function MaterialDtabs(props) {
       .then((client: MSGraphClient) => {
         client
           .api("users")
-          .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname")
+          .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType")
           .expand("manager")
           .top(999)
           .get()
@@ -297,7 +299,8 @@ export default function MaterialDtabs(props) {
             console.log(data);
             for(let i=0;i<data.value.length;i++)
             {
-                alldatafromAD.push(data.value[i]);
+              if(data.value[i].userType!="Guest")
+              alldatafromAD.push(data.value[i]);
             }
 
             let strtoken='';

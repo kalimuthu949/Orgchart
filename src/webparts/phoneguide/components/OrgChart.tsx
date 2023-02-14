@@ -271,7 +271,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
   async function getallusers() {
     await graph.users
       .top(999)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation')
+      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,userType')
       .get()
       .then(function (data) {
         console.log(data);
@@ -288,6 +288,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
           if( data[i].department)
           arrdepartments.push(data[i].department);
 
+          if(data[i].userType!="Guest"){
           users.push({
             imageUrl:
               "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
@@ -302,6 +303,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             officeLocation:data[i].officeLocation,
 
           });
+          }
 
           if(i==data.length-1)
           {

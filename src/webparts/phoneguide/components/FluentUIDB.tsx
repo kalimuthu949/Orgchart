@@ -127,7 +127,7 @@ const _columns: IColumn[] = [
   {
     key: "Column4",
     name: "Email",
-    fieldName: "Email",
+    fieldName: "userprincipalname",
     minWidth: 300,
     maxWidth: 300,
   },
@@ -195,6 +195,7 @@ export default function FluentUIDB(props) {
         Manager: item.manager ? item.manager.displayName : "",
         Ext: item.Ext,
         mobile: item.mobilePhone,
+        userprincipalname:item.UserPrincipalName
       });
     });
     setData([...rows]);
