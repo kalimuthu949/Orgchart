@@ -196,7 +196,7 @@ export default function MaterialDtabs(props) {
             jobTitle: data[i].jobTitle ? data[i].jobTitle : "",
             givenName: data[i].givenName ? data[i].givenName : "",
             surname: data[i].surname ? data[i].surname : "",
-            mobilePhone: data[i].mobilePhone,
+            mobilePhone: data[i].businessPhones.length>0?data[i].businessPhones[0]:"",//data[i].mobilePhone,
             department: data[i].department,
             Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
             Dept:
@@ -252,7 +252,7 @@ export default function MaterialDtabs(props) {
       .then((client: MSGraphClient) => {
         client
           .api("users")
-          .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType")
+          .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,businessPhones")
           .top(999)
           .skipToken(skiptoken)
           .get()
@@ -290,7 +290,7 @@ export default function MaterialDtabs(props) {
       .then((client: MSGraphClient) => {
         client
           .api("users")
-          .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType")
+          .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType,businessPhones")
           .expand("manager")
           .top(999)
           .get()

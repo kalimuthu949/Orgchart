@@ -148,7 +148,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
 
   async function getcurrentuser() {
     await graph.me
-      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation')
+      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones')
       .get()
       .then(function (data) {
         const cnrtUserDetails = [];
@@ -160,7 +160,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
           key: 0,
           text: data.displayName,
           jobTitle: data.jobTitle,
-          mobilePhone: data.mobilePhone,
+          mobilePhone: data.businessPhones.length>0?data.businessPhones[0]:[],//data.mobilePhone,
           department:data.department,
           officeLocation:data.officeLocation,
         });
@@ -187,7 +187,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
   async function getdeptcount(dept) {
     await graph.users
       .top(999)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation')
+      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones')
       .get()
       .then(function (data) 
       {
@@ -215,7 +215,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
   async function getusersfromselecteddept(dept) {
     await graph.users
       .top(999)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation')
+      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones')
       .get()
       .then(function (data) {
         console.log(data);
@@ -233,7 +233,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             key: i,
             text: data[i].displayName,
             jobTitle: data[i].jobTitle,
-            mobilePhone: data[i].mobilePhone,
+            mobilePhone: data[i].businessPhones.length>0?data[i].businessPhones[0]:[],//data[i].mobilePhone,
             department:data[i].department,
             officeLocation:data[i].officeLocation,
           });
@@ -271,7 +271,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
   async function getallusers() {
     await graph.users
       .top(999)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,userType')
+      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,userType,businessPhones')
       .get()
       .then(function (data) {
         console.log(data);
@@ -298,7 +298,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             key: i,
             text: data[i].displayName,
             jobTitle: data[i].jobTitle,
-            mobilePhone: data[i].mobilePhone,
+            mobilePhone: data[i].businessPhones.length>0?data[i].businessPhones[0]:[],//data[i].mobilePhone,
             department:data[i].department,
             officeLocation:data[i].officeLocation,
 
@@ -359,7 +359,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
 
     await graph.users
       .getById(userID)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation')
+      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones')
       .manager()
       .then(function (data: any) {
         if (data) {
@@ -380,7 +380,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
     setloader(true);
     await graph.users
       .getById(userID)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation')
+      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones')
       .manager()
       .then(function (data: any) {
         if (data) {
@@ -393,7 +393,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             Email: data.mail,
             text: data.displayName,
             jobTitle: data.jobTitle,
-            mobilePhone: data.mobilePhone,
+            mobilePhone: data.businessPhones.length>0?data.businessPhones[0]:[],//data.mobilePhone,
             department:data.department,
             officeLocation:data.officeLocation,
           });
@@ -409,7 +409,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
   async function getDirectreports(userID) {
     await graph.users
       .getById(userID)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation')
+      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones')
       .directReports()
       .then(function (data: any) {
         const directreports: any = [];
@@ -422,7 +422,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             text: data[i].displayName,
             Manager: "",
             jobTitle: data[i].jobTitle,
-            mobilePhone: data[i].mobilePhone,
+            mobilePhone: data[i].businessPhones.length>0?data[i].businessPhones[0]:[],//data[i].mobilePhone,
             department:data[i].department,
             officeLocation:data[i].officeLocation,
           });
@@ -451,7 +451,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             Email: peopleList[i].Email,
             text: peopleList[i].text,
             jobTitle: peopleList[i].jobTitle,
-            mobilePhone: peopleList[i].mobilePhone,
+            mobilePhone: peopleList[i].mobilePhone.length>0?peopleList[i].mobilePhone:"",//peopleList[i].mobilePhone,
             department:peopleList[i].department,
             officeLocation:peopleList[i].officeLocation,
           });
