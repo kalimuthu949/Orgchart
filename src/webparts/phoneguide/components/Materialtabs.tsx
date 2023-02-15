@@ -252,7 +252,7 @@ export default function MaterialDtabs(props) {
       .then((client: MSGraphClient) => {
         client
           .api("users")
-          .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName")
+          .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType")
           .top(999)
           .skipToken(skiptoken)
           .get()
