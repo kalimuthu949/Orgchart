@@ -788,7 +788,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
           </div>
           <div className="clsEmail">
             <h3>
-              <b>JobTitle</b>
+              <b>Job Title</b>
             </h3>
             <div>{SelectedPerson[0].jobTitle?SelectedPerson[0].jobTitle:"N/A"}</div>
           </div>

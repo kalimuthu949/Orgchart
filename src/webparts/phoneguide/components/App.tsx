@@ -5,6 +5,7 @@ import MaterialDtabs from "./Materialtabs";
 import NewPivot from "./NewPivot";
 import "../assets/Css/App.scss";
 import { useState } from "react";
+import BalkanChart from "./BalkanChart";
 // import { initializeIcons } from "@uifabric/icons/fonts";
 // initializeIcons("@uifabric/icons/fonts");
 const App = (props) => {
@@ -33,7 +34,8 @@ const App = (props) => {
       </div>
       <div>
         {activeTab === "OrgChart" ? (
-          <OrgChart context={props.context} />
+          // <OrgChart context={props.context} />
+          <BalkanChart context={props.context} />
         ) : activeTab === "PhoneGuide" ? (
           <MaterialDtabs context={props.context}/>
         ) : (
