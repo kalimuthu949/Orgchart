@@ -1,0 +1,60 @@
+[data-n-id] rect {
+    fill: #d8f4f7;
+}
+
+[data-n-id='1'] rect {
+    fill: #750000;
+}
+
+.olivia-f0 {
+    fill: #03606a !important;
+}
+
+#OrgChart {
+    .boc-edit-form-instruments {
+        display: none;
+    }
+    rect {
+        stroke: none !important;
+        box-shadow: #00000021 0px 6.4px 14.4px 0px, #0000001c 0px 1.2px 3.6px 0px
+    }
+    .boc-edit-form-header {
+        background-color: #ffe49f !important;
+    }
+    .boc-edit-form-title {
+        color: #03606a !important;
+    }
+    .boc-img-button {
+        background-color: #d8f4f7 !important;
+        path {
+            fill: #03606a !important;
+        }
+    }
+    .boc-edit-form-close {
+        path {
+            fill: #03606a !important;
+        }
+    }
+    .boc-edit-form-avatar {
+        width: 126px !important;
+        height: 126px !important;
+        position: absolute;
+        top: 88px !important;
+    }
+    .boc-edit-form-fields-inner {
+        margin-top: 44px !important;
+    }
+    .boc-input {
+        label {
+            text-transform: capitalize;
+            font-weight: 700;
+            color: #03606a;
+        }
+    }
+}
+
+.boc-form-field {
+    &:has(.boc-input input[value *="/_layouts"]) {
+        display: none !important;
+    }
+}

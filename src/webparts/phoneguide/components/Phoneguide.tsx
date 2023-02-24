@@ -31,7 +31,10 @@ export default class Phoneguide extends React.Component<IPhoneguideProps, {}> {
 
     return (
       <div style={{ padding: 26 }}>
-        <App context={this.props.context} />
+        <App
+          context={this.props.context}
+          URL={this.props.context.pageContext.site.absoluteUrl}
+        />
       </div>
     );
   }

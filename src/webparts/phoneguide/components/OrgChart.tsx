@@ -17,11 +17,11 @@ import { Icon } from "@fluentui/react/lib/Icon";
 // import { Icon } from "office-ui-fabric-react/lib/Icon";
 import "../../../../node_modules/office-ui-fabric-react/dist/css/fabric.min.css";
 import { initializeIcons } from "@fluentui/react/lib/Icons";
-import { Spinner, SpinnerSize } from '@fluentui/react/lib/Spinner';
-import styles from "./Phoneguide.module.scss"
-import { Dropdown, IDropdownStyles } from '@fluentui/react/lib/Dropdown';
+import { Spinner, SpinnerSize } from "@fluentui/react/lib/Spinner";
+import styles from "./Phoneguide.module.scss";
+import { Dropdown, IDropdownStyles } from "@fluentui/react/lib/Dropdown";
 import SPServices from "./SPServices";
-import {sp} from "@pnp/sp/presets/all";
+import { sp } from "@pnp/sp/presets/all";
 initializeIcons();
 const MyIcon = () => <Icon iconName="CompassNW" />;
 const Manager = [];
@@ -66,26 +66,29 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
     IPersonaProps[]
   >([]);
   const [peopleList, setPeopleList] = React.useState([]);
-  const [alluserdata,setalluserdata]=React.useState([]);
+  const [alluserdata, setalluserdata] = React.useState([]);
   const [ManagerList, setManagerList] = React.useState(Manager);
   const [ReporteeList, setReporteeList] = React.useState(Reportees);
   const [SelectedPerson, setSelectedPerson] = React.useState([]);
-  const[SelectedPersonManager, setSelectedPersonManager] = React.useState("");
-  const [userdatafromsharepoint,setuserdatafromsharepoint]=React.useState([]);
+  const [SelectedPersonManager, setSelectedPersonManager] = React.useState("");
+  const [userdatafromsharepoint, setuserdatafromsharepoint] = React.useState(
+    []
+  );
   const [CallLink, setCallLink] = React.useState("#");
   const [chatlink, setchatlink] = React.useState("#");
-  const [loader,setloader]=React.useState(true);
-  const [departments,setdepartments]=React.useState([]);
-  const [selecteddeprt,setselecteddeprt]=React.useState("");
-  const [deptuserscount,setdeptuserscount]=React.useState(0);
-  const [userzonefromuserprofile,setuserzonefromuserprofile]=React.useState("");
+  const [loader, setloader] = React.useState(true);
+  const [departments, setdepartments] = React.useState([]);
+  const [selecteddeprt, setselecteddeprt] = React.useState("");
+  const [deptuserscount, setdeptuserscount] = React.useState(0);
+  const [userzonefromuserprofile, setuserzonefromuserprofile] =
+    React.useState("");
 
+  const departDrpdownoptions = [{ key: "A", text: "Option a" }];
 
-  const departDrpdownoptions = [
-    { key: 'A', text: 'Option a' },
-  ];
-
-  const dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: 300 }, root: { height: 100 } };
+  const dropdownStyles: Partial<IDropdownStyles> = {
+    dropdown: { width: 300 },
+    root: { height: 100 },
+  };
 
   const hoverCard = React.useRef<IHoverCard>(null);
   const instantDismissCard = (): void => {
@@ -148,7 +151,9 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
 
   async function getcurrentuser() {
     await graph.me
-      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones')
+      .select(
+        "mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones"
+      )
       .get()
       .then(function (data) {
         const cnrtUserDetails = [];
@@ -160,22 +165,20 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
           key: 0,
           text: data.displayName,
           jobTitle: data.jobTitle,
-          mobilePhone: data.businessPhones.length>0?data.businessPhones[0]:[],//data.mobilePhone,
-          department:data.department,
-          officeLocation:data.officeLocation,
+          mobilePhone:
+            data.businessPhones.length > 0 ? data.businessPhones[0] : [], //data.mobilePhone,
+          department: data.department,
+          officeLocation: data.officeLocation,
         });
-        if(data.department)
-        {
-           setselecteddeprt(data.department);
-           getdeptcount(data.department);
-        }
-        else
-        {
+        if (data.department) {
+          setselecteddeprt(data.department);
+          getdeptcount(data.department);
+        } else {
           setselecteddeprt("");
         }
 
         setManagerList([...cnrtUserDetails]);
-        
+
         getDirectreports(data.id);
       })
       .catch(function (error) {
@@ -187,27 +190,23 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
   async function getdeptcount(dept) {
     await graph.users
       .top(999)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones')
+      .select(
+        "mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones"
+      )
       .get()
-      .then(function (data) 
-      {
+      .then(function (data) {
         console.log(data);
         const users = [];
-        let countofusers=0;
-        for (let i = 0; i < data.length; i++) 
-        {
-          if(dept==data[i].department)
-          {
-            countofusers=countofusers+1;
+        let countofusers = 0;
+        for (let i = 0; i < data.length; i++) {
+          if (dept == data[i].department) {
+            countofusers = countofusers + 1;
           }
         }
 
         setdeptuserscount(countofusers);
-
-        
       })
-      .catch(function (error) 
-      {
+      .catch(function (error) {
         console.log(error);
       });
   }
@@ -215,43 +214,43 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
   async function getusersfromselecteddept(dept) {
     await graph.users
       .top(999)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones')
+      .select(
+        "mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones"
+      )
       .get()
       .then(function (data) {
         console.log(data);
         const users = [];
-        for (let i = 0; i < data.length; i++) 
-        {
-          
-          if(dept==data[i].department){
-          users.push({
-            imageUrl:
-              "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
-            isValid: true,
-            Email: data[i].mail,
-            ID: data[i].id,
-            key: i,
-            text: data[i].displayName,
-            jobTitle: data[i].jobTitle,
-            mobilePhone: data[i].businessPhones.length>0?data[i].businessPhones[0]:[],//data[i].mobilePhone,
-            department:data[i].department,
-            officeLocation:data[i].officeLocation,
-          });
+        for (let i = 0; i < data.length; i++) {
+          if (dept == data[i].department) {
+            users.push({
+              imageUrl:
+                "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
+              isValid: true,
+              Email: data[i].mail,
+              ID: data[i].id,
+              key: i,
+              text: data[i].displayName,
+              jobTitle: data[i].jobTitle,
+              mobilePhone:
+                data[i].businessPhones.length > 0
+                  ? data[i].businessPhones[0]
+                  : [], //data[i].mobilePhone,
+              department: data[i].department,
+              officeLocation: data[i].officeLocation,
+            });
           }
         }
         setloader(false);
         setdeptuserscount(users.length);
-        if(users.length>0)
-        {
-          getSelecteduser([users[0]])
+        if (users.length > 0) {
+          getSelecteduser([users[0]]);
         }
-        
       })
       .catch(function (error) {
         console.log(error);
       });
   }
-
 
   async function getalluserssp() {
     SPServices.SPReadItems({
@@ -271,52 +270,55 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
   async function getallusers() {
     await graph.users
       .top(999)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,userType,businessPhones')
+      .select(
+        "mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,userType,businessPhones"
+      )
       .get()
       .then(function (data) {
         console.log(data);
         const users = [];
-        let arrdepartments=[];
-        let arrDeptswithkey=[];
-        console.log("length"+data.length);
-        for (let i = 0; i < data.length; i++) 
-        {
+        let arrdepartments = [];
+        let arrDeptswithkey = [];
+        console.log("length" + data.length);
+        for (let i = 0; i < data.length; i++) {
           if (props.context.pageContext.user.email == data[i].mail) {
             userID = data[i].id;
           }
 
-          if( data[i].department)
-          arrdepartments.push(data[i].department);
+          if (data[i].department) arrdepartments.push(data[i].department);
 
-          if(data[i].userType!="Guest"){
-          users.push({
-            imageUrl:
-              "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
-            isValid: true,
-            Email: data[i].mail,
-            ID: data[i].id,
-            key: i,
-            text: data[i].displayName,
-            jobTitle: data[i].jobTitle,
-            mobilePhone: data[i].businessPhones.length>0?data[i].businessPhones[0]:[],//data[i].mobilePhone,
-            department:data[i].department,
-            officeLocation:data[i].officeLocation,
-
-          });
+          if (data[i].userType != "Guest") {
+            users.push({
+              imageUrl:
+                "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
+              isValid: true,
+              Email: data[i].mail,
+              ID: data[i].id,
+              key: i,
+              text: data[i].displayName,
+              jobTitle: data[i].jobTitle,
+              mobilePhone:
+                data[i].businessPhones.length > 0
+                  ? data[i].businessPhones[0]
+                  : [], //data[i].mobilePhone,
+              department: data[i].department,
+              officeLocation: data[i].officeLocation,
+            });
           }
 
-          if(i==data.length-1)
-          {
-              console.log("start")
+          if (i == data.length - 1) {
+            console.log("start");
           }
         }
 
         console.log("end");
-        arrdepartments=removeDuplicatesfromarray(arrdepartments);
+        arrdepartments = removeDuplicatesfromarray(arrdepartments);
 
-        for(var i=0;i<arrdepartments.length;i++)
-        {
-          arrDeptswithkey.push({ key: arrdepartments[i], text: arrdepartments[i]})
+        for (var i = 0; i < arrdepartments.length; i++) {
+          arrDeptswithkey.push({
+            key: arrdepartments[i],
+            text: arrdepartments[i],
+          });
         }
         setdepartments([...arrDeptswithkey]);
         setPeopleList([...users]);
@@ -331,27 +333,24 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
     return arr.filter((item, index) => arr.indexOf(item) === index);
   }
 
-  async function getManagerforcard(userID,userEmail) 
-  {
+  async function getManagerforcard(userID, userEmail) {
     setloader(true);
 
-    let testdata=[];
-    for(let i=0;i<alluserdata.length;i++)
-    {
-      if(alluserdata[i].Employee.EMail)
-      {
+    let testdata = [];
+    for (let i = 0; i < alluserdata.length; i++) {
+      if (alluserdata[i].Employee.EMail) {
         testdata.push(alluserdata[i]);
-        setuserdatafromsharepoint(alluserdata[i])
+        setuserdatafromsharepoint(alluserdata[i]);
         break;
       }
     }
 
     // const loginName = "i:0#.f|membership|"+userEmail;
     // const propertyName = "SPS-TimeZone";
-    // const property = await sp.profiles.getUserProfilePropertyFor(loginName, propertyName).then(function (data: any) 
+    // const property = await sp.profiles.getUserProfilePropertyFor(loginName, propertyName).then(function (data: any)
     // {
     //   setuserzonefromuserprofile(data)
-    // }).catch(function (error) 
+    // }).catch(function (error)
     // {
     //   console.log(error);
     //   setloader(false);
@@ -359,7 +358,9 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
 
     await graph.users
       .getById(userID)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones')
+      .select(
+        "mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones"
+      )
       .manager()
       .then(function (data: any) {
         if (data) {
@@ -380,7 +381,9 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
     setloader(true);
     await graph.users
       .getById(userID)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones')
+      .select(
+        "mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones"
+      )
       .manager()
       .then(function (data: any) {
         if (data) {
@@ -393,9 +396,10 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             Email: data.mail,
             text: data.displayName,
             jobTitle: data.jobTitle,
-            mobilePhone: data.businessPhones.length>0?data.businessPhones[0]:[],//data.mobilePhone,
-            department:data.department,
-            officeLocation:data.officeLocation,
+            mobilePhone:
+              data.businessPhones.length > 0 ? data.businessPhones[0] : [], //data.mobilePhone,
+            department: data.department,
+            officeLocation: data.officeLocation,
           });
           getSelecteduser(userdetails);
         }
@@ -409,7 +413,9 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
   async function getDirectreports(userID) {
     await graph.users
       .getById(userID)
-      .select('mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones')
+      .select(
+        "mail,id,displayName,jobTitle,mobilePhone,department,officeLocation,businessPhones"
+      )
       .directReports()
       .then(function (data: any) {
         const directreports: any = [];
@@ -422,9 +428,12 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             text: data[i].displayName,
             Manager: "",
             jobTitle: data[i].jobTitle,
-            mobilePhone: data[i].businessPhones.length>0?data[i].businessPhones[0]:[],//data[i].mobilePhone,
-            department:data[i].department,
-            officeLocation:data[i].officeLocation,
+            mobilePhone:
+              data[i].businessPhones.length > 0
+                ? data[i].businessPhones[0]
+                : [], //data[i].mobilePhone,
+            department: data[i].department,
+            officeLocation: data[i].officeLocation,
           });
         }
         setReporteeList([...directreports]);
@@ -440,8 +449,7 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
     const users = [];
     if (userDetails.length > 0) {
       for (let i = 0; i < peopleList.length; i++) {
-        if (peopleList[i].ID == userDetails[0].ID) 
-        {
+        if (peopleList[i].ID == userDetails[0].ID) {
           users.push({
             imageUrl:
               "/_layouts/15/userphoto.aspx?size=L&username=" +
@@ -451,18 +459,18 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             Email: peopleList[i].Email,
             text: peopleList[i].text,
             jobTitle: peopleList[i].jobTitle,
-            mobilePhone: peopleList[i].mobilePhone.length>0?peopleList[i].mobilePhone:"",//peopleList[i].mobilePhone,
-            department:peopleList[i].department,
-            officeLocation:peopleList[i].officeLocation,
+            mobilePhone:
+              peopleList[i].mobilePhone.length > 0
+                ? peopleList[i].mobilePhone
+                : "", //peopleList[i].mobilePhone,
+            department: peopleList[i].department,
+            officeLocation: peopleList[i].officeLocation,
           });
         }
       }
-      if(users[0].department)
-      {
+      if (users[0].department) {
         setselecteddeprt(users[0].department);
-      }
-      else
-      {
+      } else {
         setselecteddeprt("");
       }
       setManagerList([...users]);
@@ -557,11 +565,15 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
     }
   }
 
-
-
   return (
     <div>
-      {loader?<div className="spinnerBackground"><Spinner className="clsSpinner" size={SpinnerSize.large} /></div>:<></>}
+      {loader ? (
+        <div className="spinnerBackground">
+          <Spinner className="clsSpinner" size={SpinnerSize.large} />
+        </div>
+      ) : (
+        <></>
+      )}
       <div className="searchDiv">
         <div
           className="clsBack"
@@ -579,43 +591,45 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
           </li>
         </div>
         <div className="clsDropplussearch">
-        <div className="clsDeptCount">
-          <label><b>Department User Count</b> : {deptuserscount}</label>
-        </div>
-        <div className="clsDeptDrpDown">
+          <div className="clsDeptCount">
+            <label>
+              <b>Department User Count</b> : {deptuserscount}
+            </label>
+          </div>
+          <div className="clsDeptDrpDown">
             <Dropdown
-            placeholder="Select department"
-            selectedKey={selecteddeprt}
-            options={departments}
-            styles={dropdownStyles}
-            onChange={(event,option:any,index)=>{
+              placeholder="Select department"
+              selectedKey={selecteddeprt}
+              options={departments}
+              styles={dropdownStyles}
+              onChange={(event, option: any, index) => {
                 setselecteddeprt(option.key);
                 setSelectedPerson([]);
                 getusersfromselecteddept(option.key);
-                getdeptcount(option.key)
-            }}
-          />
-        </div>
-        <div>
-          <NormalPeoplePicker
-            onResolveSuggestions={onFilterChanged}
-            getTextFromItem={getTextFromItem}
-            className={"ms-PeoplePicker"}
-            key={"normal"}
-            inputProps={{ placeholder: "Search User" }}
-            onValidateInput={validateInput}
-            selectionAriaLabel={"Selected contacts"}
-            removeButtonAriaLabel={"Remove"}
-            resolveDelay={300}
-            itemLimit={1}
-            disabled={isPickerDisabled}
-            onChange={(data) => {
-              setloader(true);
-              getSelecteduser(data);
-              HidePopup();
-            }}
-          />
-        </div>
+                getdeptcount(option.key);
+              }}
+            />
+          </div>
+          <div>
+            <NormalPeoplePicker
+              onResolveSuggestions={onFilterChanged}
+              getTextFromItem={getTextFromItem}
+              className={"ms-PeoplePicker"}
+              key={"normal"}
+              inputProps={{ placeholder: "Search User" }}
+              onValidateInput={validateInput}
+              selectionAriaLabel={"Selected contacts"}
+              removeButtonAriaLabel={"Remove"}
+              resolveDelay={300}
+              itemLimit={1}
+              disabled={isPickerDisabled}
+              onChange={(data) => {
+                setloader(true);
+                getSelecteduser(data);
+                HidePopup();
+              }}
+            />
+          </div>
         </div>
       </div>
 
@@ -652,10 +666,15 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
                               onClick={() => {
                                 const ItemID = item.ID;
                                 setSelectedPerson([{ ...item }]);
-                                setCallLink('https://teams.microsoft.com/l/call/0/0?users='+item.Email);
-                                setchatlink('https://teams.microsoft.com/l/chat/0/0?users='+item.Email);
-                                getManagerforcard(item.ID,item.Email);
-                                
+                                setCallLink(
+                                  "https://teams.microsoft.com/l/call/0/0?users=" +
+                                    item.Email
+                                );
+                                setchatlink(
+                                  "https://teams.microsoft.com/l/chat/0/0?users=" +
+                                    item.Email
+                                );
+                                getManagerforcard(item.ID, item.Email);
                               }}
                             />
                           </a>
@@ -707,9 +726,15 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
                                   onClick={() => {
                                     const ItemID = item.ID;
                                     setSelectedPerson([{ ...item }]);
-                                    setCallLink('https://teams.microsoft.com/l/call/0/0?users='+item.Email);
-                                    setchatlink('https://teams.microsoft.com/l/chat/0/0?users='+item.Email);
-                                    getManagerforcard(item.ID,item.Email);
+                                    setCallLink(
+                                      "https://teams.microsoft.com/l/call/0/0?users=" +
+                                        item.Email
+                                    );
+                                    setchatlink(
+                                      "https://teams.microsoft.com/l/chat/0/0?users=" +
+                                        item.Email
+                                    );
+                                    getManagerforcard(item.ID, item.Email);
                                   }}
                                 />
                               </a>
@@ -779,8 +804,11 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
               <b>Contact</b>
             </h3>
             <div>
-              {userdatafromsharepoint?(userdatafromsharepoint['Ext']?userdatafromsharepoint['Ext']:""):""}
-              {" "}
+              {userdatafromsharepoint
+                ? userdatafromsharepoint["Ext"]
+                  ? userdatafromsharepoint["Ext"]
+                  : ""
+                : ""}{" "}
               {SelectedPerson[0].mobilePhone
                 ? SelectedPerson[0].mobilePhone
                 : "N/A"}
@@ -790,19 +818,25 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             <h3>
               <b>Job Title</b>
             </h3>
-            <div>{SelectedPerson[0].jobTitle?SelectedPerson[0].jobTitle:"N/A"}</div>
+            <div>
+              {SelectedPerson[0].jobTitle ? SelectedPerson[0].jobTitle : "N/A"}
+            </div>
           </div>
           <div className="clsEmail">
             <h3>
               <b>Department</b>
             </h3>
-            <div>{SelectedPerson[0].department?SelectedPerson[0].department:"N/A"}</div>
+            <div>
+              {SelectedPerson[0].department
+                ? SelectedPerson[0].department
+                : "N/A"}
+            </div>
           </div>
           <div className="clsEmail">
             <h3>
               <b>Manager</b>
             </h3>
-            <div>{SelectedPersonManager?SelectedPersonManager:"N/A"}</div>
+            <div>{SelectedPersonManager ? SelectedPersonManager : "N/A"}</div>
           </div>
           <div className="clsEmail">
             <h3>
@@ -810,7 +844,11 @@ export const OrgChart: React.FunctionComponent<IPhoneguideProps> = (
             </h3>
             {/* <div>{userdatafromsharepoint?(userdatafromsharepoint['Zone']?userdatafromsharepoint['Zone']:"N/A"):"N/A"}</div> */}
             {/* <div>{userzonefromuserprofile}</div> */}
-            <div>{SelectedPerson[0].officeLocation?SelectedPerson[0].officeLocation:"N/A"}</div>
+            <div>
+              {SelectedPerson[0].officeLocation
+                ? SelectedPerson[0].officeLocation
+                : "N/A"}
+            </div>
           </div>
         </div>
       ) : (
