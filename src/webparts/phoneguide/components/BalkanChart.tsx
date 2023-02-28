@@ -308,10 +308,10 @@ export default function BalkanChart(props) {
     }
 
     chart = new OrgChart(document.getElementById("OrgChart"), {
-      collapse: {
-        level: 1,
-        allChildren: true,
-      },
+      // collapse: {
+      //   level: 1,
+      //   allChildren: true,
+      // },
       layout: OrgChart.mixed,
       scaleInitial: 1,
       enableSearch: false,
@@ -325,10 +325,23 @@ export default function BalkanChart(props) {
         img_0: "img",
       },
       nodes: _nodeData,
+      editForm:{
+        generateElementsFromFields: false,
+        elements: [
+            { type: 'textbox', label: 'Name', binding: 'name' },
+            { type: 'textbox', label: 'Job Title', binding: 'title' },
+            { type: 'textbox', label: 'Email', binding: 'email' },
+            { type: 'textbox', label: 'Contact', binding: 'Mobile Phone' },
+            { type: 'textbox', label: 'Department', binding: 'department' },
+            { type: 'textbox', label: 'Manager', binding: 'Manager' },
+            { type: 'textbox', label: 'Zone', binding: 'Zone' }
+          ]
+    },
     });
 
     setloader(false);
   }
+
 
   function loadChart(data) {
     const users = [];
@@ -414,16 +427,15 @@ export default function BalkanChart(props) {
     setdepartments([...arrDeptswithkey]);
     setPeopleList([...users]);
 
-    debugger;
     allNodeData = nodeData;
     SPComponentLoader.loadScript(
-      props.URL + "/SiteAssets/Test/orgchart.js"
+      props.URL + "/SiteAssets/OrgJS/orgchart.js"
     ).then(() => {
       chart = new OrgChart(document.getElementById("OrgChart"), {
-        collapse: {
-          level: 1,
-          allChildren: true,
-        },
+        // collapse: {
+        //   level: 1,
+        //   allChildren: true,
+        // },
         layout: OrgChart.mixed,
         scaleInitial: 1,
         enableSearch: false,
@@ -437,6 +449,18 @@ export default function BalkanChart(props) {
           img_0: "img",
         },
         nodes: nodeData,
+        editForm:{
+          generateElementsFromFields: false,
+          elements: [
+              { type: 'textbox', label: 'Name', binding: 'name' },
+              { type: 'textbox', label: 'Job Title', binding: 'title' },
+              { type: 'textbox', label: 'Email', binding: 'email' },
+              { type: 'textbox', label: 'Contact', binding: 'Mobile Phone' },
+              { type: 'textbox', label: 'Department', binding: 'department' },
+              { type: 'textbox', label: 'Manager', binding: 'Manager' },
+              { type: 'textbox', label: 'Zone', binding: 'Zone' }
+            ]
+      },
       });
     });
 
@@ -458,7 +482,7 @@ export default function BalkanChart(props) {
         filteredNodeData = _allNodeData.filter(
           (_data) =>
             _data.department == _filterKeys.department &&
-            _data.title == _filteredData[0].Position
+            _data.title  && _data.title == _filteredData[0].Position
         );
       } else {
         filteredNodeData = _allNodeData.filter(

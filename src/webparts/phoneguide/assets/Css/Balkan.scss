@@ -55,6 +55,6 @@
 
 .boc-form-field {
     &:has(.boc-input input[value *="/_layouts"]) {
-        display: none !important;
+        //display: none !important;
     }
 }

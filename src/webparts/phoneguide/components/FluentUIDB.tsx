@@ -129,7 +129,11 @@ const _columns: IColumn[] = [
     name: "Email",
     fieldName: "userprincipalname",
     minWidth: 300,
-    maxWidth: 300,
+    maxWidth: 500,
+
+    onRender:((data)=>(
+      <div title={data.userprincipalname} style={{wordBreak:'break-all',whiteSpace:'break-spaces'}}>{data.userprincipalname}</div>
+    ))
   },
   {
     key: "Column5",

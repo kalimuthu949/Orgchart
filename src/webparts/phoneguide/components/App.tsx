@@ -34,7 +34,7 @@ const App = (props) => {
       </div>
       <div>
         {activeTab === "OrgChart" ? (
-          // <OrgChart context={props.context} />
+          //<OrgChart context={props.context} />
           <BalkanChart context={props.context} URL={props.URL} />
         ) : activeTab === "PhoneGuide" ? (
           <MaterialDtabs context={props.context} />
