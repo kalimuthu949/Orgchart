@@ -1,16 +1,19 @@
 [data-n-id] rect {
-    fill: #d8f4f7;
+    fill: #ffe49f;
 }
 
-[data-n-id='1'] rect {
-    fill: #750000;
-}
-
+// [data-n-id='1'] rect {
+//     fill: #750000;
+// }
 .olivia-f0 {
     fill: #03606a !important;
 }
 
 #OrgChart {
+    .boc-edit-form {
+        position: fixed !important;
+        top: 48px !important;
+    }
     .boc-edit-form-instruments {
         display: none;
     }
@@ -19,7 +22,20 @@
         box-shadow: #00000021 0px 6.4px 14.4px 0px, #0000001c 0px 1.2px 3.6px 0px
     }
     .boc-edit-form-header {
-        background-color: #ffe49f !important;
+        height: 46px !important;
+        background-color: #d8f4f7 !important;
+        border-radius: 0 !important;
+        h1 {
+            font-size: 18px;
+            font-weight: 600;
+            padding-top: 20px;
+            text-align: left !important;
+            padding-left: 86px !important;
+        }
+    }
+    .boc-edit-form {
+        border-radius: 0 !important;
+        background-color: #d8f4f7 !important;
     }
     .boc-edit-form-title {
         color: #03606a !important;
@@ -36,10 +52,12 @@
         }
     }
     .boc-edit-form-avatar {
-        width: 126px !important;
-        height: 126px !important;
+        width: 56px !important;
+        height: 56px !important;
         position: absolute;
-        top: 88px !important;
+        top: 4px !important;
+        border: unset !important;
+        left: 42px !important;
     }
     .boc-edit-form-fields-inner {
         margin-top: 44px !important;
@@ -53,8 +71,19 @@
     }
 }
 
-.boc-form-field {
-    &:has(.boc-input input[value *="/_layouts"]) {
-        //display: none !important;
-    }
-}
+// .boc-light [data-boc-input-disabled]>input,
+// .boc-light [data-boc-input-disabled]>select {
+//     background-color: #d8f4f7 !important;
+// }
+// .boc-light .boc-input>input,
+// .boc-light .boc-input>select {
+//     background-color: #d8f4f7 !important;
+// }
+// input[data-binding="name"] {
+//     background-color: #d8f4f7 !important;
+// }
+// .boc-form-field {
+//     &:has(.boc-input input[value *="/_layouts"]) {
+//         //display: none !important;
+//     }
+// }

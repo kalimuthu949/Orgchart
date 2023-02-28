@@ -325,36 +325,34 @@ export default function BalkanChart(props) {
         img_0: "img",
       },
       nodes: _nodeData,
-      editForm:{
+      editForm: {
         generateElementsFromFields: false,
         elements: [
-            { type: 'textbox', label: 'Name', binding: 'name' },
-            { type: 'textbox', label: 'Job Title', binding: 'title' },
-            { type: 'textbox', label: 'Email', binding: 'email' },
-            { type: 'textbox', label: 'Contact', binding: 'Mobile Phone' },
-            { type: 'textbox', label: 'Department', binding: 'department' },
-            { type: 'textbox', label: 'Manager', binding: 'Manager' },
-            { type: 'textbox', label: 'Zone', binding: 'Zone' }
-          ]
-    },
+          { type: "textbox", label: "Name", binding: "name" },
+          { type: "textbox", label: "Job Title", binding: "title" },
+          { type: "textbox", label: "Email", binding: "email" },
+          { type: "textbox", label: "Contact", binding: "Mobile Phone" },
+          { type: "textbox", label: "Department", binding: "department" },
+          { type: "textbox", label: "Manager", binding: "Manager" },
+          { type: "textbox", label: "Zone", binding: "Zone" },
+        ],
+      },
     });
 
     setloader(false);
   }
 
-
   function loadChart(data) {
     const users = [];
     let arrdepartments = [];
     let arrDeptswithkey = [];
-    let crntUserData=[];
+    let crntUserData = [];
 
     let nodeData = [];
     for (var i = 0; i < data.length; i++) {
       if (data[i].department) arrdepartments.push(data[i].department);
 
-      if(data[i].mail==props.userEmail)
-      {
+      if (data[i].mail == props.userEmail) {
         crntUserData.push({
           imageUrl:
             "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
@@ -371,8 +369,7 @@ export default function BalkanChart(props) {
         });
       }
 
-      if (data[i].userType != "Guest") 
-      {
+      if (data[i].userType != "Guest") {
         users.push({
           imageUrl:
             "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
@@ -469,22 +466,22 @@ export default function BalkanChart(props) {
           img_0: "img",
         },
         nodes: nodeData,
-        editForm:{
+        editForm: {
           generateElementsFromFields: false,
           elements: [
-              { type: 'textbox', label: 'Name', binding: 'name' },
-              { type: 'textbox', label: 'Job Title', binding: 'title' },
-              { type: 'textbox', label: 'Email', binding: 'email' },
-              { type: 'textbox', label: 'Contact', binding: 'Mobile Phone' },
-              { type: 'textbox', label: 'Department', binding: 'department' },
-              { type: 'textbox', label: 'Manager', binding: 'Manager' },
-              { type: 'textbox', label: 'Zone', binding: 'Zone' }
-            ]
-      },
+            { type: "textbox", label: "Name", binding: "name" },
+            { type: "textbox", label: "Job Title", binding: "title" },
+            { type: "textbox", label: "Email", binding: "email" },
+            { type: "textbox", label: "Contact", binding: "Mobile Phone" },
+            { type: "textbox", label: "Department", binding: "department" },
+            { type: "textbox", label: "Manager", binding: "Manager" },
+            { type: "textbox", label: "Zone", binding: "Zone" },
+          ],
+        },
       });
-                filterKeys.peoplePicker = crntUserData;
-                filterKeys.department = "Select";
-                LoadFilteredChartData(crntUserData);
+      filterKeys.peoplePicker = crntUserData;
+      filterKeys.department = "Select";
+      LoadFilteredChartData(crntUserData);
     });
     setloader(false);
   }
@@ -504,7 +501,8 @@ export default function BalkanChart(props) {
         filteredNodeData = _allNodeData.filter(
           (_data) =>
             _data.department == _filterKeys.department &&
-            _data.title  && _data.title == _filteredData[0].Position
+            _data.title &&
+            _data.title == _filteredData[0].Position
         );
       } else {
         filteredNodeData = _allNodeData.filter(
@@ -517,7 +515,6 @@ export default function BalkanChart(props) {
     }
 
     setFilterKeys({ ..._filterKeys });
-  
   }
 
   return (

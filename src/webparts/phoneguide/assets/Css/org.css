@@ -243,13 +243,13 @@ a:hover {
     font-size: 14px !important;
 }
 
-.clsDropplussearch
-{
+.clsDropplussearch {
     display: flex;
     justify-content: space-between;
+    height: 32px;
 }
 
-.clsDeptCount label{
+.clsDeptCount label {
     display: block;
     padding: 10px;
 }
