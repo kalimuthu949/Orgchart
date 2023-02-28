@@ -20,7 +20,7 @@ import {
 import Box from "@material-ui/core/Box";
 import MaterialDBNew from "./MaterialDBNew";
 import FluentUIDB from "./FluentUIDB";
-import { graph  } from "@pnp/graph/presets/all";
+import { graph } from "@pnp/graph/presets/all";
 import { Dropdown, IDropdownStyles } from "@fluentui/react/lib/Dropdown";
 import SPServices from "./SPServices";
 import "../assets/Css/Phoneguide.css";
@@ -104,9 +104,8 @@ const useStyles = makeStyles((theme) => ({
 let CurrentPage: number = 1;
 let totalPageItems: number = 10;
 
-
-var count=0;
-var alldatafromAD=[];
+var count = 0;
+var alldatafromAD = [];
 
 export default function MaterialDtabs(props) {
   const classes = useStyles();
@@ -164,172 +163,164 @@ export default function MaterialDtabs(props) {
       });
   }
 
-  function binddata(data,userData) 
-      {
-        const users = [];
+  function binddata(data, userData) {
+    const users = [];
 
-        let depts = [];
-        let arrzones = [];
-        let arrTitles = [];
-        for (let i = 0; i < data.length; i++) 
-        {
-          
+    let depts = [];
+    let arrzones = [];
+    let arrTitles = [];
+    for (let i = 0; i < data.length; i++) {
+      let filteredArr = [];
 
-          let filteredArr = [];
-
-          for (let j = 0; j < userData.length; j++) {
-            let user = userData[j];
-            if (user.EmployeeId && user.Employee.EMail == data[i].mail) {
-              filteredArr.push(user);
-            }
-          }
-
-          users.push({
-            imageUrl:
-              "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
-            isValid: true,
-            Email: data[i].mail ? data[i].mail : "",
-            ID: data[i].id,
-            key: i,
-            text: data[i].displayName,
-            UserPrincipalName:data[i].userPrincipalName,
-            jobTitle: data[i].jobTitle ? data[i].jobTitle : "",
-            givenName: data[i].givenName ? data[i].givenName : "",
-            surname: data[i].surname ? data[i].surname : "",
-            mobilePhone: data[i].businessPhones.length>0?data[i].businessPhones[0]:"",//data[i].mobilePhone,
-            department: data[i].department,
-            Zone: filteredArr.length > 0 ? filteredArr[0].Zone : "",
-            Dept:
-              filteredArr.length > 0
-                ? filteredArr[0].SubDepartments.join(", ")
-                : "",
-            manager: data[i].manager ? data[i].manager : null,
-            Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
-          });
-
-          if (data[i].department) depts.push(data[i].department);
-          if (data[i].jobTitle) arrTitles.push(data[i].jobTitle);
-
-          let zonename = filteredArr.length > 0 ? filteredArr[0].Zone : "";
-          if (zonename) arrzones.push(zonename);
+      for (let j = 0; j < userData.length; j++) {
+        let user = userData[j];
+        if (user.EmployeeId && user.Employee.EMail == data[i].mail) {
+          filteredArr.push(user);
         }
-
-        graphuserdetails = users;
-
-        depts = removeDuplicatesfromarray(depts);
-        arrzones = removeDuplicatesfromarray(arrzones);
-        arrTitles = removeDuplicatesfromarray(arrTitles);
-
-        let statedept = [];
-        for (let i = 0; i < depts.length; i++) {
-          statedept.push({ key: depts[i], text: depts[i] });
-        }
-
-        let statezones = [];
-        for (let i = 0; i < arrzones.length; i++) {
-          statezones.push({ key: arrzones[i], text: arrzones[i] });
-        }
-
-        let statetitles = [];
-        for (let i = 0; i < arrTitles.length; i++) {
-          statetitles.push({ key: arrTitles[i], text: arrTitles[i] });
-        }
-
-        paginateFunction(1, users);
-        setalldepartment([...statedept]);
-        setzones([...statezones]);
-        settitles([...statetitles]);
-        setallusers([...users]);
-        setMasterPeopleList([...users]);
-        setPeopleList([...users]);
-        setloader(false);
       }
 
-  async function getnextitems(skiptoken,userData)
-  {
+      users.push({
+        imageUrl: "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
+        isValid: true,
+        Email: data[i].mail ? data[i].mail : "",
+        ID: data[i].id,
+        key: i,
+        text: data[i].displayName,
+        UserPrincipalName: data[i].userPrincipalName,
+        jobTitle: data[i].jobTitle ? data[i].jobTitle : "",
+        givenName: data[i].givenName ? data[i].givenName : "",
+        surname: data[i].surname ? data[i].surname : "",
+        mobilePhone:
+          data[i].businessPhones.length > 0 ? data[i].businessPhones[0] : "", //data[i].mobilePhone,
+        department: data[i].department,
+        Zone: data[i].officeLocation ? data[i].officeLocation : "", //filteredArr.length > 0 ? filteredArr[0].Zone : "",
+        Dept:
+          filteredArr.length > 0
+            ? filteredArr[0].SubDepartments.join(", ")
+            : "",
+        manager: data[i].manager ? data[i].manager : null,
+        Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
+      });
+
+      if (data[i].department) depts.push(data[i].department);
+      if (data[i].jobTitle) arrTitles.push(data[i].jobTitle);
+
+      let zonename = filteredArr.length > 0 ? filteredArr[0].Zone : "";
+      if (zonename) arrzones.push(zonename);
+    }
+
+    graphuserdetails = users;
+
+    depts = removeDuplicatesfromarray(depts);
+    arrzones = removeDuplicatesfromarray(arrzones);
+    arrTitles = removeDuplicatesfromarray(arrTitles);
+
+    let statedept = [];
+    for (let i = 0; i < depts.length; i++) {
+      statedept.push({ key: depts[i], text: depts[i] });
+    }
+
+    let statezones = [];
+    for (let i = 0; i < arrzones.length; i++) {
+      statezones.push({ key: arrzones[i], text: arrzones[i] });
+    }
+
+    let statetitles = [];
+    for (let i = 0; i < arrTitles.length; i++) {
+      statetitles.push({ key: arrTitles[i], text: arrTitles[i] });
+    }
+
+    paginateFunction(1, users);
+    setalldepartment([...statedept]);
+    setzones([...statezones]);
+    settitles([...statetitles]);
+    setallusers([...users]);
+    setMasterPeopleList([...users]);
+    setPeopleList([...users]);
+    setloader(false);
+  }
+
+  async function getnextitems(skiptoken, userData) {
     await props.context.msGraphClientFactory
       .getClient()
       .then((client: MSGraphClient) => {
         client
           .api("users")
-          .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,businessPhones")
+          .select(
+            "department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,businessPhones,officeLocation"
+          )
           .top(999)
           .skipToken(skiptoken)
           .get()
-          .then(function (data) 
-          {
-            for(let i=0;i<data.value.length;i++)
-            {
-              if(data.value[i].userType!="Guest")  
-              alldatafromAD.push(data.value[i]);
+          .then(function (data) {
+            for (let i = 0; i < data.value.length; i++) {
+              if (data.value[i].userType != "Guest")
+                alldatafromAD.push(data.value[i]);
             }
 
-            let strtoken='';
-            if(data["@odata.nextLink"])
-            {
-              strtoken=data["@odata.nextLink"].split("skipToken=")[1];
-              getnextitems(data["@odata.nextLink"].split("skipToken=")[1],userData);
-            }
-            else
-            {
-              binddata(alldatafromAD,userData);
+            let strtoken = "";
+            if (data["@odata.nextLink"]) {
+              strtoken = data["@odata.nextLink"].split("skipToken=")[1];
+              getnextitems(
+                data["@odata.nextLink"].split("skipToken=")[1],
+                userData
+              );
+            } else {
+              binddata(alldatafromAD, userData);
             }
           })
-      .catch(function (error) 
-      { console.log(error);
-        setloader(false);
-      })
-    })
+          .catch(function (error) {
+            console.log(error);
+            setloader(false);
+          });
+      });
   }
 
-  async function getallusersgraph(userData) 
-  {
-    alldatafromAD=[];
+  async function getallusersgraph(userData) {
+    alldatafromAD = [];
     await props.context.msGraphClientFactory
       .getClient()
       .then((client: MSGraphClient) => {
         client
           .api("users")
-          .select("department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType,businessPhones")
+          .select(
+            "department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType,businessPhones,officeLocation"
+          )
           .expand("manager")
           .top(999)
           .get()
-          .then(function (data) 
-          {
+          .then(function (data) {
             console.log(data);
-            for(let i=0;i<data.value.length;i++)
-            {
-              if(data.value[i].userType!="Guest")
-              alldatafromAD.push(data.value[i]);
+            for (let i = 0; i < data.value.length; i++) {
+              if (data.value[i].userType != "Guest")
+                alldatafromAD.push(data.value[i]);
             }
 
-            let strtoken='';
-            if(data["@odata.nextLink"])
-            {
-              strtoken=data["@odata.nextLink"].split("skiptoken=")[1];
-              getnextitems(data["@odata.nextLink"].split("skiptoken=")[1],userData);
-            }
-            else
-            {
-              binddata(alldatafromAD,userData);
+            let strtoken = "";
+            if (data["@odata.nextLink"]) {
+              strtoken = data["@odata.nextLink"].split("skiptoken=")[1];
+              getnextitems(
+                data["@odata.nextLink"].split("skiptoken=")[1],
+                userData
+              );
+            } else {
+              binddata(alldatafromAD, userData);
             }
           })
-          .catch(function (error) 
-          { 
-            console.log(error)
+          .catch(function (error) {
+            console.log(error);
             setloader(false);
-          })
-    })
-    
-    
-    
-    await graph.users.top(999).select("*")
+          });
+      });
+
+    await graph.users
+      .top(999)
+      .select("*")
       .expand("manager")
       .get()
-      .then(function(data)
-       {
-         //testing(data,userData);
-       })
+      .then(function (data) {
+        //testing(data,userData);
+      })
       .catch(function (error) {
         console.log(error);
         setloader(false);
