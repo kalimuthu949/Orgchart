@@ -138,13 +138,13 @@ const _columns: IColumn[] = [
     minWidth: 150,
     maxWidth: 150,
   },
-  {
-    key: "Column6",
-    name: "Ext",
-    fieldName: "Ext",
-    minWidth: 50,
-    maxWidth: 100,
-  },
+  // {
+  //   key: "Column6",
+  //   name: "Ext",
+  //   fieldName: "Ext",
+  //   minWidth: 50,
+  //   maxWidth: 100,
+  // },
   {
     key: "Column7",
     name: "Mobile Number",
@@ -159,13 +159,13 @@ const _columns: IColumn[] = [
     minWidth: 100,
     maxWidth: 150,
   },
-  {
-    key: "Column9",
-    name: "Sub Department",
-    fieldName: "subDep",
-    minWidth: 200,
-    maxWidth: 200,
-  },
+  // {
+  //   key: "Column9",
+  //   name: "Sub Department",
+  //   fieldName: "subDep",
+  //   minWidth: 200,
+  //   maxWidth: 200,
+  // },
   {
     key: "Column10",
     name: "Manager",
