@@ -347,12 +347,32 @@ export default function BalkanChart(props) {
     const users = [];
     let arrdepartments = [];
     let arrDeptswithkey = [];
+    let crntUserData=[];
 
     let nodeData = [];
     for (var i = 0; i < data.length; i++) {
       if (data[i].department) arrdepartments.push(data[i].department);
 
-      if (data[i].userType != "Guest") {
+      if(data[i].mail==props.userEmail)
+      {
+        crntUserData.push({
+          imageUrl:
+            "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
+          isValid: true,
+          email: data[i].mail,
+          ID: data[i].id,
+          key: i,
+          text: data[i].displayName,
+          jobTitle: data[i].jobTitle,
+          mobilePhone:
+            data[i].businessPhones.length > 0 ? data[i].businessPhones[0] : [], //data[i].mobilePhone,
+          department: data[i].department,
+          Zone: data[i].officeLocation ? data[i].officeLocation : "",
+        });
+      }
+
+      if (data[i].userType != "Guest") 
+      {
         users.push({
           imageUrl:
             "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
@@ -462,8 +482,10 @@ export default function BalkanChart(props) {
             ]
       },
       });
+                filterKeys.peoplePicker = crntUserData;
+                filterKeys.department = "Select";
+                LoadFilteredChartData(crntUserData);
     });
-
     setloader(false);
   }
 
@@ -495,6 +517,7 @@ export default function BalkanChart(props) {
     }
 
     setFilterKeys({ ..._filterKeys });
+  
   }
 
   return (
