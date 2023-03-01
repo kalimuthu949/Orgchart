@@ -1,10 +1,13 @@
 .Toggle-section {
     display: flex;
     background: #d8f4f7;
-    width: fit-content;
+    // min-width: fit-content;
+    width: 352px;
     padding: 6px;
     border-radius: 4px;
-    margin: 6px 0px 12px auto;
+    margin: 6px 0px 6px auto;
+    position: relative;
+    z-index: 1;
     button {
         border-radius: 4px;
         padding: 6px 20px;
@@ -17,5 +20,22 @@
             color: #fff;
             font-weight: 600;
         }
+    }
+}
+
+.headerAndTabSection {
+    display: flex;
+    position: relative;
+    z-index: 10;
+    padding: 0 16px;
+    align-items: center;
+    .Title-section {
+        width: 100%;
+    }
+    h2 {
+        color: #03606a;
+        font-size: 25px;
+        text-align: center;
+        margin-left: 352px;
     }
 }

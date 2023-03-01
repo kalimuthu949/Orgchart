@@ -10,9 +10,25 @@
 }
 
 #OrgChart {
+    // &::-webkit-scrollbar {
+    //     display: none;
+    // }
+    // /* Hide scrollbar for IE, Edge and Firefox */
+    // -ms-overflow-style: none;
+    // /* IE and Edge */
+    // scrollbar-width: none;
+    // /* Firefox */
+    //  height: auto !important;
+    svg {
+        height: auto !important;
+    }
+    &>div {
+        visibility: hidden;
+    }
     .boc-edit-form {
         position: fixed !important;
         top: 48px !important;
+        z-index: 10;
     }
     .boc-edit-form-instruments {
         display: none;
@@ -87,3 +103,10 @@
 //         //display: none !important;
 //     }
 // }
+div#OrgChart[data-count="one"] {
+    top: -260px;
+}
+
+div#OrgChart[data-count="many"] {
+    top: -103px;
+}

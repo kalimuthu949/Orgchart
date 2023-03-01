@@ -128,12 +128,19 @@ const _columns: IColumn[] = [
     key: "Column4",
     name: "Email",
     fieldName: "userprincipalname",
-    minWidth: 300,
-    maxWidth: 500,
+    isMultiline: true,
+    minWidth: 100,
+    maxWidth: 250,
 
-    onRender:((data)=>(
-      <div title={data.userprincipalname} style={{wordBreak:'break-all',whiteSpace:'break-spaces'}}>{data.userprincipalname}</div>
-    ))
+    onRender: (data) => (
+      <div
+        className="hi"
+        title={data.userprincipalname}
+        style={{ wordBreak: "break-all", whiteSpace: "break-spaces" }}
+      >
+        {data.userprincipalname}
+      </div>
+    ),
   },
   {
     key: "Column5",
@@ -199,13 +206,20 @@ export default function FluentUIDB(props) {
         Manager: item.manager ? item.manager.displayName : "",
         Ext: item.Ext,
         mobile: item.mobilePhone,
-        userprincipalname:item.UserPrincipalName
+        userprincipalname: item.UserPrincipalName,
       });
     });
     setData([...rows]);
   }, [props.items]);
   return (
-    <div style={{ overflow: "auto", width: "100%",boxShadow: "0px 2px 4px #00000024, 0px 0px 2px #0000001f",borderRadius:8 }} >
+    <div
+      style={{
+        overflow: "auto",
+        width: "100%",
+        boxShadow: "0px 2px 4px #00000024, 0px 0px 2px #0000001f",
+        borderRadius: 8,
+      }}
+    >
       <DetailsList
         items={data}
         columns={_columns}
@@ -214,13 +228,13 @@ export default function FluentUIDB(props) {
             ".ms-DetailsRow-cell": {
               height: 40,
             },
-            ".ms-DetailsList":{
-              padding:10,
-              margin:"10px 0px !important"
+            ".ms-DetailsList": {
+              padding: 10,
+              margin: "10px 0px !important",
             },
-            ".ms-DetailsHeader":{
-              padding:0,
-              background:'#d8f4f7c7'
+            ".ms-DetailsHeader": {
+              padding: 0,
+              background: "#d8f4f7c7",
             },
           },
         }}

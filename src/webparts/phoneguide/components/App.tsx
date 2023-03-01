@@ -12,25 +12,33 @@ const App = (props) => {
   const [activeTab, setActiveTab] = useState("OrgChart");
   return (
     <>
-      <div className="Toggle-section">
-        <button
-          className={`${activeTab === "OrgChart" ? "Active" : ""}`}
-          onClick={() => setActiveTab("OrgChart")}
-        >
-          Organization Chart
-        </button>
-        <button
-          className={`${activeTab === "PhoneGuide" ? "Active" : ""}`}
-          onClick={() => setActiveTab("PhoneGuide")}
-        >
-          Phone Guide
-        </button>
-        {/* <button
+      <div className="headerAndTabSection">
+        <div className="Title-section">
+          <h2>
+            {" "}
+            {activeTab === "OrgChart" ? "Organization Chart" : "Phone Guide"}
+          </h2>
+        </div>
+        <div className="Toggle-section">
+          <button
+            className={`${activeTab === "OrgChart" ? "Active" : ""}`}
+            onClick={() => setActiveTab("OrgChart")}
+          >
+            Organization Chart
+          </button>
+          <button
+            className={`${activeTab === "PhoneGuide" ? "Active" : ""}`}
+            onClick={() => setActiveTab("PhoneGuide")}
+          >
+            Phone Guide
+          </button>
+          {/* <button
           className={`${activeTab === "Pivot" ? "Active" : ""}`}
           onClick={() => setActiveTab("Pivot")}
         >
           Pivot
         </button> */}
+        </div>
       </div>
       <div>
         {activeTab === "OrgChart" ? (

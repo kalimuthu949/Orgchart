@@ -134,6 +134,11 @@ a:hover {
     align-items: center;
 }
 
+.searchDiv {
+    position: relative;
+    z-index: 100;
+}
+
 .searchDiv .ms-SelectionZone {
     display: flex;
     justify-content: flex-end;
@@ -252,4 +257,8 @@ a:hover {
 .clsDeptCount label {
     display: block;
     padding: 10px;
+}
+
+.spinnerBackground {
+    z-index: 1000 !important;
 }

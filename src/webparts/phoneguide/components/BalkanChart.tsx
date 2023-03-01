@@ -45,7 +45,7 @@ export default function BalkanChart(props) {
   const [departmentConfigData, setDepartmentConfigData] = React.useState([]);
   const [departments, setdepartments] = React.useState([]);
   const [loader, setloader] = React.useState(true);
-
+  const [userCount, setUserCount] = useState("");
   const [filterKeys, setFilterKeys] = React.useState({
     department: "Select",
     peoplePicker: [],
@@ -316,8 +316,8 @@ export default function BalkanChart(props) {
       scaleInitial: 1,
       enableSearch: false,
       template: "olivia",
-      showXScroll: OrgChart.scroll.visible,
-      showYScroll: OrgChart.scroll.visible,
+      showXScroll: OrgChart.scroll.none,
+      showYScroll: OrgChart.scroll.none,
       mouseScrool: OrgChart.action.scroll,
       nodeBinding: {
         field_0: "name",
@@ -338,7 +338,15 @@ export default function BalkanChart(props) {
         ],
       },
     });
-
+    setUserCount(
+      userData.length == 1 && _nodeData.length == 1
+        ? "one"
+        : userData.length == 1 && _nodeData.length > 1
+        ? "many"
+        : "all"
+    );
+    // let selectedSVG = document.querySelector("#OrgChart svg");
+    // selectedSVG.setAttribute("height", "auto");
     setloader(false);
   }
 
@@ -460,6 +468,7 @@ export default function BalkanChart(props) {
         showXScroll: OrgChart.scroll.visible,
         showYScroll: OrgChart.scroll.visible,
         mouseScrool: OrgChart.action.scroll,
+
         nodeBinding: {
           field_0: "name",
           field_1: "title",
@@ -479,11 +488,15 @@ export default function BalkanChart(props) {
           ],
         },
       });
+      OrgChart.scroll.smooth = 2;
+      OrgChart.scroll.speed = 50;
       filterKeys.peoplePicker = crntUserData;
       filterKeys.department = "Select";
-      LoadFilteredChartData([...crntUserData]);
+      setTimeout(() => {
+        LoadFilteredChartData([...crntUserData]);
+        setloader(false);
+      }, 2000);
     });
-    setloader(false);
   }
 
   function filterList(_filterKeys) {
@@ -590,7 +603,7 @@ export default function BalkanChart(props) {
           </div>
         </div>
       </div>
-      <div id="OrgChart"></div>
+      <div id={`OrgChart`} data-count={userCount}></div>
     </div>
   );
 }
