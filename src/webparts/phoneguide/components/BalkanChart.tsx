@@ -481,7 +481,7 @@ export default function BalkanChart(props) {
       });
       filterKeys.peoplePicker = crntUserData;
       filterKeys.department = "Select";
-      LoadFilteredChartData(crntUserData);
+      LoadFilteredChartData([...crntUserData]);
     });
     setloader(false);
   }
