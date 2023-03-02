@@ -275,7 +275,7 @@ export default function BalkanChart(props) {
     let _nodeData = [];
     let parentData = [];
     let childData = [];
-
+    let pidnull = true;
     if (userData.length > 0) {
       for (let i = 0; i < userData.length; i++) {
         parentData = [];
@@ -292,6 +292,7 @@ export default function BalkanChart(props) {
 
         while (childData.length > 0) {
           let tempChildData = [];
+          pidnull = false;
           for (let i = 0; i < childData.length; i++) {
             tempChildData = [
               ...allNodeData.filter(
@@ -305,6 +306,7 @@ export default function BalkanChart(props) {
       }
     } else {
       _nodeData = [...allNodeData];
+      pidnull = false;
     }
 
     chart = new OrgChart(document.getElementById("OrgChart"), {
@@ -312,7 +314,7 @@ export default function BalkanChart(props) {
       //   level: 1,
       //   allChildren: true,
       // },
-      layout: OrgChart.mixed,
+      layout: OrgChart.treeRightOffset,
       scaleInitial: 1,
       enableSearch: false,
       template: "olivia",
@@ -338,12 +340,12 @@ export default function BalkanChart(props) {
         ],
       },
     });
+
     setUserCount(
-      userData.length == 1 && _nodeData.length == 1
-        ? "one"
-        : userData.length == 1 && _nodeData.length > 1
-        ? "many"
-        : "all"
+      _nodeData.length == 1 || pidnull ? "one" : ""
+      // : userData.length == 1 && _nodeData.length > 1
+      // ? "many"
+      // : "all"
     );
     // let selectedSVG = document.querySelector("#OrgChart svg");
     // selectedSVG.setAttribute("height", "auto");
@@ -461,14 +463,13 @@ export default function BalkanChart(props) {
         //   level: 1,
         //   allChildren: true,
         // },
-        layout: OrgChart.mixed,
+        layout: OrgChart.treeRightOffset,
         scaleInitial: 1,
         enableSearch: false,
         template: "olivia",
         showXScroll: OrgChart.scroll.visible,
         showYScroll: OrgChart.scroll.visible,
         mouseScrool: OrgChart.action.scroll,
-
         nodeBinding: {
           field_0: "name",
           field_1: "title",
