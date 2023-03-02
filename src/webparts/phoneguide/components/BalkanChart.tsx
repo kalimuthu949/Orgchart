@@ -342,7 +342,7 @@ export default function BalkanChart(props) {
     });
 
     setUserCount(
-      _nodeData.length == 1 || pidnull ? "one" : ""
+      _nodeData.length <= 9 && pidnull ? "one" : ""
       // : userData.length == 1 && _nodeData.length > 1
       // ? "many"
       // : "all"

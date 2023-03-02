@@ -129,8 +129,8 @@ const _columns: IColumn[] = [
     name: "Email",
     fieldName: "userprincipalname",
     isMultiline: true,
-    minWidth: 100,
-    maxWidth: 250,
+    minWidth: 250,
+    maxWidth: 350,
 
     onRender: (data) => (
       <div
