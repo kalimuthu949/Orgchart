@@ -16,7 +16,7 @@ const App = (props) => {
         <div className="Title-section">
           <h2>
             {" "}
-            {activeTab === "OrgChart" ? "Organization Chart" : "Phone Guide"}
+            {activeTab === "OrgChart" ? "Organization Chart" : "Employee Guide"}
           </h2>
         </div>
         <div className="Toggle-section">
@@ -30,7 +30,7 @@ const App = (props) => {
             className={`${activeTab === "PhoneGuide" ? "Active" : ""}`}
             onClick={() => setActiveTab("PhoneGuide")}
           >
-            Phone Guide
+            Employee Guide
           </button>
           {/* <button
           className={`${activeTab === "Pivot" ? "Active" : ""}`}

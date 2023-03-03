@@ -281,7 +281,7 @@ export default function BalkanChart(props) {
         parentData = [];
         childData = [];
         parentData = allNodeData.filter(
-          (_people) => _people.email.trim() == userData[i].email.trim()
+          (_people) => _people.email== userData[i].email
         );
 
         childData = allNodeData.filter(
@@ -309,7 +309,14 @@ export default function BalkanChart(props) {
       pidnull = false;
     }
 
-    chart = new OrgChart(document.getElementById("OrgChart"), {
+    _nodeData = _nodeData.filter((value, index, self) =>
+    index === self.findIndex((t) => (
+      t.id === value.id
+    ))
+  )
+
+    try{
+    chart=new OrgChart(document.getElementById("OrgChart"), {
       // collapse: {
       //   level: 1,
       //   allChildren: true,
@@ -340,6 +347,13 @@ export default function BalkanChart(props) {
         ],
       },
     });
+    OrgChart.scroll.smooth = 2;
+    OrgChart.scroll.speed = 50;
+  }
+  catch(e)
+  {
+    console.log(e);
+  }
 
     setUserCount(
       _nodeData.length <= 9 && pidnull ? "one" : ""
@@ -362,12 +376,12 @@ export default function BalkanChart(props) {
     for (var i = 0; i < data.length; i++) {
       if (data[i].department) arrdepartments.push(data[i].department);
 
-      if (data[i].mail == props.userEmail) {
+      if (data[i].userPrincipalName == props.userEmail) {
         crntUserData.push({
           imageUrl:
             "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
           isValid: true,
-          email: data[i].mail,
+          email: data[i].userPrincipalName,
           ID: data[i].id,
           key: i,
           text: data[i].displayName,
@@ -379,12 +393,12 @@ export default function BalkanChart(props) {
         });
       }
 
-      if (data[i].userType != "Guest") {
+      if (data[i].userType != "Guest"&&data[i].userPrincipalName) {
         users.push({
           imageUrl:
             "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
           isValid: true,
-          email: data[i].mail,
+          email: data[i].userPrincipalName,
           ID: data[i].id,
           key: i,
           text: data[i].displayName,
@@ -394,7 +408,7 @@ export default function BalkanChart(props) {
           department: data[i].department,
           Zone: data[i].officeLocation ? data[i].officeLocation : "",
         });
-      }
+      
 
       try {
         nodeData.push({
@@ -436,6 +450,7 @@ export default function BalkanChart(props) {
           // ["Testing"]: <div>Hi World</div>,
         });
       }
+    }
     }
 
     arrdepartments = removeDuplicatesfromarray(arrdepartments);
@@ -578,7 +593,7 @@ export default function BalkanChart(props) {
               }}
             />
           </div>
-          {filterKeys.department != "Select" ? (
+          {true? (
             <div className="clsDeptCount">
               <Label>
                 Department User Count :{" "}
