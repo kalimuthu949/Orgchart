@@ -316,6 +316,7 @@ export default function BalkanChart(props) {
           pidnull = false;
           for (let i = 0; i < childData.length; i++) {
             tempChildData = [
+              ...tempChildData,
               ...allNodeData.filter(
                 (_people) => _people.pid == childData[i].id
               ),
