@@ -97,15 +97,25 @@ export default function BalkanChart(props) {
         client
           .api("users")
           .select(
-            "department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType,businessPhones,officeLocation"
+            "department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType,businessPhones,officeLocation,identities"
           )
           .top(999)
           .skipToken(skiptoken)
           .get()
           .then(function (data) {
+            let condition: boolean;
             for (let i = 0; i < data.value.length; i++) {
-              if (data.value[i].userType != "Guest")
-                alldatafromAD.push(data.value[i]);
+              if (props.propertyPaneProps.propertyToggle) {
+                condition =
+                  data.value[i].userType != "Guest" ||
+                  (data.value[i].userType == "Guest" &&
+                    data.value[i].identities.some(
+                      (_i) => _i.issuer == "ExternalAzureAD"
+                    ));
+              } else {
+                condition = data.value[i].userType != "Guest";
+              }
+              if (condition) alldatafromAD.push(data.value[i]);
             }
 
             let strtoken = "";
@@ -130,16 +140,27 @@ export default function BalkanChart(props) {
         client
           .api("users")
           .select(
-            "department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType,businessPhones,officeLocation"
+            "department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType,businessPhones,officeLocation,identities"
           )
           .expand("manager")
           .top(999)
           .get()
           .then(function (data) {
-            console.log(data);
+            let condition: boolean = false;
             for (let i = 0; i < data.value.length; i++) {
-              if (data.value[i].userType != "Guest")
-                alldatafromAD.push(data.value[i]);
+              condition = false;
+              if (props.propertyPaneProps.propertyToggle) {
+                condition =
+                  data.value[i].userType != "Guest" ||
+                  (data.value[i].userType == "Guest" &&
+                    data.value[i].identities.some(
+                      (_i) => _i.issuer == "ExternalAzureAD"
+                    ));
+              } else {
+                condition = data.value[i].userType != "Guest";
+              }
+
+              if (condition) alldatafromAD.push(data.value[i]);
             }
 
             let strtoken = "";
@@ -281,7 +302,7 @@ export default function BalkanChart(props) {
         parentData = [];
         childData = [];
         parentData = allNodeData.filter(
-          (_people) => _people.email== userData[i].email
+          (_people) => _people.email == userData[i].email
         );
 
         childData = allNodeData.filter(
@@ -309,51 +330,47 @@ export default function BalkanChart(props) {
       pidnull = false;
     }
 
-    _nodeData = _nodeData.filter((value, index, self) =>
-    index === self.findIndex((t) => (
-      t.id === value.id
-    ))
-  )
+    _nodeData = _nodeData.filter(
+      (value, index, self) => index === self.findIndex((t) => t.id === value.id)
+    );
 
-    try{
-    chart=new OrgChart(document.getElementById("OrgChart"), {
-      // collapse: {
-      //   level: 1,
-      //   allChildren: true,
-      // },
-      layout: OrgChart.treeRightOffset,
-      scaleInitial: 1,
-      enableSearch: false,
-      template: "olivia",
-      showXScroll: OrgChart.scroll.none,
-      showYScroll: OrgChart.scroll.none,
-      mouseScrool: OrgChart.action.scroll,
-      nodeBinding: {
-        field_0: "name",
-        field_1: "title",
-        img_0: "img",
-      },
-      nodes: _nodeData,
-      editForm: {
-        generateElementsFromFields: false,
-        elements: [
-          { type: "textbox", label: "Name", binding: "name" },
-          { type: "textbox", label: "Job Title", binding: "title" },
-          { type: "textbox", label: "Email", binding: "email" },
-          { type: "textbox", label: "Contact", binding: "Mobile Phone" },
-          { type: "textbox", label: "Department", binding: "department" },
-          { type: "textbox", label: "Manager", binding: "Manager" },
-          { type: "textbox", label: "Zone", binding: "Zone" },
-        ],
-      },
-    });
-    OrgChart.scroll.smooth = 2;
-    OrgChart.scroll.speed = 50;
-  }
-  catch(e)
-  {
-    console.log(e);
-  }
+    try {
+      chart = new OrgChart(document.getElementById("OrgChart"), {
+        // collapse: {
+        //   level: 1,
+        //   allChildren: true,
+        // },
+        layout: OrgChart.treeRightOffset,
+        scaleInitial: 1,
+        enableSearch: false,
+        template: "olivia",
+        showXScroll: OrgChart.scroll.none,
+        showYScroll: OrgChart.scroll.none,
+        mouseScrool: OrgChart.action.scroll,
+        nodeBinding: {
+          field_0: "name",
+          field_1: "title",
+          img_0: "img",
+        },
+        nodes: _nodeData,
+        editForm: {
+          generateElementsFromFields: false,
+          elements: [
+            { type: "textbox", label: "Name", binding: "name" },
+            { type: "textbox", label: "Job Title", binding: "title" },
+            { type: "textbox", label: "Email", binding: "email" },
+            { type: "textbox", label: "Contact", binding: "Mobile Phone" },
+            { type: "textbox", label: "Department", binding: "department" },
+            { type: "textbox", label: "Manager", binding: "Manager" },
+            { type: "textbox", label: "Zone", binding: "Zone" },
+          ],
+        },
+      });
+      OrgChart.scroll.smooth = 2;
+      OrgChart.scroll.speed = 50;
+    } catch (e) {
+      console.log(e);
+    }
 
     setUserCount(
       _nodeData.length <= 9 && pidnull ? "one" : ""
@@ -374,8 +391,6 @@ export default function BalkanChart(props) {
 
     let nodeData = [];
     for (var i = 0; i < data.length; i++) {
-      if (data[i].department) arrdepartments.push(data[i].department);
-
       if (data[i].userPrincipalName == props.userEmail) {
         crntUserData.push({
           imageUrl:
@@ -393,7 +408,7 @@ export default function BalkanChart(props) {
         });
       }
 
-      if (data[i].userType != "Guest"&&data[i].userPrincipalName) {
+      if (data[i].userPrincipalName) {
         users.push({
           imageUrl:
             "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
@@ -408,49 +423,53 @@ export default function BalkanChart(props) {
           department: data[i].department,
           Zone: data[i].officeLocation ? data[i].officeLocation : "",
         });
-      
 
-      try {
-        nodeData.push({
-          id: data[i].id,
-          pid: data[i].manager.id,
-          ["Manager"]: data[i].manager.displayName,
-          name: data[i].displayName,
-          title: data[i].jobTitle ? data[i].jobTitle : "N/A",
-          department: data[i].department ? data[i].department : "N/A",
-          email: data[i].userPrincipalName ? data[i].userPrincipalName : "N/A",
-          ["Zone"]: data[i].officeLocation ? data[i].officeLocation : "N/A",
-          ["Mobile Phone"]:
-            data[i].businessPhones.length > 0
-              ? data[i].businessPhones[0]
+        try {
+          nodeData.push({
+            id: data[i].id,
+            pid: data[i].manager.id,
+            ["Manager"]: data[i].manager.displayName,
+            name: data[i].displayName,
+            title: data[i].jobTitle ? data[i].jobTitle : "N/A",
+            department: data[i].department ? data[i].department : "N/A",
+            email: data[i].userPrincipalName
+              ? data[i].userPrincipalName
               : "N/A",
-          img:
-            "/_layouts/15/userphoto.aspx?size=L&username=" +
-            data[i].userPrincipalName,
+            ["Zone"]: data[i].officeLocation ? data[i].officeLocation : "N/A",
+            ["Mobile Phone"]:
+              data[i].businessPhones.length > 0
+                ? data[i].businessPhones[0]
+                : "N/A",
+            img:
+              "/_layouts/15/userphoto.aspx?size=L&username=" +
+              data[i].userPrincipalName,
 
-          // ["Testing"]: <div>Hi World</div>,
-        });
-      } catch (e) {
-        nodeData.push({
-          id: data[i].id,
-          pid: null,
-          ["Manager"]: "N/A",
-          name: data[i].displayName,
-          title: data[i].jobTitle ? data[i].jobTitle : "N/A",
-          department: data[i].department ? data[i].department : "N/A",
-          email: data[i].userPrincipalName ? data[i].userPrincipalName : "N/A",
-          ["Zone"]: data[i].officeLocation ? data[i].officeLocation : "N/A",
-          ["Mobile Phone"]:
-            data[i].businessPhones.length > 0
-              ? data[i].businessPhones[0]
+            // ["Testing"]: <div>Hi World</div>,
+          });
+        } catch (e) {
+          nodeData.push({
+            id: data[i].id,
+            pid: null,
+            ["Manager"]: "N/A",
+            name: data[i].displayName,
+            title: data[i].jobTitle ? data[i].jobTitle : "N/A",
+            department: data[i].department ? data[i].department : "N/A",
+            email: data[i].userPrincipalName
+              ? data[i].userPrincipalName
               : "N/A",
-          img:
-            "/_layouts/15/userphoto.aspx?size=L&username=" +
-            data[i].userPrincipalName,
-          // ["Testing"]: <div>Hi World</div>,
-        });
+            ["Zone"]: data[i].officeLocation ? data[i].officeLocation : "N/A",
+            ["Mobile Phone"]:
+              data[i].businessPhones.length > 0
+                ? data[i].businessPhones[0]
+                : "N/A",
+            img:
+              "/_layouts/15/userphoto.aspx?size=L&username=" +
+              data[i].userPrincipalName,
+            // ["Testing"]: <div>Hi World</div>,
+          });
+        }
       }
-    }
+      if (data[i].department) arrdepartments.push(data[i].department);
     }
 
     arrdepartments = removeDuplicatesfromarray(arrdepartments);
@@ -593,7 +612,7 @@ export default function BalkanChart(props) {
               }}
             />
           </div>
-          {true? (
+          {true ? (
             <div className="clsDeptCount">
               <Label>
                 Department User Count :{" "}

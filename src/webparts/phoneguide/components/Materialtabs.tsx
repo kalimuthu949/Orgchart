@@ -142,6 +142,7 @@ export default function MaterialDtabs(props) {
   }
 
   React.useEffect(function () {
+    console.log(props.propertyPaneProps.propertyToggle);
     setloader(true);
     getalluserssp();
     // getallusersgraph();
@@ -247,15 +248,25 @@ export default function MaterialDtabs(props) {
         client
           .api("users")
           .select(
-            "department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,businessPhones,officeLocation"
+            "department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType,businessPhones,officeLocation,identities"
           )
           .top(999)
           .skipToken(skiptoken)
           .get()
           .then(function (data) {
+            let condition: boolean;
             for (let i = 0; i < data.value.length; i++) {
-              if (data.value[i].userType != "Guest")
-                alldatafromAD.push(data.value[i]);
+              if (props.propertyPaneProps.propertyToggle) {
+                condition =
+                  data.value[i].userType != "Guest" ||
+                  (data.value[i].userType == "Guest" &&
+                    data.value[i].identities.some(
+                      (_i) => _i.issuer == "ExternalAzureAD"
+                    ));
+              } else {
+                condition = data.value[i].userType != "Guest";
+              }
+              if (condition) alldatafromAD.push(data.value[i]);
             }
 
             let strtoken = "";
@@ -284,16 +295,25 @@ export default function MaterialDtabs(props) {
         client
           .api("users")
           .select(
-            "department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType,businessPhones,officeLocation"
+            "department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType,businessPhones,officeLocation,identities"
           )
           .expand("manager")
           .top(999)
           .get()
           .then(function (data) {
-            console.log(data);
+            let condition: boolean;
             for (let i = 0; i < data.value.length; i++) {
-              if (data.value[i].userType != "Guest")
-                alldatafromAD.push(data.value[i]);
+              if (props.propertyPaneProps.propertyToggle) {
+                condition =
+                  data.value[i].userType != "Guest" ||
+                  (data.value[i].userType == "Guest" &&
+                    data.value[i].identities.some(
+                      (_i) => _i.issuer == "ExternalAzureAD"
+                    ));
+              } else {
+                condition = data.value[i].userType != "Guest";
+              }
+              if (condition) alldatafromAD.push(data.value[i]);
             }
 
             let strtoken = "";

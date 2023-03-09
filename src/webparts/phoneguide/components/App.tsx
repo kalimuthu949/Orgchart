@@ -44,12 +44,16 @@ const App = (props) => {
         {activeTab === "OrgChart" ? (
           //<OrgChart context={props.context} />
           <BalkanChart
+            propertyPaneProps={props.propertyPaneProps}
             context={props.context}
             URL={props.URL}
             userEmail={props.context.pageContext.user.email}
           />
         ) : activeTab === "PhoneGuide" ? (
-          <MaterialDtabs context={props.context} />
+          <MaterialDtabs
+            propertyPaneProps={props.propertyPaneProps}
+            context={props.context}
+          />
         ) : (
           ""
         )}

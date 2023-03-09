@@ -3,7 +3,7 @@ import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import {
   IPropertyPaneConfiguration,
-  PropertyPaneTextField
+  PropertyPaneTextField,PropertyPaneToggle
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
@@ -14,6 +14,7 @@ import { IPhoneguideProps } from './components/IPhoneguideProps';
 
 export interface IPhoneguideWebPartProps {
   description: string;
+  propertyToggle:string;
 }
 
 export default class PhoneguideWebPart extends BaseClientSideWebPart<IPhoneguideWebPartProps> {
@@ -32,6 +33,7 @@ export default class PhoneguideWebPart extends BaseClientSideWebPart<IPhoneguide
       Phoneguide,
       {
         description: this.properties.description,
+        propertyToggle:this.properties.propertyToggle,
         isDarkTheme: this._isDarkTheme,
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
@@ -87,7 +89,10 @@ export default class PhoneguideWebPart extends BaseClientSideWebPart<IPhoneguide
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
-                })
+                }),
+                PropertyPaneToggle('propertyToggle', {
+                  label: 'External Users'
+                }),
               ]
             }
           ]

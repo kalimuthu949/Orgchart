@@ -23,15 +23,16 @@ export default class Phoneguide extends React.Component<IPhoneguideProps, {}> {
   public render(): React.ReactElement<IPhoneguideProps> {
     const {
       description,
+      propertyToggle,
       isDarkTheme,
       environmentMessage,
       hasTeamsContext,
       userDisplayName,
     } = this.props;
-
     return (
       <div style={{ padding: 26 }}>
         <App
+          propertyPaneProps={this.props}
           context={this.props.context}
           URL={this.props.context.pageContext.site.absoluteUrl}
         />
