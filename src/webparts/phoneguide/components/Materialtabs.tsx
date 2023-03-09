@@ -250,6 +250,7 @@ export default function MaterialDtabs(props) {
           .select(
             "department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType,businessPhones,officeLocation,identities"
           )
+          .expand("manager")
           .top(999)
           .skipToken(skiptoken)
           .get()
