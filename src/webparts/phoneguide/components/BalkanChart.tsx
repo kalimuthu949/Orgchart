@@ -106,17 +106,20 @@ export default function BalkanChart(props) {
           .then(function (data) {
             let condition: boolean;
             for (let i = 0; i < data.value.length; i++) {
-              if (props.propertyPaneProps.propertyToggle) {
-                condition =
-                  data.value[i].userType != "Guest" ||
-                  (data.value[i].userType == "Guest" &&
-                    data.value[i].identities.some(
-                      (_i) => _i.issuer == "ExternalAzureAD"
-                    ));
-              } else {
-                condition = data.value[i].userType != "Guest";
+              
+              let userIdentity=data.value[i].identities[0].issuer;
+              if(!props.propertyPaneProps.propertyToggle)
+              {
+                if(userIdentity)
+                {
+                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com")
+                  alldatafromAD.push(data.value[i]);
+                } 
               }
-              if (condition) alldatafromAD.push(data.value[i]);
+              else
+              {
+                alldatafromAD.push(data.value[i]);
+              }
             }
 
             let strtoken = "";
@@ -149,19 +152,20 @@ export default function BalkanChart(props) {
           .then(function (data) {
             let condition: boolean = false;
             for (let i = 0; i < data.value.length; i++) {
-              condition = false;
-              if (props.propertyPaneProps.propertyToggle) {
-                condition =
-                  data.value[i].userType != "Guest" ||
-                  (data.value[i].userType == "Guest" &&
-                    data.value[i].identities.some(
-                      (_i) => _i.issuer == "ExternalAzureAD"
-                    ));
-              } else {
-                condition = data.value[i].userType != "Guest";
-              }
 
-              if (condition) alldatafromAD.push(data.value[i]);
+              let userIdentity=data.value[i].identities[0].issuer;
+              if(!props.propertyPaneProps.propertyToggle)
+              {
+                if(userIdentity)
+                {
+                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com")
+                  alldatafromAD.push(data.value[i]);
+                } 
+              }
+              else
+              {
+                alldatafromAD.push(data.value[i]);
+              }
             }
 
             let strtoken = "";

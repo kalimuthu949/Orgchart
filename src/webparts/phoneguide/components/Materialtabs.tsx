@@ -31,6 +31,7 @@ import { useState } from "react";
 import { Icon } from "@fluentui/react";
 import Pagination from "office-ui-fabric-react-pagination";
 import { MSGraphClient } from "@microsoft/sp-http";
+import { eq } from "lodash";
 //Filter functionality
 let listitems = []; //glb array which is having the all user details from sharepoint list
 let graphuserdetails = []; //glb array which is having the all user details from grpah
@@ -257,17 +258,19 @@ export default function MaterialDtabs(props) {
           .then(function (data) {
             let condition: boolean;
             for (let i = 0; i < data.value.length; i++) {
-              if (props.propertyPaneProps.propertyToggle) {
-                condition =
-                  data.value[i].userType != "Guest" ||
-                  (data.value[i].userType == "Guest" &&
-                    data.value[i].identities.some(
-                      (_i) => _i.issuer == "ExternalAzureAD"
-                    ));
-              } else {
-                condition = data.value[i].userType != "Guest";
+              let userIdentity=data.value[i].identities[0].issuer;
+              if(!props.propertyPaneProps.propertyToggle)
+              {
+                if(userIdentity)
+                {
+                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com")
+                  alldatafromAD.push(data.value[i]);
+                } 
               }
-              if (condition) alldatafromAD.push(data.value[i]);
+              else
+              {
+                alldatafromAD.push(data.value[i]);
+              }
             }
 
             let strtoken = "";
@@ -298,23 +301,26 @@ export default function MaterialDtabs(props) {
           .select(
             "department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType,businessPhones,officeLocation,identities"
           )
+          .filter('contains("userPrincipalName","EXT")')
           .expand("manager")
           .top(999)
           .get()
           .then(function (data) {
             let condition: boolean;
             for (let i = 0; i < data.value.length; i++) {
-              if (props.propertyPaneProps.propertyToggle) {
-                condition =
-                  data.value[i].userType != "Guest" ||
-                  (data.value[i].userType == "Guest" &&
-                    data.value[i].identities.some(
-                      (_i) => _i.issuer == "ExternalAzureAD"
-                    ));
-              } else {
-                condition = data.value[i].userType != "Guest";
+              let userIdentity=data.value[i].identities[0].issuer;
+              if(!props.propertyPaneProps.propertyToggle)
+              {
+                if(userIdentity)
+                {
+                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com")
+                  alldatafromAD.push(data.value[i]);
+                } 
               }
-              if (condition) alldatafromAD.push(data.value[i]);
+              else
+              {
+                alldatafromAD.push(data.value[i]);
+              }
             }
 
             let strtoken = "";
