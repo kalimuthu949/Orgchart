@@ -108,11 +108,12 @@ export default function BalkanChart(props) {
             for (let i = 0; i < data.value.length; i++) {
               
               let userIdentity=data.value[i].identities[0].issuer;
+              let userPrinName=data.value[i].userPrincipalName?data.value[i].userPrincipalName:"";
               if(!props.propertyPaneProps.propertyToggle)
               {
                 if(userIdentity)
                 {
-                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com")
+                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com" && !userPrinName.includes('#EXT#'))
                   alldatafromAD.push(data.value[i]);
                 } 
               }
@@ -154,11 +155,12 @@ export default function BalkanChart(props) {
             for (let i = 0; i < data.value.length; i++) {
 
               let userIdentity=data.value[i].identities[0].issuer;
+              let userPrinName=data.value[i].userPrincipalName?data.value[i].userPrincipalName:"";
               if(!props.propertyPaneProps.propertyToggle)
               {
                 if(userIdentity)
                 {
-                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com")
+                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com"&& !userPrinName.includes('#EXT#'))
                   alldatafromAD.push(data.value[i]);
                 } 
               }

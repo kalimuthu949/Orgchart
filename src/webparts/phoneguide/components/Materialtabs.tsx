@@ -259,11 +259,12 @@ export default function MaterialDtabs(props) {
             let condition: boolean;
             for (let i = 0; i < data.value.length; i++) {
               let userIdentity=data.value[i].identities[0].issuer;
+              let userPrinName=data.value[i].userPrincipalName?data.value[i].userPrincipalName:"";
               if(!props.propertyPaneProps.propertyToggle)
               {
                 if(userIdentity)
                 {
-                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com")
+                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com" && !userPrinName.includes('#EXT#'))
                   alldatafromAD.push(data.value[i]);
                 } 
               }
@@ -301,7 +302,6 @@ export default function MaterialDtabs(props) {
           .select(
             "department,mail,id,displayName,jobTitle,mobilePhone,manager,ext,givenName,surname,userPrincipalName,userType,businessPhones,officeLocation,identities"
           )
-          .filter('contains("userPrincipalName","EXT")')
           .expand("manager")
           .top(999)
           .get()
@@ -309,11 +309,12 @@ export default function MaterialDtabs(props) {
             let condition: boolean;
             for (let i = 0; i < data.value.length; i++) {
               let userIdentity=data.value[i].identities[0].issuer;
+              let userPrinName=data.value[i].userPrincipalName?data.value[i].userPrincipalName:"";
               if(!props.propertyPaneProps.propertyToggle)
               {
                 if(userIdentity)
                 {
-                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com")
+                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com" && !userPrinName.includes('#EXT#'))
                   alldatafromAD.push(data.value[i]);
                 } 
               }
