@@ -113,7 +113,7 @@ export default function BalkanChart(props) {
               {
                 if(userIdentity)
                 {
-                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com" && !userPrinName.includes('#EXT#'))
+                  if(userIdentity.toLowerCase()=="chandrudemo.onmicrosoft.com" && !userPrinName.includes('#EXT#'))
                   alldatafromAD.push(data.value[i]);
                 } 
               }
@@ -160,7 +160,7 @@ export default function BalkanChart(props) {
               {
                 if(userIdentity)
                 {
-                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com"&& !userPrinName.includes('#EXT#'))
+                  if(userIdentity.toLowerCase()=="chandrudemo.onmicrosoft.com"&& !userPrinName.includes('#EXT#'))
                   alldatafromAD.push(data.value[i]);
                 } 
               }
@@ -482,7 +482,10 @@ export default function BalkanChart(props) {
 
     arrdepartments = removeDuplicatesfromarray(arrdepartments);
 
-    for (var i = 0; i < arrdepartments.length; i++) {
+    arrdepartments= arrdepartments.sort();
+
+    for (var i = 0; i < arrdepartments.length; i++) 
+    {
       arrDeptswithkey.push({
         key: arrdepartments[i],
         text: arrdepartments[i],
@@ -560,6 +563,15 @@ export default function BalkanChart(props) {
             _data.title &&
             _data.title == _filteredData[0].Position
         );
+
+        if(filteredNodeData.length==0)
+        {
+          filteredNodeData = _allNodeData.filter(
+            (_data) =>
+              _data.department == _filterKeys.department
+          );
+        }
+
       } else {
         filteredNodeData = _allNodeData.filter(
           (_data) => _data.department == _filterKeys.department
