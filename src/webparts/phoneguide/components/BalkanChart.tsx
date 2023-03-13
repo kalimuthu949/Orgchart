@@ -113,7 +113,7 @@ export default function BalkanChart(props) {
               {
                 if(userIdentity)
                 {
-                  if(userIdentity.toLowerCase()=="chandrudemo.onmicrosoft.com" && !userPrinName.includes('#EXT#'))
+                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com" && !userPrinName.includes('#EXT#'))
                   alldatafromAD.push(data.value[i]);
                 } 
               }
@@ -160,7 +160,7 @@ export default function BalkanChart(props) {
               {
                 if(userIdentity)
                 {
-                  if(userIdentity.toLowerCase()=="chandrudemo.onmicrosoft.com"&& !userPrinName.includes('#EXT#'))
+                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com"&& !userPrinName.includes('#EXT#'))
                   alldatafromAD.push(data.value[i]);
                 } 
               }

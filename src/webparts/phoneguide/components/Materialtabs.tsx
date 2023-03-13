@@ -661,7 +661,7 @@ export default function MaterialDtabs(props) {
                     marginTop: "15px",
                   }}
                 >
-                  <Label style={{ color: "#2392B2" }}>No data Found !!!</Label>
+                 {!loader?<Label style={{ color: "#2392B2" }}>No data Found !!!</Label>:""}
                 </div>
               )}
             </div>
