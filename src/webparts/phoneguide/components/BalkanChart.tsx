@@ -112,12 +112,7 @@ export default function BalkanChart(props) {
                 : "";
               if (!props.propertyPaneProps.propertyToggle) {
                 if (userIdentity) {
-                  if (
-                    userIdentity.toLowerCase() ==
-                      // "chandrudemo.onmicrosoft.com" &&
-                      "hosthealthcare.onmicrosoft.com" &&
-                    !userPrinName.includes("#EXT#")
-                  )
+                  if (userIdentity.toLowerCase() ==props.tenEmail && !userPrinName.includes("#EXT#"))
                     alldatafromAD.push(data.value[i]);
                 }
               } else {
@@ -161,12 +156,7 @@ export default function BalkanChart(props) {
                 : "";
               if (!props.propertyPaneProps.propertyToggle) {
                 if (userIdentity) {
-                  if (
-                    userIdentity.toLowerCase() ==
-                      // "chandrudemo.onmicrosoft.com" &&
-                      "hosthealthcare.onmicrosoft.com" &&
-                    !userPrinName.includes("#EXT#")
-                  )
+                  if (userIdentity.toLowerCase() ==props.tenEmail &&!userPrinName.includes("#EXT#"))
                     alldatafromAD.push(data.value[i]);
                 }
               } else {
@@ -481,10 +471,12 @@ export default function BalkanChart(props) {
           });
         }
       }
-      if (data[i].department) arrdepartments.push(data[i].department);
+      if (data[i].department) arrdepartments.push(data[i].department.trim());
     }
 
+    console.log(arrdepartments);
     arrdepartments = removeDuplicatesfromarray(arrdepartments);
+    console.log(arrdepartments);
 
     arrdepartments = arrdepartments.sort();
 
@@ -499,6 +491,7 @@ export default function BalkanChart(props) {
       key: "Select",
       text: "Select",
     });
+
     setdepartments([...arrDeptswithkey]);
     setPeopleList([...users]);
 

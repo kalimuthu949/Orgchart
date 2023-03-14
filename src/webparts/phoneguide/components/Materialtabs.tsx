@@ -204,11 +204,11 @@ export default function MaterialDtabs(props) {
         Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
       });
 
-      if (data[i].department) depts.push(data[i].department);
-      if (data[i].jobTitle) arrTitles.push(data[i].jobTitle);
+      if (data[i].department) depts.push(data[i].department.trim());
+      if (data[i].jobTitle) arrTitles.push(data[i].jobTitle.trim());
 
       let zonename = filteredArr.length > 0 ? filteredArr[0].Zone : "";
-      if (zonename) arrzones.push(zonename);
+      if (zonename) arrzones.push(zonename.trim());
     }
 
     graphuserdetails = users;
@@ -264,7 +264,7 @@ export default function MaterialDtabs(props) {
               {
                 if(userIdentity)
                 {
-                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com" && !userPrinName.includes('#EXT#'))
+                  if(userIdentity.toLowerCase()==props.tenEmail && !userPrinName.includes('#EXT#'))
                   alldatafromAD.push(data.value[i]);
                 } 
               }
@@ -314,7 +314,7 @@ export default function MaterialDtabs(props) {
               {
                 if(userIdentity)
                 {
-                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com" && !userPrinName.includes('#EXT#'))
+                  if(userIdentity.toLowerCase()==props.tenEmail && !userPrinName.includes('#EXT#'))
                   alldatafromAD.push(data.value[i]);
                 } 
               }
@@ -539,6 +539,7 @@ export default function MaterialDtabs(props) {
               <div className="clsFilterdropdowns">
                 <Dropdown
                   multiSelect
+                  style={{width:250}}
                   placeholder="Select Title"
                   options={titles}
                   selectedKeys={title}
@@ -558,6 +559,7 @@ export default function MaterialDtabs(props) {
               <div className="clsFilterdropdowns">
                 <Dropdown
                   multiSelect
+                  style={{width:250}}
                   placeholder="Select Department"
                   options={alldepartment}
                   selectedKeys={dept}
