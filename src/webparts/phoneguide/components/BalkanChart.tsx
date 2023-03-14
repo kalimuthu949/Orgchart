@@ -106,19 +106,21 @@ export default function BalkanChart(props) {
           .then(function (data) {
             let condition: boolean;
             for (let i = 0; i < data.value.length; i++) {
-              
-              let userIdentity=data.value[i].identities[0].issuer;
-              let userPrinName=data.value[i].userPrincipalName?data.value[i].userPrincipalName:"";
-              if(!props.propertyPaneProps.propertyToggle)
-              {
-                if(userIdentity)
-                {
-                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com" && !userPrinName.includes('#EXT#'))
-                  alldatafromAD.push(data.value[i]);
-                } 
-              }
-              else
-              {
+              let userIdentity = data.value[i].identities[0].issuer;
+              let userPrinName = data.value[i].userPrincipalName
+                ? data.value[i].userPrincipalName
+                : "";
+              if (!props.propertyPaneProps.propertyToggle) {
+                if (userIdentity) {
+                  if (
+                    userIdentity.toLowerCase() ==
+                      // "chandrudemo.onmicrosoft.com" &&
+                      "hosthealthcare.onmicrosoft.com" &&
+                    !userPrinName.includes("#EXT#")
+                  )
+                    alldatafromAD.push(data.value[i]);
+                }
+              } else {
                 alldatafromAD.push(data.value[i]);
               }
             }
@@ -153,19 +155,21 @@ export default function BalkanChart(props) {
           .then(function (data) {
             let condition: boolean = false;
             for (let i = 0; i < data.value.length; i++) {
-
-              let userIdentity=data.value[i].identities[0].issuer;
-              let userPrinName=data.value[i].userPrincipalName?data.value[i].userPrincipalName:"";
-              if(!props.propertyPaneProps.propertyToggle)
-              {
-                if(userIdentity)
-                {
-                  if(userIdentity.toLowerCase()=="hosthealthcare.onmicrosoft.com"&& !userPrinName.includes('#EXT#'))
-                  alldatafromAD.push(data.value[i]);
-                } 
-              }
-              else
-              {
+              let userIdentity = data.value[i].identities[0].issuer;
+              let userPrinName = data.value[i].userPrincipalName
+                ? data.value[i].userPrincipalName
+                : "";
+              if (!props.propertyPaneProps.propertyToggle) {
+                if (userIdentity) {
+                  if (
+                    userIdentity.toLowerCase() ==
+                      // "chandrudemo.onmicrosoft.com" &&
+                      "hosthealthcare.onmicrosoft.com" &&
+                    !userPrinName.includes("#EXT#")
+                  )
+                    alldatafromAD.push(data.value[i]);
+                }
+              } else {
                 alldatafromAD.push(data.value[i]);
               }
             }
@@ -375,7 +379,7 @@ export default function BalkanChart(props) {
         },
       });
       OrgChart.scroll.smooth = 2;
-      OrgChart.scroll.speed = 50;
+      OrgChart.scroll.speed = 20;
     } catch (e) {
       console.log(e);
     }
@@ -482,10 +486,9 @@ export default function BalkanChart(props) {
 
     arrdepartments = removeDuplicatesfromarray(arrdepartments);
 
-    arrdepartments= arrdepartments.sort();
+    arrdepartments = arrdepartments.sort();
 
-    for (var i = 0; i < arrdepartments.length; i++) 
-    {
+    for (var i = 0; i < arrdepartments.length; i++) {
       arrDeptswithkey.push({
         key: arrdepartments[i],
         text: arrdepartments[i],
@@ -564,14 +567,11 @@ export default function BalkanChart(props) {
             _data.title == _filteredData[0].Position
         );
 
-        if(filteredNodeData.length==0)
-        {
+        if (filteredNodeData.length == 0) {
           filteredNodeData = _allNodeData.filter(
-            (_data) =>
-              _data.department == _filterKeys.department
+            (_data) => _data.department == _filterKeys.department
           );
         }
-
       } else {
         filteredNodeData = _allNodeData.filter(
           (_data) => _data.department == _filterKeys.department
