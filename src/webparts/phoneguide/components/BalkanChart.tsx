@@ -187,8 +187,8 @@ export default function BalkanChart(props) {
         for (let i = 0; i < data.length; i++) {
           _deptConfigData.push({
             ID: data[i].ID,
-            Department: data[i].Department,
-            Position: data[i].Position,
+            Department: data[i].Department?data[i].Department.trim():"",
+            Position: data[i].Position?data[i].Position.trim():"",
           });
         }
 
@@ -405,7 +405,7 @@ export default function BalkanChart(props) {
           jobTitle: data[i].jobTitle,
           mobilePhone:
             data[i].businessPhones.length > 0 ? data[i].businessPhones[0] : [], //data[i].mobilePhone,
-          department: data[i].department,
+          department: data[i].department?data[i].department.trim():"",
           Zone: data[i].officeLocation ? data[i].officeLocation : "",
         });
       }
@@ -422,7 +422,7 @@ export default function BalkanChart(props) {
           jobTitle: data[i].jobTitle,
           mobilePhone:
             data[i].businessPhones.length > 0 ? data[i].businessPhones[0] : [], //data[i].mobilePhone,
-          department: data[i].department,
+          department: data[i].department?data[i].department.trim():"",
           Zone: data[i].officeLocation ? data[i].officeLocation : "",
         });
 
@@ -433,7 +433,7 @@ export default function BalkanChart(props) {
             ["Manager"]: data[i].manager.displayName,
             name: data[i].displayName,
             title: data[i].jobTitle ? data[i].jobTitle : "N/A",
-            department: data[i].department ? data[i].department : "N/A",
+            department: data[i].department ? data[i].department.trim() : "N/A",
             email: data[i].userPrincipalName
               ? data[i].userPrincipalName
               : "N/A",
@@ -455,7 +455,7 @@ export default function BalkanChart(props) {
             ["Manager"]: "N/A",
             name: data[i].displayName,
             title: data[i].jobTitle ? data[i].jobTitle : "N/A",
-            department: data[i].department ? data[i].department : "N/A",
+            department: data[i].department ? data[i].department.trim() : "N/A",
             email: data[i].userPrincipalName
               ? data[i].userPrincipalName
               : "N/A",
@@ -552,13 +552,21 @@ export default function BalkanChart(props) {
         (user) => user.Department == _filterKeys.department
       );
 
-      if (_filteredData.length > 0) {
+      if (_filteredData.length > 0) 
+      {
+        
+        let positions = [];
+        positions=_filteredData[0].Position? _filteredData[0].Position.toLowerCase().split(";"):[]
         filteredNodeData = _allNodeData.filter(
           (_data) =>
             _data.department == _filterKeys.department &&
             _data.title &&
-            _data.title == _filteredData[0].Position
+            //_data.title == _filteredData[0].Position
+            //positions.includes(_data.title)
+            positions.indexOf(_data.title.toLowerCase()) !== -1
         );
+
+        console.log(filteredNodeData)
 
         if (filteredNodeData.length == 0) {
           filteredNodeData = _allNodeData.filter(

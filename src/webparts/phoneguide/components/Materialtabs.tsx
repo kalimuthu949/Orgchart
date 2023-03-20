@@ -189,12 +189,12 @@ export default function MaterialDtabs(props) {
         key: i,
         text: data[i].displayName,
         UserPrincipalName: data[i].userPrincipalName,
-        jobTitle: data[i].jobTitle ? data[i].jobTitle : "",
+        jobTitle: data[i].jobTitle ? data[i].jobTitle.trim() : "",
         givenName: data[i].givenName ? data[i].givenName : "",
         surname: data[i].surname ? data[i].surname : "",
         mobilePhone:
           data[i].businessPhones.length > 0 ? data[i].businessPhones[0] : "", //data[i].mobilePhone,
-        department: data[i].department,
+        department: data[i].department?data[i].department.trim():"",
         Zone: data[i].officeLocation ? data[i].officeLocation : "", //filteredArr.length > 0 ? filteredArr[0].Zone : "",
         Dept:
           filteredArr.length > 0
