@@ -143,7 +143,7 @@ export default function MaterialDtabs(props) {
   }
 
   React.useEffect(function () {
-    console.log(props.propertyPaneProps.propertyToggle);
+    // console.log(props.propertyPaneProps.propertyToggle);
     setloader(true);
     getalluserssp();
     // getallusersgraph();
@@ -157,13 +157,45 @@ export default function MaterialDtabs(props) {
     })
       .then((items: any) => {
         listitems = items;
-        getallusersgraph(items);
+        getEmployeeDetails(items);
+        // getallusersgraph(items);
       })
       .catch(function (error) {
         console.log(error);
         setloader(false);
       });
   }
+
+  const getEmployeeDetails = (userData) => {
+    SPServices.SPReadItems({
+      Listname: "EmployeeGroupDetails",
+      Select: "*,Manager/Title,Manager/Id,Manager/EMail",
+      Expand: "Manager",
+    })
+      .then((data: any) => {
+        let employeeArr = [];
+        for (const item of data) {
+          employeeArr.push({
+            mail: item.Email,
+            id: item.Title,
+            displayName: [item.FirstName, item.LastName].join(" "),
+            userPrincipalName: item.UserPrincipalName,
+            jobTitle: item.JobTitle,
+            givenName: item.FirstName,
+            surname: item.LastName,
+            businessPhones: item.PhoneNumber.split(","),
+            department: item.Department,
+            officeLocation: item.Zone,
+            manager: item.ManagerId ? item.Manager.Title : "",
+          });
+        }
+        binddata(employeeArr, userData);
+      })
+      .catch((error) => {
+        console.log(error);
+        setloader(false);
+      });
+  };
 
   function binddata(data, userData) {
     const users = [];
@@ -194,13 +226,14 @@ export default function MaterialDtabs(props) {
         surname: data[i].surname ? data[i].surname : "",
         mobilePhone:
           data[i].businessPhones.length > 0 ? data[i].businessPhones[0] : "", //data[i].mobilePhone,
-        department: data[i].department?data[i].department.trim():"",
+        department: data[i].department ? data[i].department.trim() : "",
         Zone: data[i].officeLocation ? data[i].officeLocation : "", //filteredArr.length > 0 ? filteredArr[0].Zone : "",
+        manager: data[i].manager ? data[i].manager : null,
+
         Dept:
           filteredArr.length > 0
             ? filteredArr[0].SubDepartments.join(", ")
             : "",
-        manager: data[i].manager ? data[i].manager : null,
         Ext: filteredArr.length > 0 ? filteredArr[0].Ext : "",
       });
 
@@ -258,18 +291,19 @@ export default function MaterialDtabs(props) {
           .then(function (data) {
             let condition: boolean;
             for (let i = 0; i < data.value.length; i++) {
-              let userIdentity=data.value[i].identities[0].issuer;
-              let userPrinName=data.value[i].userPrincipalName?data.value[i].userPrincipalName:"";
-              if(!props.propertyPaneProps.propertyToggle)
-              {
-                if(userIdentity)
-                {
-                  if(userIdentity.toLowerCase()==props.tenEmail && !userPrinName.includes('#EXT#'))
-                  alldatafromAD.push(data.value[i]);
-                } 
-              }
-              else
-              {
+              let userIdentity = data.value[i].identities[0].issuer;
+              let userPrinName = data.value[i].userPrincipalName
+                ? data.value[i].userPrincipalName
+                : "";
+              if (!props.propertyPaneProps.propertyToggle) {
+                if (userIdentity) {
+                  if (
+                    userIdentity.toLowerCase() == props.tenEmail &&
+                    !userPrinName.includes("#EXT#")
+                  )
+                    alldatafromAD.push(data.value[i]);
+                }
+              } else {
                 alldatafromAD.push(data.value[i]);
               }
             }
@@ -308,18 +342,19 @@ export default function MaterialDtabs(props) {
           .then(function (data) {
             let condition: boolean;
             for (let i = 0; i < data.value.length; i++) {
-              let userIdentity=data.value[i].identities[0].issuer;
-              let userPrinName=data.value[i].userPrincipalName?data.value[i].userPrincipalName:"";
-              if(!props.propertyPaneProps.propertyToggle)
-              {
-                if(userIdentity)
-                {
-                  if(userIdentity.toLowerCase()==props.tenEmail && !userPrinName.includes('#EXT#'))
-                  alldatafromAD.push(data.value[i]);
-                } 
-              }
-              else
-              {
+              let userIdentity = data.value[i].identities[0].issuer;
+              let userPrinName = data.value[i].userPrincipalName
+                ? data.value[i].userPrincipalName
+                : "";
+              if (!props.propertyPaneProps.propertyToggle) {
+                if (userIdentity) {
+                  if (
+                    userIdentity.toLowerCase() == props.tenEmail &&
+                    !userPrinName.includes("#EXT#")
+                  )
+                    alldatafromAD.push(data.value[i]);
+                }
+              } else {
                 alldatafromAD.push(data.value[i]);
               }
             }
@@ -539,7 +574,7 @@ export default function MaterialDtabs(props) {
               <div className="clsFilterdropdowns">
                 <Dropdown
                   multiSelect
-                  style={{width:250}}
+                  style={{ width: 250 }}
                   placeholder="Select Title"
                   options={titles}
                   selectedKeys={title}
@@ -559,7 +594,7 @@ export default function MaterialDtabs(props) {
               <div className="clsFilterdropdowns">
                 <Dropdown
                   multiSelect
-                  style={{width:250}}
+                  style={{ width: 250 }}
                   placeholder="Select Department"
                   options={alldepartment}
                   selectedKeys={dept}
@@ -663,7 +698,13 @@ export default function MaterialDtabs(props) {
                     marginTop: "15px",
                   }}
                 >
-                 {!loader?<Label style={{ color: "#2392B2" }}>No data Found !!!</Label>:""}
+                  {!loader ? (
+                    <Label style={{ color: "#2392B2" }}>
+                      No data Found !!!
+                    </Label>
+                  ) : (
+                    ""
+                  )}
                 </div>
               )}
             </div>

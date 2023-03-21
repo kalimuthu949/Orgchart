@@ -86,8 +86,9 @@ export default function BalkanChart(props) {
     ],
   });
   useEffect(() => {
-    getallusersgraph();
     getDepartmentConfigData();
+    getEmployeeDetails();
+    // getallusersgraph();
   }, []);
 
   async function getnextitems(skiptoken) {
@@ -112,7 +113,10 @@ export default function BalkanChart(props) {
                 : "";
               if (!props.propertyPaneProps.propertyToggle) {
                 if (userIdentity) {
-                  if (userIdentity.toLowerCase() ==props.tenEmail && !userPrinName.includes("#EXT#"))
+                  if (
+                    userIdentity.toLowerCase() == props.tenEmail &&
+                    !userPrinName.includes("#EXT#")
+                  )
                     alldatafromAD.push(data.value[i]);
                 }
               } else {
@@ -156,7 +160,10 @@ export default function BalkanChart(props) {
                 : "";
               if (!props.propertyPaneProps.propertyToggle) {
                 if (userIdentity) {
-                  if (userIdentity.toLowerCase() ==props.tenEmail &&!userPrinName.includes("#EXT#"))
+                  if (
+                    userIdentity.toLowerCase() == props.tenEmail &&
+                    !userPrinName.includes("#EXT#")
+                  )
                     alldatafromAD.push(data.value[i]);
                 }
               } else {
@@ -187,8 +194,8 @@ export default function BalkanChart(props) {
         for (let i = 0; i < data.length; i++) {
           _deptConfigData.push({
             ID: data[i].ID,
-            Department: data[i].Department?data[i].Department.trim():"",
-            Position: data[i].Position?data[i].Position.trim():"",
+            Department: data[i].Department ? data[i].Department.trim() : "",
+            Position: data[i].Position ? data[i].Position.trim() : "",
           });
         }
 
@@ -385,6 +392,40 @@ export default function BalkanChart(props) {
     setloader(false);
   }
 
+  const getEmployeeDetails = () => {
+    SPServices.SPReadItems({
+      Listname: "EmployeeGroupDetails",
+      Select: "*,Manager/Title,Manager/Id,Manager/EMail",
+      Expand: "Manager",
+    })
+      .then((data: any) => {
+        let employeeArr = [];
+        for (const item of data) {
+          employeeArr.push({
+            mail: item.Email,
+            id: item.Title,
+            displayName: [item.FirstName, item.LastName].join(" "),
+            userPrincipalName: item.UserPrincipalName,
+            jobTitle: item.JobTitle,
+            givenName: item.FirstName,
+            surname: item.LastName,
+            businessPhones: item.PhoneNumber.split(","),
+            department: item.Department,
+            officeLocation: item.Zone,
+            manager: item.ManagerId ? item.Manager.Title : "",
+            managerAzureId: item.ManagerId ? item.ManagerAzureId : "",
+          });
+        }
+
+        debugger;
+        loadChart(employeeArr);
+      })
+      .catch((error) => {
+        console.log(error);
+        setloader(false);
+      });
+  };
+
   function loadChart(data) {
     const users = [];
     let arrdepartments = [];
@@ -405,7 +446,7 @@ export default function BalkanChart(props) {
           jobTitle: data[i].jobTitle,
           mobilePhone:
             data[i].businessPhones.length > 0 ? data[i].businessPhones[0] : [], //data[i].mobilePhone,
-          department: data[i].department?data[i].department.trim():"",
+          department: data[i].department ? data[i].department.trim() : "",
           Zone: data[i].officeLocation ? data[i].officeLocation : "",
         });
       }
@@ -422,15 +463,17 @@ export default function BalkanChart(props) {
           jobTitle: data[i].jobTitle,
           mobilePhone:
             data[i].businessPhones.length > 0 ? data[i].businessPhones[0] : [], //data[i].mobilePhone,
-          department: data[i].department?data[i].department.trim():"",
+          department: data[i].department ? data[i].department.trim() : "",
           Zone: data[i].officeLocation ? data[i].officeLocation : "",
         });
 
         try {
           nodeData.push({
             id: data[i].id,
-            pid: data[i].manager.id,
-            ["Manager"]: data[i].manager.displayName,
+            // pid: data[i].manager.id,
+            // ["Manager"]: data[i].manager.displayName,
+            pid: data[i].managerAzureId,
+            ["Manager"]: data[i].manager,
             name: data[i].displayName,
             title: data[i].jobTitle ? data[i].jobTitle : "N/A",
             department: data[i].department ? data[i].department.trim() : "N/A",
@@ -552,11 +595,11 @@ export default function BalkanChart(props) {
         (user) => user.Department == _filterKeys.department
       );
 
-      if (_filteredData.length > 0) 
-      {
-        
+      if (_filteredData.length > 0) {
         let positions = [];
-        positions=_filteredData[0].Position? _filteredData[0].Position.toLowerCase().split(";"):[]
+        positions = _filteredData[0].Position
+          ? _filteredData[0].Position.toLowerCase().split(";")
+          : [];
         filteredNodeData = _allNodeData.filter(
           (_data) =>
             _data.department == _filterKeys.department &&
@@ -566,7 +609,7 @@ export default function BalkanChart(props) {
             positions.indexOf(_data.title.toLowerCase()) !== -1
         );
 
-        console.log(filteredNodeData)
+        console.log(filteredNodeData);
 
         if (filteredNodeData.length == 0) {
           filteredNodeData = _allNodeData.filter(

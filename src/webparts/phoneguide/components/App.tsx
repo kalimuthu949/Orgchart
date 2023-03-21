@@ -10,8 +10,8 @@ import BalkanChart from "./BalkanChart";
 // initializeIcons("@uifabric/icons/fonts");
 const App = (props) => {
   const [activeTab, setActiveTab] = useState("OrgChart");
-  // let tenantEmail="chandrudemo.onmicrosoft.com";
-  let tenantEmail="hosthealthcare.onmicrosoft.com";
+  let tenantEmail = "chandrudemo.onmicrosoft.com";
+  //let tenantEmail="hosthealthcare.onmicrosoft.com";
   return (
     <>
       <div className="headerAndTabSection">
