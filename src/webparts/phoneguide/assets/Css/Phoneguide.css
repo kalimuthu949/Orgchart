@@ -112,3 +112,6 @@
 .ms-DetailsRow:hover{
 background: rgba(255,228,159,.5019607843137255);
 }
+.ms-Callout.ms-Dropdown-callout{
+	width:400px !important;
+}
