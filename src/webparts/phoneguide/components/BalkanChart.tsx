@@ -409,7 +409,7 @@ export default function BalkanChart(props) {
             jobTitle: item.JobTitle,
             givenName: item.FirstName,
             surname: item.LastName,
-            businessPhones: item.PhoneNumber.split(","),
+            businessPhones: item.PhoneNumber ? item.PhoneNumber.split(",") : [],
             department: item.Department,
             officeLocation: item.Zone,
             manager: item.ManagerId ? item.Manager.Title : "",
