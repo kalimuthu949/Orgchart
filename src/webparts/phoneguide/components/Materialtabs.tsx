@@ -149,6 +149,16 @@ export default function MaterialDtabs(props) {
     // getallusersgraph();
   }, []);
 
+  const sortFunction = (a, b, key) => {
+    if (a[key] < b[key]) {
+      return -1;
+    }
+    if (a[key] > b[key]) {
+      return 1;
+    }
+    return 0;
+  };
+
   async function getalluserssp() {
     SPServices.SPReadItems({
       Listname: "EmployeeDetails",
@@ -189,6 +199,8 @@ export default function MaterialDtabs(props) {
             manager: item.ManagerId ? item.Manager.Title : "",
           });
         }
+
+        employeeArr.sort((a, b) => sortFunction(a, b, "displayName"));
         binddata(employeeArr, userData);
       })
       .catch((error) => {
@@ -264,6 +276,10 @@ export default function MaterialDtabs(props) {
     for (let i = 0; i < arrTitles.length; i++) {
       statetitles.push({ key: arrTitles[i], text: arrTitles[i] });
     }
+
+    statedept.sort((a, b) => sortFunction(a, b, "text"));
+    statezones.sort((a, b) => sortFunction(a, b, "text"));
+    statetitles.sort((a, b) => sortFunction(a, b, "text"));
 
     paginateFunction(1, users);
     setalldepartment([...statedept]);

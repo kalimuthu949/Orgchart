@@ -158,7 +158,7 @@ const _columns: IColumn[] = [
   // },
   {
     key: "Column7",
-    name: "Mobile Number",
+    name: "Work Number",
     fieldName: "mobile",
     minWidth: 150,
     maxWidth: 150,
@@ -189,6 +189,16 @@ const _columns: IColumn[] = [
 export default function FluentUIDB(props) {
   const [data, setData] = React.useState([]);
 
+  const sortFunction = (a, b, key) => {
+    if (a[key] < b[key]) {
+      return -1;
+    }
+    if (a[key] > b[key]) {
+      return 1;
+    }
+    return 0;
+  };
+
   React.useEffect(() => {
     let rows = [];
 
@@ -197,6 +207,7 @@ export default function FluentUIDB(props) {
         id: item.ID,
         empName: item.text,
         title: item.jobTitle,
+        displayName: [item.givenName, item.surname].join(" "),
         givenName: item.givenName,
         surname: item.surname,
         Email: item.Email,
@@ -210,6 +221,8 @@ export default function FluentUIDB(props) {
         userprincipalname: item.UserPrincipalName,
       });
     });
+
+    // rows = rows.sort((a, b) => sortFunction(a, b, "displayName"));
     setData([...rows]);
   }, [props.items]);
   return (
