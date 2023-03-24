@@ -40,14 +40,17 @@ declare var OrgChart: any;
 var chart: any;
 let alldatafromAD = [];
 let allNodeData = [];
+import ProdData from "./ProdData";
 
 export default function BalkanChart(props) {
+  var testing=ProdData.cmd();
+  var proddata=JSON.parse(testing);
   const [departmentConfigData, setDepartmentConfigData] = React.useState([]);
   const [departments, setdepartments] = React.useState([]);
   const [loader, setloader] = React.useState(true);
   const [userCount, setUserCount] = useState("");
   const [filterKeys, setFilterKeys] = React.useState({
-    department: "Select",
+    department: "All Host Healthcare",
     peoplePicker: [],
   });
 
@@ -87,7 +90,6 @@ export default function BalkanChart(props) {
   });
   useEffect(() => {
     getDepartmentConfigData();
-    getEmployeeDetails();
     // getallusersgraph();
   }, []);
 
@@ -200,6 +202,7 @@ export default function BalkanChart(props) {
         }
 
         setDepartmentConfigData([..._deptConfigData]);
+        getEmployeeDetails();
       })
       .catch(function (error) {
         console.log(error);
@@ -344,15 +347,19 @@ export default function BalkanChart(props) {
     );
 
     try {
+      OrgChart.templates.myTemplate = Object.assign({}, OrgChart.templates.olivia);
+      // OrgChart.templates.myTemplate.field_0 = '<text data-width="230" data-text-overflow="multiline" style="font-size: 16px;" fill="#757575" x="150" y="30" text-anchor="middle">{val}</text>';
+      OrgChart.templates.myTemplate.field_1 = '<text data-width="130" data-text-overflow="multiline" style="font-size: 14px;width: 10px;" fill="#757575" x="100" y="80">{val}</text>';
+
       chart = new OrgChart(document.getElementById("OrgChart"), {
         // collapse: {
         //   level: 1,
         //   allChildren: true,
         // },
         layout: OrgChart.treeRightOffset,
-        scaleInitial: 1,
+        // scaleInitial: 1,
         enableSearch: false,
-        template: "olivia",
+        template: "myTemplate",
         showXScroll: OrgChart.scroll.none,
         showYScroll: OrgChart.scroll.none,
         mouseScrool: OrgChart.action.scroll,
@@ -375,8 +382,17 @@ export default function BalkanChart(props) {
           ],
         },
       });
-      OrgChart.scroll.smooth = 2;
-      OrgChart.scroll.speed = 20;
+      // OrgChart.scroll.smooth = 2;
+      // OrgChart.scroll.speed = 20;
+      chart.on('expcollclick', function (sender, collapse, id, ids) {
+        if (!collapse) {
+            sender.expand(id, ids, function () {
+                sender.center(id);
+            });
+    
+            return false;
+        }
+    });
     } catch (e) {
       console.log(e);
     }
@@ -400,24 +416,29 @@ export default function BalkanChart(props) {
     })
       .then((data: any) => {
         let employeeArr = [];
-        for (const item of data) {
-          employeeArr.push({
-            mail: item.Email,
-            id: item.Title,
-            displayName: [item.FirstName, item.LastName].join(" "),
-            userPrincipalName: item.UserPrincipalName,
-            jobTitle: item.JobTitle,
-            givenName: item.FirstName,
-            surname: item.LastName,
-            businessPhones: item.PhoneNumber ? item.PhoneNumber.split(",") : [],
-            department: item.Department,
-            officeLocation: item.Zone,
-            manager: item.ManagerId ? item.Manager.Title : "",
-            managerAzureId: item.ManagerId ? item.ManagerAzureId : "",
-          });
-        }
-
         debugger;
+        for (const item of data) {
+          
+          if(item.UserPrincipalName)
+          {
+            employeeArr.push({
+              mail: item.UserPrincipalName,
+              id: item.Title,
+              displayName: [item.FirstName, item.LastName].join(" "),
+              userPrincipalName: item.UserPrincipalName,
+              jobTitle: item.JobTitle,
+              givenName: item.FirstName,
+              surname: item.LastName,
+              businessPhones: item.PhoneNumber ? item.PhoneNumber.split(",") : [],
+              department: item.Department,
+              officeLocation: item.Zone,
+              manager: item.ManagerId ? item.Manager.Title : "",
+              managerAzureId: item.ManagerId ? item.ManagerAzureId : "",
+            });
+          }
+
+        }
+        console.log(employeeArr);
         loadChart(employeeArr);
       })
       .catch((error) => {
@@ -427,6 +448,8 @@ export default function BalkanChart(props) {
   };
 
   function loadChart(data) {
+    console.log(JSON.stringify(data));
+    //data = proddata;
     const users = [];
     let arrdepartments = [];
     let arrDeptswithkey = [];
@@ -434,7 +457,9 @@ export default function BalkanChart(props) {
 
     let nodeData = [];
     for (var i = 0; i < data.length; i++) {
-      if (data[i].userPrincipalName == props.userEmail) {
+      var loggedUserEmail=props.userEmail;
+      //var loggedUserEmail="EPC@hosthealthcare.com";
+      if (data[i].userPrincipalName == loggedUserEmail) {
         crntUserData.push({
           imageUrl:
             "/_layouts/15/userphoto.aspx?size=L&username=" + data[i].mail,
@@ -529,19 +554,28 @@ export default function BalkanChart(props) {
         text: arrdepartments[i],
       });
     }
-
+ 
     arrDeptswithkey.unshift({
-      key: "Select",
-      text: "Select",
+      key: "All Host Healthcare",
+      text: "All Host Healthcare",
     });
 
     setdepartments([...arrDeptswithkey]);
     setPeopleList([...users]);
 
     allNodeData = nodeData;
+
+    console.log(JSON.stringify(allNodeData));
+   
     SPComponentLoader.loadScript(
       props.URL + "/SiteAssets/OrgJS/orgchart.js"
     ).then(() => {
+      OrgChart.templates.myTemplate = Object.assign({}, OrgChart.templates.olivia);
+      // OrgChart.templates.myTemplate.field_0 = '<text data-width="230" data-text-overflow="multiline" style="font-size: 16px;" fill="#757575" x="150" y="30" text-anchor="middle">{val}</text>';
+      OrgChart.templates.myTemplate.field_1 = '<text data-width="130" data-text-overflow="multiline" style="font-size: 14px;width: 10px;" fill="#757575" x="100" y="80">{val}</text>';
+
+      
+
       chart = new OrgChart(document.getElementById("OrgChart"), {
         // collapse: {
         //   level: 1,
@@ -550,7 +584,7 @@ export default function BalkanChart(props) {
         layout: OrgChart.treeRightOffset,
         scaleInitial: 1,
         enableSearch: false,
-        template: "olivia",
+        template: "myTemplate",
         showXScroll: OrgChart.scroll.visible,
         showYScroll: OrgChart.scroll.visible,
         mouseScrool: OrgChart.action.scroll,
@@ -559,7 +593,7 @@ export default function BalkanChart(props) {
           field_1: "title",
           img_0: "img",
         },
-        nodes: nodeData,
+        nodes: [],
         editForm: {
           generateElementsFromFields: false,
           elements: [
@@ -576,7 +610,18 @@ export default function BalkanChart(props) {
       OrgChart.scroll.smooth = 2;
       OrgChart.scroll.speed = 50;
       filterKeys.peoplePicker = crntUserData;
-      filterKeys.department = "Select";
+      filterKeys.department = "All Host Healthcare";
+      chart.on('expcollclick', function (sender, collapse, id, ids) {
+        if (!collapse) {
+            sender.expand(id, ids, function () {
+                sender.center(id);
+            });
+    
+            return false;
+        }
+    });
+  
+
       setTimeout(() => {
         LoadFilteredChartData([...crntUserData]);
         setloader(false);
@@ -590,7 +635,7 @@ export default function BalkanChart(props) {
 
     let _allNodeData = [...allNodeData];
 
-    if (_filterKeys.department != "Select") {
+    if (_filterKeys.department != "All Host Healthcare") {
       _filteredData = departmentConfigData.filter(
         (user) => user.Department == _filterKeys.department
       );
@@ -609,18 +654,20 @@ export default function BalkanChart(props) {
             positions.indexOf(_data.title.toLowerCase()) !== -1
         );
 
-        console.log(filteredNodeData);
-
         if (filteredNodeData.length == 0) {
           filteredNodeData = _allNodeData.filter(
-            (_data) => _data.department == _filterKeys.department
+            (_data) => _data.department == _filterKeys.department&&_data.name
           );
         }
       } else {
         filteredNodeData = _allNodeData.filter(
-          (_data) => _data.department == _filterKeys.department
+          (_data) => _data.department == _filterKeys.department && _data.name
         );
       }
+      
+      if(_filterKeys.department=="Recruitment")
+      filteredNodeData=filteredNodeData.splice(6, 1);
+
       LoadFilteredChartData(filteredNodeData);
     } else {
       LoadFilteredChartData([]);
@@ -628,6 +675,19 @@ export default function BalkanChart(props) {
 
     setFilterKeys({ ..._filterKeys });
   }
+
+  
+
+  const sortFunction = (a, b, key) => {
+    if (a[key] < b[key]) {
+      return -1;
+    }
+    if (a[key] > b[key]) {
+      return 1;
+    }
+    return 0;
+  };
+
 
   return (
     <div>
@@ -656,7 +716,7 @@ export default function BalkanChart(props) {
               selectedItems={filterKeys.peoplePicker}
               onChange={(data: any) => {
                 filterKeys.peoplePicker = data;
-                filterKeys.department = "Select";
+                filterKeys.department = "All Host Healthcare";
                 setFilterKeys({ ...filterKeys });
 
                 LoadFilteredChartData(data);
@@ -665,7 +725,7 @@ export default function BalkanChart(props) {
           </div>
           <div className="clsDeptDrpDown" style={{ marginRight: 10 }}>
             <Dropdown
-              placeholder="Select department"
+              placeholder="All Host Healthcare"
               selectedKey={filterKeys.department}
               options={departments}
               styles={dropdownStyles}
