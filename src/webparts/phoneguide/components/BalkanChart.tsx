@@ -352,7 +352,7 @@ export default function BalkanChart(props) {
 
     try {
       OrgChart.templates.myTemplate = Object.assign({}, OrgChart.templates.olivia);
-      // OrgChart.templates.myTemplate.field_0 = '<text data-width="230" data-text-overflow="multiline" style="font-size: 16px;" fill="#757575" x="150" y="30" text-anchor="middle">{val}</text>';
+      OrgChart.templates.myTemplate.field_0 = '<text data-width="130" data-text-overflow="multiline" style="font-size: 16px;width: 10px;" fill="#757575" x="150" y="30" text-anchor="middle">{val}</text>';
       OrgChart.templates.myTemplate.field_1 = '<text data-width="130" data-text-overflow="multiline" style="font-size: 14px;width: 10px;" fill="#757575" x="100" y="80">{val}</text>';
 
       chart = new OrgChart(document.getElementById("OrgChart"), {
@@ -578,7 +578,7 @@ export default function BalkanChart(props) {
       props.URL + "/SiteAssets/OrgJS/orgchart.js"
     ).then(() => {
       OrgChart.templates.myTemplate = Object.assign({}, OrgChart.templates.olivia);
-      // OrgChart.templates.myTemplate.field_0 = '<text data-width="230" data-text-overflow="multiline" style="font-size: 16px;" fill="#757575" x="150" y="30" text-anchor="middle">{val}</text>';
+      OrgChart.templates.myTemplate.field_0 = '<text data-width="130" data-text-overflow="multiline" style="font-size: 16px;width: 10px;" fill="#757575" x="150" y="30" text-anchor="middle">{val}</text>';
       OrgChart.templates.myTemplate.field_1 = '<text data-width="130" data-text-overflow="multiline" style="font-size: 14px;width: 10px;" fill="#757575" x="100" y="80">{val}</text>';
 
       
