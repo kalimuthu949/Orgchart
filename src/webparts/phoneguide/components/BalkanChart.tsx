@@ -416,7 +416,6 @@ export default function BalkanChart(props) {
     })
       .then((data: any) => {
         let employeeArr = [];
-        debugger;
         for (const item of data) {
           
           if(item.UserPrincipalName)
@@ -438,7 +437,7 @@ export default function BalkanChart(props) {
           }
 
         }
-        console.log(employeeArr);
+        //console.log(employeeArr);
         loadChart(employeeArr);
       })
       .catch((error) => {
@@ -448,7 +447,7 @@ export default function BalkanChart(props) {
   };
 
   function loadChart(data) {
-    console.log(JSON.stringify(data));
+    //console.log(JSON.stringify(data));
     //data = proddata;
     const users = [];
     let arrdepartments = [];
@@ -542,9 +541,9 @@ export default function BalkanChart(props) {
       if (data[i].department) arrdepartments.push(data[i].department.trim());
     }
 
-    console.log(arrdepartments);
+    //console.log(arrdepartments);
     arrdepartments = removeDuplicatesfromarray(arrdepartments);
-    console.log(arrdepartments);
+    //console.log(arrdepartments);
 
     arrdepartments = arrdepartments.sort();
 
@@ -565,7 +564,7 @@ export default function BalkanChart(props) {
 
     allNodeData = nodeData;
 
-    console.log(JSON.stringify(allNodeData));
+    //console.log(JSON.stringify(allNodeData));
    
     SPComponentLoader.loadScript(
       props.URL + "/SiteAssets/OrgJS/orgchart.js"
