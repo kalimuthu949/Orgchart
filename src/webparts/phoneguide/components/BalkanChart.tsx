@@ -234,8 +234,9 @@ export default function BalkanChart(props) {
   };
 
   const filterPersonasByText = (filterText: string): IPersonaProps[] => {
+    
     return peopleList.filter((item) =>
-      doesTextStartWith(item.text as string, filterText)
+      doesTextStartWith((item.text as string), filterText)
     );
   };
 
@@ -256,7 +257,8 @@ export default function BalkanChart(props) {
   };
 
   function doesTextStartWith(text: string, filterText: string): boolean {
-    return text.toLowerCase().indexOf(filterText.toLowerCase()) === 0;
+    //return text.toLowerCase().indexOf(filterText.toLowerCase()) === 0;
+    return text.toLowerCase().includes(filterText);
   }
 
   function removeDuplicates(
@@ -427,7 +429,7 @@ export default function BalkanChart(props) {
               userPrincipalName: item.UserPrincipalName,
               jobTitle: item.JobTitle,
               givenName: item.FirstName,
-              surname: item.LastName,
+              LastName: item.LastName,
               businessPhones: item.PhoneNumber ? item.PhoneNumber.split(",") : [],
               department: item.Department,
               officeLocation: item.Zone,
@@ -467,6 +469,7 @@ export default function BalkanChart(props) {
           ID: data[i].id,
           key: i,
           text: data[i].displayName,
+          surname: data[i].LastName,
           jobTitle: data[i].jobTitle,
           mobilePhone:
             data[i].businessPhones.length > 0 ? data[i].businessPhones[0] : [], //data[i].mobilePhone,
@@ -484,6 +487,7 @@ export default function BalkanChart(props) {
           ID: data[i].id,
           key: i,
           text: data[i].displayName,
+          surname: data[i].LastName,
           jobTitle: data[i].jobTitle,
           mobilePhone:
             data[i].businessPhones.length > 0 ? data[i].businessPhones[0] : [], //data[i].mobilePhone,
@@ -497,6 +501,7 @@ export default function BalkanChart(props) {
             // pid: data[i].manager.id,
             // ["Manager"]: data[i].manager.displayName,
             pid: data[i].managerAzureId,
+            surname: data[i].LastName,
             ["Manager"]: data[i].manager,
             name: data[i].displayName,
             title: data[i].jobTitle ? data[i].jobTitle : "N/A",
@@ -519,6 +524,7 @@ export default function BalkanChart(props) {
           nodeData.push({
             id: data[i].id,
             pid: null,
+            surname: data[i].LastName,
             ["Manager"]: "N/A",
             name: data[i].displayName,
             title: data[i].jobTitle ? data[i].jobTitle : "N/A",
