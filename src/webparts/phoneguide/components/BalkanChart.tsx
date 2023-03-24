@@ -41,6 +41,8 @@ var chart: any;
 let alldatafromAD = [];
 let allNodeData = [];
 import ProdData from "./ProdData";
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
 
 export default function BalkanChart(props) {
   var testing=ProdData.cmd();
@@ -706,7 +708,37 @@ export default function BalkanChart(props) {
       <div className="searchDiv">
         <div className="clsDropplussearch">
           <div style={{ marginRight: 10 }}>
-            <NormalPeoplePicker
+          <Autocomplete
+          title="Search User"
+          aria-label="Search User"
+          id="combo-box-demo"
+          options={peopleList}
+          placeholder="Search User"
+          value={filterKeys.peoplePicker.length>0?filterKeys.peoplePicker[0]:{}}
+          //defaultValue={filterKeys.peoplePicker.length>0?filterKeys.peoplePicker[0]:{}}
+          getOptionLabel={(option) => option.text}
+          onChange={((event,data)=>
+          {
+            let newData=[];
+            if(data)
+            {
+              newData.push(data);
+              filterKeys.peoplePicker = newData;
+            }
+            else
+            {
+              filterKeys.peoplePicker = [];
+            }
+            
+            filterKeys.department = "All Host Healthcare";
+            setFilterKeys({ ...filterKeys });
+            LoadFilteredChartData(newData);
+          })}
+          style={{ width: 300 }}
+          renderInput={(params) => <TextField {...params} label="Search User" variant="outlined" />}
+        />
+
+            {/* <NormalPeoplePicker
               onResolveSuggestions={onFilterChanged}
               getTextFromItem={getTextFromItem}
               className={"ms-PeoplePicker"}
@@ -723,10 +755,9 @@ export default function BalkanChart(props) {
                 filterKeys.peoplePicker = data;
                 filterKeys.department = "All Host Healthcare";
                 setFilterKeys({ ...filterKeys });
-
                 LoadFilteredChartData(data);
-              }}
-            />
+              }} 
+            />*/}
           </div>
           <div className="clsDeptDrpDown" style={{ marginRight: 10 }}>
             <Dropdown
