@@ -262,3 +262,25 @@ a:hover {
 .spinnerBackground {
     z-index: 1000 !important;
 }
+
+.clsDropplussearch .MuiInputBase-input {
+    padding: 0 !important;
+}
+
+.clsDropplussearch .MuiInputLabel-outlined[data-shrink="false"] {
+    transform: translate(14px, 12px) scale(1) !important;
+}
+
+.clsDropplussearch .MuiInputLabel-outlined[data-shrink="true"] {
+    color: #000 !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+    border-color: #000 !important;
+    border-radius: 2px !important;
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #000 !important;
+    /* border: 1px solid */
+}

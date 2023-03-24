@@ -41,12 +41,12 @@ var chart: any;
 let alldatafromAD = [];
 let allNodeData = [];
 import ProdData from "./ProdData";
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import TextField from "@material-ui/core/TextField";
 
 export default function BalkanChart(props) {
-  var testing=ProdData.cmd();
-  var proddata=JSON.parse(testing);
+  var testing = ProdData.cmd();
+  var proddata = JSON.parse(testing);
   const [departmentConfigData, setDepartmentConfigData] = React.useState([]);
   const [departments, setdepartments] = React.useState([]);
   const [loader, setloader] = React.useState(true);
@@ -66,7 +66,18 @@ export default function BalkanChart(props) {
 
   const dropdownStyles: Partial<IDropdownStyles> = {
     dropdown: { width: 300 },
-    root: { height: 100 },
+    root: {
+      height: 100,
+      selectors: {
+        ".ms-Dropdown-title": {
+          height: 37,
+          paddingTop: 4,
+        },
+        ".ms-Dropdown-caretDownWrapper": {
+          top: 3,
+        },
+      },
+    },
   };
 
   const iconStyles = mergeStyleSets({
@@ -236,9 +247,8 @@ export default function BalkanChart(props) {
   };
 
   const filterPersonasByText = (filterText: string): IPersonaProps[] => {
-    
     return peopleList.filter((item) =>
-      doesTextStartWith((item.text as string), filterText)
+      doesTextStartWith(item.text as string, filterText)
     );
   };
 
@@ -351,9 +361,14 @@ export default function BalkanChart(props) {
     );
 
     try {
-      OrgChart.templates.myTemplate = Object.assign({}, OrgChart.templates.olivia);
-      OrgChart.templates.myTemplate.field_0 = '<text data-width="130" data-text-overflow="multiline" style="font-size: 16px;width: 10px;" fill="#757575" x="150" y="30" text-anchor="middle">{val}</text>';
-      OrgChart.templates.myTemplate.field_1 = '<text data-width="130" data-text-overflow="multiline" style="font-size: 14px;width: 10px;" fill="#757575" x="100" y="80">{val}</text>';
+      OrgChart.templates.myTemplate = Object.assign(
+        {},
+        OrgChart.templates.olivia
+      );
+      OrgChart.templates.myTemplate.field_0 =
+        '<text data-width="130" data-text-overflow="multiline" style="font-size: 16px;width: 10px;font-weight:600;" fill="#03606a" x="100" y="35">{val}</text>';
+      OrgChart.templates.myTemplate.field_1 =
+        '<text data-width="130" data-text-overflow="multiline" style="font-size: 14px;width: 10px;" fill="#757575" x="100" y="70">{val}</text>';
 
       chart = new OrgChart(document.getElementById("OrgChart"), {
         // collapse: {
@@ -388,15 +403,15 @@ export default function BalkanChart(props) {
       });
       // OrgChart.scroll.smooth = 2;
       // OrgChart.scroll.speed = 20;
-      chart.on('expcollclick', function (sender, collapse, id, ids) {
+      chart.on("expcollclick", function (sender, collapse, id, ids) {
         if (!collapse) {
-            sender.expand(id, ids, function () {
-                sender.center(id);
-            });
-    
-            return false;
+          sender.expand(id, ids, function () {
+            sender.center(id);
+          });
+
+          return false;
         }
-    });
+      });
     } catch (e) {
       console.log(e);
     }
@@ -421,9 +436,7 @@ export default function BalkanChart(props) {
       .then((data: any) => {
         let employeeArr = [];
         for (const item of data) {
-          
-          if(item.UserPrincipalName)
-          {
+          if (item.UserPrincipalName) {
             employeeArr.push({
               mail: item.UserPrincipalName,
               id: item.Title,
@@ -432,14 +445,15 @@ export default function BalkanChart(props) {
               jobTitle: item.JobTitle,
               givenName: item.FirstName,
               LastName: item.LastName,
-              businessPhones: item.PhoneNumber ? item.PhoneNumber.split(",") : [],
+              businessPhones: item.PhoneNumber
+                ? item.PhoneNumber.split(",")
+                : [],
               department: item.Department,
               officeLocation: item.Zone,
               manager: item.ManagerId ? item.Manager.Title : "",
               managerAzureId: item.ManagerId ? item.ManagerAzureId : "",
             });
           }
-
         }
         //console.log(employeeArr);
         loadChart(employeeArr);
@@ -460,7 +474,7 @@ export default function BalkanChart(props) {
 
     let nodeData = [];
     for (var i = 0; i < data.length; i++) {
-      var loggedUserEmail=props.userEmail;
+      var loggedUserEmail = props.userEmail;
       //var loggedUserEmail="EPC@hosthealthcare.com";
       if (data[i].userPrincipalName == loggedUserEmail) {
         crntUserData.push({
@@ -561,7 +575,7 @@ export default function BalkanChart(props) {
         text: arrdepartments[i],
       });
     }
- 
+
     arrDeptswithkey.unshift({
       key: "All Host Healthcare",
       text: "All Host Healthcare",
@@ -573,15 +587,18 @@ export default function BalkanChart(props) {
     allNodeData = nodeData;
 
     //console.log(JSON.stringify(allNodeData));
-   
+
     SPComponentLoader.loadScript(
       props.URL + "/SiteAssets/OrgJS/orgchart.js"
     ).then(() => {
-      OrgChart.templates.myTemplate = Object.assign({}, OrgChart.templates.olivia);
-      OrgChart.templates.myTemplate.field_0 = '<text data-width="130" data-text-overflow="multiline" style="font-size: 16px;width: 10px;" fill="#757575" x="150" y="30" text-anchor="middle">{val}</text>';
-      OrgChart.templates.myTemplate.field_1 = '<text data-width="130" data-text-overflow="multiline" style="font-size: 14px;width: 10px;" fill="#757575" x="100" y="80">{val}</text>';
-
-      
+      OrgChart.templates.myTemplate = Object.assign(
+        {},
+        OrgChart.templates.olivia
+      );
+      OrgChart.templates.myTemplate.field_0 =
+        '<text data-width="130" data-text-overflow="multiline" style="font-size: 16px;width: 10px;font-weight:600;" fill="#03606a" x="100" y="35">{val}</text>';
+      OrgChart.templates.myTemplate.field_1 =
+        '<text data-width="130" data-text-overflow="multiline" style="font-size: 14px;width: 10px;" fill="#757575" x="100" y="70">{val}</text>';
 
       chart = new OrgChart(document.getElementById("OrgChart"), {
         // collapse: {
@@ -618,16 +635,15 @@ export default function BalkanChart(props) {
       OrgChart.scroll.speed = 50;
       filterKeys.peoplePicker = crntUserData;
       filterKeys.department = "All Host Healthcare";
-      chart.on('expcollclick', function (sender, collapse, id, ids) {
+      chart.on("expcollclick", function (sender, collapse, id, ids) {
         if (!collapse) {
-            sender.expand(id, ids, function () {
-                sender.center(id);
-            });
-    
-            return false;
+          sender.expand(id, ids, function () {
+            sender.center(id);
+          });
+
+          return false;
         }
-    });
-  
+      });
 
       setTimeout(() => {
         LoadFilteredChartData([...crntUserData]);
@@ -663,7 +679,7 @@ export default function BalkanChart(props) {
 
         if (filteredNodeData.length == 0) {
           filteredNodeData = _allNodeData.filter(
-            (_data) => _data.department == _filterKeys.department&&_data.name
+            (_data) => _data.department == _filterKeys.department && _data.name
           );
         }
       } else {
@@ -671,9 +687,9 @@ export default function BalkanChart(props) {
           (_data) => _data.department == _filterKeys.department && _data.name
         );
       }
-      
-      if(_filterKeys.department=="Recruitment")
-      filteredNodeData=filteredNodeData.splice(6, 1);
+
+      if (_filterKeys.department == "Recruitment")
+        filteredNodeData = filteredNodeData.splice(6, 1);
 
       LoadFilteredChartData(filteredNodeData);
     } else {
@@ -682,8 +698,6 @@ export default function BalkanChart(props) {
 
     setFilterKeys({ ..._filterKeys });
   }
-
-  
 
   const sortFunction = (a, b, key) => {
     if (a[key] < b[key]) {
@@ -694,7 +708,6 @@ export default function BalkanChart(props) {
     }
     return 0;
   };
-
 
   return (
     <div>
@@ -708,35 +721,37 @@ export default function BalkanChart(props) {
       <div className="searchDiv">
         <div className="clsDropplussearch">
           <div style={{ marginRight: 10 }}>
-          <Autocomplete
-          title="Search User"
-          aria-label="Search User"
-          id="combo-box-demo"
-          options={peopleList}
-          placeholder="Search User"
-          value={filterKeys.peoplePicker.length>0?filterKeys.peoplePicker[0]:{}}
-          //defaultValue={filterKeys.peoplePicker.length>0?filterKeys.peoplePicker[0]:{}}
-          getOptionLabel={(option) => option.text}
-          onChange={((event,data)=>
-          {
-            let newData=[];
-            if(data)
-            {
-              newData.push(data);
-              filterKeys.peoplePicker = newData;
-            }
-            else
-            {
-              filterKeys.peoplePicker = [];
-            }
-            
-            filterKeys.department = "All Host Healthcare";
-            setFilterKeys({ ...filterKeys });
-            LoadFilteredChartData(newData);
-          })}
-          style={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Search User" variant="outlined" />}
-        />
+            <Autocomplete
+              title="Search User"
+              aria-label="Search User"
+              id="combo-box-demo"
+              options={peopleList}
+              placeholder="Search User"
+              value={
+                filterKeys.peoplePicker.length > 0
+                  ? filterKeys.peoplePicker[0]
+                  : {}
+              }
+              //defaultValue={filterKeys.peoplePicker.length>0?filterKeys.peoplePicker[0]:{}}
+              getOptionLabel={(option) => option.text}
+              onChange={(event, data) => {
+                let newData = [];
+                if (data) {
+                  newData.push(data);
+                  filterKeys.peoplePicker = newData;
+                } else {
+                  filterKeys.peoplePicker = [];
+                }
+
+                filterKeys.department = "All Host Healthcare";
+                setFilterKeys({ ...filterKeys });
+                LoadFilteredChartData(newData);
+              }}
+              style={{ width: 300 }}
+              renderInput={(params) => (
+                <TextField {...params} label="Search User" variant="outlined" />
+              )}
+            />
 
             {/* <NormalPeoplePicker
               onResolveSuggestions={onFilterChanged}
