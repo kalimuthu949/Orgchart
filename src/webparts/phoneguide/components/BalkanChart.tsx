@@ -466,7 +466,7 @@ export default function BalkanChart(props) {
 
   function loadChart(data) {
     //console.log(JSON.stringify(data));
-    data = proddata;
+    //data = proddata;
     const users = [];
     let arrdepartments = [];
     let arrDeptswithkey = [];
