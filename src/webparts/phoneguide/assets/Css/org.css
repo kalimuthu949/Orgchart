@@ -267,11 +267,23 @@ a:hover {
     padding: 0 !important;
 }
 
+.clsFilterdropdowns .MuiInputBase-input {
+    padding: 0 !important;
+}
+
 .clsDropplussearch .MuiInputLabel-outlined[data-shrink="false"] {
     transform: translate(14px, 12px) scale(1) !important;
 }
 
+.clsFilterdropdowns .MuiInputLabel-outlined[data-shrink="false"] {
+    transform: translate(14px, 12px) scale(1) !important;
+}
+
 .clsDropplussearch .MuiInputLabel-outlined[data-shrink="true"] {
+    color: #000 !important;
+}
+
+.clsFilterdropdowns .MuiInputLabel-outlined[data-shrink="true"] {
     color: #000 !important;
 }
 

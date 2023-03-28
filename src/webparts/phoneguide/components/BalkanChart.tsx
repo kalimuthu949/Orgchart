@@ -366,9 +366,9 @@ export default function BalkanChart(props) {
         OrgChart.templates.olivia
       );
       OrgChart.templates.myTemplate.field_0 =
-        '<text data-width="130" data-text-overflow="multiline" style="font-size: 16px;width: 10px;font-weight:600;" fill="#03606a" x="100" y="35">{val}</text>';
+        '<text data-width="130" data-text-overflow="multiline" style="font-size: 15px;width: 10px;font-weight:600;" fill="#03606a" x="100" y="25">{val}</text>';
       OrgChart.templates.myTemplate.field_1 =
-        '<text data-width="130" data-text-overflow="multiline" style="font-size: 14px;width: 10px;" fill="#757575" x="100" y="70">{val}</text>';
+        '<text data-width="130" data-text-overflow="multiline" style="font-size: 13px;width: 10px;" fill="#757575" x="100" y="70" text-anchor="middle">{val}</text>';
 
       chart = new OrgChart(document.getElementById("OrgChart"), {
         // collapse: {
@@ -598,7 +598,7 @@ export default function BalkanChart(props) {
       OrgChart.templates.myTemplate.field_0 =
         '<text data-width="130" data-text-overflow="multiline" style="font-size: 16px;width: 10px;font-weight:600;" fill="#03606a" x="100" y="35">{val}</text>';
       OrgChart.templates.myTemplate.field_1 =
-        '<text data-width="130" data-text-overflow="multiline" style="font-size: 14px;width: 10px;" fill="#757575" x="100" y="70">{val}</text>';
+        '<text data-width="130" data-text-overflow="multiline" style="font-size: 14px;width: 10px;" fill="#757575" x="100" y="70" text-anchor="middle">{val}</text>';
 
       chart = new OrgChart(document.getElementById("OrgChart"), {
         // collapse: {

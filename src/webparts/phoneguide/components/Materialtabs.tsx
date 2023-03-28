@@ -109,7 +109,21 @@ let totalPageItems: number = 10;
 
 var count = 0;
 var alldatafromAD = [];
-
+const dropdownStyles: Partial<IDropdownStyles> = {
+  dropdown: { width: 300 },
+  root: {
+    height: 100,
+    selectors: {
+      ".ms-Dropdown-title": {
+        height: 37,
+        paddingTop: 4,
+      },
+      ".ms-Dropdown-caretDownWrapper": {
+        top: 3,
+      },
+    },
+  },
+};
 export default function MaterialDtabs(props) {
   const classes = useStyles();
   const [delayResults, setDelayResults] = React.useState(false);
@@ -195,7 +209,7 @@ export default function MaterialDtabs(props) {
             jobTitle: item.JobTitle,
             givenName: item.FirstName,
             surname: item.LastName,
-            businessPhones:  item.PhoneNumber?item.PhoneNumber.split(","):[],
+            businessPhones: item.PhoneNumber ? item.PhoneNumber.split(",") : [],
             department: item.Department,
             officeLocation: item.Zone,
             manager: item.ManagerId ? item.Manager.Title : "",
@@ -589,48 +603,48 @@ export default function MaterialDtabs(props) {
                   }}
                 /> */}
 
-              <Autocomplete
-              title="Search User"
-              aria-label="Search User"
-              id="combo-box-demo"
-              options={allusers}
-              placeholder="Search User"
-              value={
-                selectedusers.length > 0
-                  ? selectedusers[0]
-                  : {}
-              }
-              //defaultValue={filterKeys.peoplePicker.length>0?filterKeys.peoplePicker[0]:{}}
-              getOptionLabel={(option) => option.text}
-              onChange={(event, data) => {
+                <Autocomplete
+                  title="Search User"
+                  aria-label="Search User"
+                  id="combo-box-demo"
+                  options={allusers}
+                  placeholder="Search User"
+                  value={selectedusers.length > 0 ? selectedusers[0] : {}}
+                  //defaultValue={filterKeys.peoplePicker.length>0?filterKeys.peoplePicker[0]:{}}
+                  getOptionLabel={(option) => option.text}
+                  onChange={(event, data) => {
+                    let newData = [];
+                    if (data) {
+                      newData.push(data);
+                    } else {
+                      newData = [];
+                    }
 
-                let newData = [];
-                if (data) {
-                  newData.push(data);
-                } else {
-                  newData = [];
-                }
-
-                if (newData.length > 0) {
-                  setempname(newData[0]["Email"]);
-                  setselectedusers(newData);
-                  filtervalues(newData[0]["Email"], zone, title);
-                } else {
-                  setempname("");
-                  setselectedusers([]);
-                  filtervalues("", zone, title);
-                }
-              }}
-              style={{ width: 300 }}
-              renderInput={(params) => (
-                <TextField {...params} label="Search User" variant="outlined" />
-              )}
-            />
+                    if (newData.length > 0) {
+                      setempname(newData[0]["Email"]);
+                      setselectedusers(newData);
+                      filtervalues(newData[0]["Email"], zone, title);
+                    } else {
+                      setempname("");
+                      setselectedusers([]);
+                      filtervalues("", zone, title);
+                    }
+                  }}
+                  style={{ width: 300 }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Search User"
+                      variant="outlined"
+                    />
+                  )}
+                />
               </div>
               <div className="clsFilterdropdowns">
                 <Dropdown
                   multiSelect
                   style={{ width: 250 }}
+                  styles={dropdownStyles}
                   placeholder="Select Title"
                   options={titles}
                   selectedKeys={title}
@@ -651,6 +665,7 @@ export default function MaterialDtabs(props) {
                 <Dropdown
                   multiSelect
                   style={{ width: 250 }}
+                  styles={dropdownStyles}
                   placeholder="Select Department"
                   options={alldepartment}
                   selectedKeys={dept}
