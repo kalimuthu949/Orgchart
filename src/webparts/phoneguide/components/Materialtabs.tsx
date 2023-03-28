@@ -31,6 +31,8 @@ import { useState } from "react";
 import { Icon } from "@fluentui/react";
 import Pagination from "office-ui-fabric-react-pagination";
 import { MSGraphClient } from "@microsoft/sp-http";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import TextField from "@material-ui/core/TextField";
 import { eq } from "lodash";
 //Filter functionality
 let listitems = []; //glb array which is having the all user details from sharepoint list
@@ -562,7 +564,7 @@ export default function MaterialDtabs(props) {
           <div className="clsMaterialtab">
             <div className="clsFilters">
               <div className="clsFilterdropdowns">
-                <NormalPeoplePicker
+                {/* <NormalPeoplePicker
                   onResolveSuggestions={onFilterChanged}
                   getTextFromItem={getTextFromItem}
                   className={"ms-PeoplePicker"}
@@ -585,7 +587,45 @@ export default function MaterialDtabs(props) {
                       filtervalues("", zone, title);
                     }
                   }}
-                />
+                /> */}
+
+              <Autocomplete
+              title="Search User"
+              aria-label="Search User"
+              id="combo-box-demo"
+              options={allusers}
+              placeholder="Search User"
+              value={
+                selectedusers.length > 0
+                  ? selectedusers[0]
+                  : {}
+              }
+              //defaultValue={filterKeys.peoplePicker.length>0?filterKeys.peoplePicker[0]:{}}
+              getOptionLabel={(option) => option.text}
+              onChange={(event, data) => {
+
+                let newData = [];
+                if (data) {
+                  newData.push(data);
+                } else {
+                  newData = [];
+                }
+
+                if (newData.length > 0) {
+                  setempname(newData[0]["Email"]);
+                  setselectedusers(newData);
+                  filtervalues(newData[0]["Email"], zone, title);
+                } else {
+                  setempname("");
+                  setselectedusers([]);
+                  filtervalues("", zone, title);
+                }
+              }}
+              style={{ width: 300 }}
+              renderInput={(params) => (
+                <TextField {...params} label="Search User" variant="outlined" />
+              )}
+            />
               </div>
               <div className="clsFilterdropdowns">
                 <Dropdown
